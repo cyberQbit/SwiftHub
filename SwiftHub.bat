@@ -82,16 +82,17 @@ if "!menu!"=="1" goto :LaunchWinSwift
 goto :MainMenu
 
 :: ==============================================================================
-:: LAUNCHERS (Kusursuz İndirme, CRLF Zorlama ve Terminal Entegrasyonu)
+:: LAUNCHERS (Byte-Level Kusursuz İndirme, CRLF ve Güvenli Operasyon Bölgesi)
 :: ==============================================================================
 :LaunchWinSwift
 cls
 echo.
 echo %BLUE%[*] WinSwift Pro sunucudan cekiliyor... Lutfen bekleyin.%RESET%
 echo %GRAY%    (Kaynak: raw.githubusercontent.com/.../WinSwift.bat)%RESET%
-powershell -NoProfile -Command "$b=\"$env:TEMP\WinSwift.bat\"; $bytes=(New-Object System.Net.WebClient).DownloadData('https://raw.githubusercontent.com/cyberQbit/WinSwift/main/WinSwift.bat?t=%random%'); $str=[System.Text.Encoding]::UTF8.GetString($bytes); [System.IO.File]::WriteAllLines($b, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))"
+if not exist "%PROGRAMDATA%\cyberQbit" mkdir "%PROGRAMDATA%\cyberQbit" >nul
+powershell -NoProfile -Command "$b=\"$env:PROGRAMDATA\cyberQbit\WinSwift.bat\"; $bytes=(New-Object System.Net.WebClient).DownloadData('https://raw.githubusercontent.com/cyberQbit/WinSwift/main/WinSwift.bat?t=%random%'); $str=[System.Text.Encoding]::UTF8.GetString($bytes); [System.IO.File]::WriteAllLines($b, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))"
 where wt.exe >nul 2>&1
-if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%TEMP%\WinSwift.bat"" ) else ( start "" cmd.exe /c ""%TEMP%\WinSwift.bat"" )
+if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%PROGRAMDATA%\cyberQbit\WinSwift.bat"" ) else ( start "" cmd.exe /c ""%PROGRAMDATA%\cyberQbit\WinSwift.bat"" )
 goto :MainMenu
 
 :LaunchDevSwift
@@ -99,9 +100,10 @@ cls
 echo.
 echo %BLUE%[*] DevSwift Pro sunucudan cekiliyor... Lutfen bekleyin.%RESET%
 echo %GRAY%    (Kaynak: raw.githubusercontent.com/.../DevSwift.bat)%RESET%
-powershell -NoProfile -Command "$b=\"$env:TEMP\DevSwift.bat\"; $bytes=(New-Object System.Net.WebClient).DownloadData('https://raw.githubusercontent.com/cyberQbit/DevSwift/main/DevSwift.bat?t=%random%'); $str=[System.Text.Encoding]::UTF8.GetString($bytes); [System.IO.File]::WriteAllLines($b, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))"
+if not exist "%PROGRAMDATA%\cyberQbit" mkdir "%PROGRAMDATA%\cyberQbit" >nul
+powershell -NoProfile -Command "$b=\"$env:PROGRAMDATA\cyberQbit\DevSwift.bat\"; $bytes=(New-Object System.Net.WebClient).DownloadData('https://raw.githubusercontent.com/cyberQbit/DevSwift/main/DevSwift.bat?t=%random%'); $str=[System.Text.Encoding]::UTF8.GetString($bytes); [System.IO.File]::WriteAllLines($b, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))"
 where wt.exe >nul 2>&1
-if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%TEMP%\DevSwift.bat"" ) else ( start "" cmd.exe /c ""%TEMP%\DevSwift.bat"" )
+if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%PROGRAMDATA%\cyberQbit\DevSwift.bat"" ) else ( start "" cmd.exe /c ""%PROGRAMDATA%\cyberQbit\DevSwift.bat"" )
 goto :MainMenu
 
 :LaunchNetSwift
@@ -109,9 +111,10 @@ cls
 echo.
 echo %BLUE%[*] NetSwift Pro sunucudan cekiliyor... Lutfen bekleyin.%RESET%
 echo %GRAY%    (Kaynak: raw.githubusercontent.com/.../NetSwift.bat)%RESET%
-powershell -NoProfile -Command "$b=\"$env:TEMP\NetSwift.bat\"; $bytes=(New-Object System.Net.WebClient).DownloadData('https://raw.githubusercontent.com/cyberQbit/NetSwift/main/NetSwift.bat?t=%random%'); $str=[System.Text.Encoding]::UTF8.GetString($bytes); [System.IO.File]::WriteAllLines($b, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))"
+if not exist "%PROGRAMDATA%\cyberQbit" mkdir "%PROGRAMDATA%\cyberQbit" >nul
+powershell -NoProfile -Command "$b=\"$env:PROGRAMDATA\cyberQbit\NetSwift.bat\"; $bytes=(New-Object System.Net.WebClient).DownloadData('https://raw.githubusercontent.com/cyberQbit/NetSwift/main/NetSwift.bat?t=%random%'); $str=[System.Text.Encoding]::UTF8.GetString($bytes); [System.IO.File]::WriteAllLines($b, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))"
 where wt.exe >nul 2>&1
-if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%TEMP%\NetSwift.bat"" ) else ( start "" cmd.exe /c ""%TEMP%\NetSwift.bat"" )
+if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%PROGRAMDATA%\cyberQbit\NetSwift.bat"" ) else ( start "" cmd.exe /c ""%PROGRAMDATA%\cyberQbit\NetSwift.bat"" )
 goto :MainMenu
 
 :: ==============================================================================
