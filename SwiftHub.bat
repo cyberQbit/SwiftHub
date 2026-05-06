@@ -118,21 +118,107 @@ if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%PROGRAMDATA%\cyberQbit\Net
 goto :MainMenu
 
 :: ==============================================================================
-:: SYSTEM INFO (Gelişmiş Donanım Analizi)
+:: [4] SISTEM BILGISI (Gelistirilmis Derin Analiz Motoru)
 :: ==============================================================================
 :SysInfo
 cls
 echo.
-echo %BLUE%  [*] SWIFTHUB CORE - ADVANCED SYSTEM DIAGNOSTICS%RESET%
+echo %CYAN%  [*] SWIFTHUB CORE - ADVANCED SYSTEM DIAGNOSTICS%RESET%
 echo %GRAY%  ==========================================================================================%RESET%
+echo %BLUE%  [*] Donanim sensorleri ve kayit defteri verileri analiz ediliyor... Lutfen bekleyin.%RESET%
 echo.
 
-:: Arka Planda PowerShell ile Filtrelenmiş Nokta Atışı Donanım Taraması
-powershell -NoProfile -Command "$ErrorActionPreference = 'SilentlyContinue'; Write-Host '  [ISLETIM SISTEMI]' -ForegroundColor Blue; $os = Get-CimInstance Win32_OperatingSystem; $reg = Get-ItemProperty 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion'; $ver = if($reg.DisplayVersion){$reg.DisplayVersion}else{$reg.ReleaseId}; $uptime = (Get-Date) - $os.LastBootUpTime; Write-Host ('    Model   : ' + $os.Caption + ' ' + $os.OSArchitecture) -ForegroundColor Cyan; Write-Host ('    Surum   : Version ' + $ver + ' (Build ' + $os.BuildNumber + ')') -ForegroundColor Cyan; Write-Host ('    Calisma : ' + $uptime.Days + ' Gun, ' + $uptime.Hours + ' Saat, ' + $uptime.Minutes + ' Dakika') -ForegroundColor Cyan; Write-Host ''; Write-Host '  [ANAKART VE BIOS]' -ForegroundColor Blue; $mb = Get-CimInstance Win32_BaseBoard; $bios = Get-CimInstance Win32_BIOS; Write-Host ('    Anakart : ' + $mb.Manufacturer + ' ' + $mb.Product) -ForegroundColor Cyan; Write-Host ('    BIOS    : ' + $bios.Manufacturer + ' ' + $bios.SMBIOSBIOSVersion) -ForegroundColor Cyan; Write-Host ''; Write-Host '  [ISLEMCI (CPU)]' -ForegroundColor Blue; $cpu = Get-CimInstance Win32_Processor; $ghz = [Math]::Round($cpu.MaxClockSpeed / 1000, 2); Write-Host ('    Model   : ' + $cpu.Name) -ForegroundColor Cyan; Write-Host ('    Cekirdek: ' + $cpu.NumberOfCores + ' Core / ' + $cpu.NumberOfLogicalProcessors + ' Thread') -ForegroundColor Cyan; Write-Host ('    Hiz : ' + $ghz + ' GHz') -ForegroundColor Cyan; Write-Host ''; Write-Host '  [BELLEK (RAM)]' -ForegroundColor Blue; $ram = Get-CimInstance Win32_ComputerSystem; $ramTotal = [Math]::Round($ram.TotalPhysicalMemory / 1GB, 2); $ramSticks = Get-CimInstance Win32_PhysicalMemory; $ramSpeed = if ($ramSticks) { $ramSticks[0].Speed } else { 'Bilinmiyor' }; Write-Host ('    Kapasite: ' + $ramTotal + ' GB') -ForegroundColor Cyan; Write-Host ('    Hiz     : ' + $ramSpeed + ' MHz') -ForegroundColor Cyan; Write-Host ''; Write-Host '  [GRAFIK KARTI (GPU)]' -ForegroundColor Blue; $gpu = Get-CimInstance Win32_VideoController; foreach ($g in $gpu) { if ($g.Name -notmatch 'Virtual|SuperDisplay|Remote|AnyDesk') { $vram = [Math]::Round($g.AdapterRAM / 1GB, 2); Write-Host ('    Model   : ' + $g.Caption + ' (' + $vram + ' GB VRAM)') -ForegroundColor Cyan; if($g.CurrentHorizontalResolution){ Write-Host ('    Ekran   : ' + $g.CurrentHorizontalResolution + 'x' + $g.CurrentVerticalResolution + ' @ ' + $g.CurrentRefreshRate + 'Hz') -ForegroundColor Cyan; } } }; Write-Host ''; Write-Host '  [DEPOLAMA SUCURULERI]' -ForegroundColor Blue; $disks = Get-CimInstance Win32_LogicalDisk -Filter 'DriveType=3'; foreach ($d in $disks) { $diskTotal = [Math]::Round($d.Size / 1GB, 2); $diskFree = [Math]::Round($d.FreeSpace / 1GB, 2); Write-Host ('    Surucu ' + $d.DeviceID + ' : ' + $diskFree + ' GB Bos / ' + $diskTotal + ' GB Toplam') -ForegroundColor Cyan; }; Write-Host ''; Write-Host '  [AG BAGLANTISI]' -ForegroundColor Blue; $net = Get-NetAdapter | Where-Object { $_.Status -eq 'Up' -and $_.Virtual -eq $false } | Select-Object -First 1; if ($net) { $ip = (Get-NetIPAddress -InterfaceIndex $net.ifIndex -AddressFamily IPv4 -ErrorAction SilentlyContinue).IPAddress; Write-Host ('    Adaptor : ' + $net.InterfaceDescription) -ForegroundColor Cyan; Write-Host ('    Ag Adi  : ' + $net.Name) -ForegroundColor Cyan; Write-Host ('    IPv4    : ' + $ip) -ForegroundColor Cyan; } else { $fallback = Get-NetIPAddress -AddressFamily IPv4 | Where-Object { $_.IPAddress -notmatch '^127\.' -and $_.InterfaceAlias -notmatch 'Loopback|vEthernet|WSL|VMware|Virtual' } | Select-Object -First 1; if($fallback){ Write-Host ('    Ag Adi  : ' + $fallback.InterfaceAlias) -ForegroundColor Cyan; Write-Host ('    IPv4    : ' + $fallback.IPAddress) -ForegroundColor Cyan; } }"
+set "PSFILE=%PROGRAMDATA%\cyberQbit\sysinfo.ps1"
+if exist "%PSFILE%" del /q "%PSFILE%"
+
+>> "%PSFILE%" echo $ErrorActionPreference = 'SilentlyContinue'
+>> "%PSFILE%" echo Write-Host "[ISLETIM SISTEMI]" -ForegroundColor Cyan
+>> "%PSFILE%" echo $os = Get-CimInstance Win32_OperatingSystem
+>> "%PSFILE%" echo Write-Host "  Model   : $($os.Caption) $($os.OSArchitecture)"
+>> "%PSFILE%" echo Write-Host "  Surum   : Version $($os.Version) (Build $($os.BuildNumber))"
+>> "%PSFILE%" echo $uptime = (Get-Date) - $os.LastBootUpTime
+>> "%PSFILE%" echo Write-Host "  Calisma : $($uptime.Days) Gun, $($uptime.Hours) Saat, $($uptime.Minutes) Dakika"
+>> "%PSFILE%" echo Write-Host ""
+
+>> "%PSFILE%" echo Write-Host "[ANAKART VE BIOS]" -ForegroundColor Cyan
+>> "%PSFILE%" echo $board = Get-CimInstance Win32_BaseBoard
+>> "%PSFILE%" echo $bios = Get-CimInstance Win32_BIOS
+>> "%PSFILE%" echo Write-Host "  Anakart : $($board.Manufacturer) $($board.Product)"
+>> "%PSFILE%" echo Write-Host "  BIOS    : $($bios.Manufacturer) $($bios.SMBIOSBIOSVersion)"
+>> "%PSFILE%" echo Write-Host ""
+
+>> "%PSFILE%" echo Write-Host "[ISLEMCI (CPU)]" -ForegroundColor Cyan
+>> "%PSFILE%" echo $cpu = Get-CimInstance Win32_Processor
+>> "%PSFILE%" echo Write-Host "  Model       : $($cpu.Name)"
+>> "%PSFILE%" echo Write-Host "  Cekirdek    : $($cpu.NumberOfCores) Core / $($cpu.NumberOfLogicalProcessors) Thread"
+>> "%PSFILE%" echo $base = [math]::Round($cpu.MaxClockSpeed / 1000, 2)
+>> "%PSFILE%" echo $current = [math]::Round($cpu.CurrentClockSpeed / 1000, 2)
+>> "%PSFILE%" echo Write-Host "  Baz Hizi    : $base GHz"
+>> "%PSFILE%" echo Write-Host "  Anlik Hiz   : $current GHz (Turbo Aktifse Yukselir)"
+>> "%PSFILE%" echo Write-Host ""
+
+>> "%PSFILE%" echo Write-Host "[BELLEK (RAM)]" -ForegroundColor Cyan
+>> "%PSFILE%" echo $ram = Get-CimInstance Win32_PhysicalMemory
+>> "%PSFILE%" echo $totalRam = [math]::Round(($ram ^| Measure-Object Capacity -Sum).Sum / 1GB, 2)
+>> "%PSFILE%" echo $speed = ($ram ^| Select-Object -First 1).Speed
+>> "%PSFILE%" echo Write-Host "  Kapasite    : $totalRam GB"
+>> "%PSFILE%" echo Write-Host "  Hiz         : $speed MHz"
+>> "%PSFILE%" echo Write-Host ""
+
+>> "%PSFILE%" echo Write-Host "[GRAFIK KARTI (GPU)]" -ForegroundColor Cyan
+>> "%PSFILE%" echo $gpus = Get-CimInstance Win32_VideoController
+>> "%PSFILE%" echo foreach ($g in $gpus) {
+>> "%PSFILE%" echo     $vramGB = [math]::Round($g.AdapterRAM / 1GB, 0)
+>> "%PSFILE%" echo     # Windows 32-bit VRAM Limit Kiricisi (Kayit Defteri)
+>> "%PSFILE%" echo     if ($vramGB -eq 4 -or $vramGB -lt 0) {
+>> "%PSFILE%" echo         $reg = Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\*" -ErrorAction SilentlyContinue ^| Where-Object DriverDesc -eq $g.Name
+>> "%PSFILE%" echo         if ($reg."HardwareInformation.qwMemorySize") {
+>> "%PSFILE%" echo             $vramGB = [math]::Round($reg."HardwareInformation.qwMemorySize" / 1GB, 0)
+>> "%PSFILE%" echo         }
+>> "%PSFILE%" echo     }
+>> "%PSFILE%" echo     Write-Host "  Model       : $($g.Name) ($vramGB GB VRAM)"
+>> "%PSFILE%" echo     Write-Host "  Ekran       : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz"
+>> "%PSFILE%" echo     Write-Host ""
+>> "%PSFILE%" echo }
+
+>> "%PSFILE%" echo Write-Host "[DEPOLAMA SURUCULERI (Disks ^& SMART)]" -ForegroundColor Cyan
+>> "%PSFILE%" echo $vols = Get-CimInstance Win32_LogicalDisk ^| Where DriveType -eq 3
+>> "%PSFILE%" echo foreach ($v in $vols) {
+>> "%PSFILE%" echo     $free = [math]::Round($v.FreeSpace / 1GB, 2)
+>> "%PSFILE%" echo     $tot = [math]::Round($v.Size / 1GB, 2)
+>> "%PSFILE%" echo     Write-Host "  Surucu $($v.DeviceID)    : $free GB Bos / $tot GB Toplam"
+>> "%PSFILE%" echo }
+>> "%PSFILE%" echo Write-Host "  --- Donanim Sagligi ---" -ForegroundColor DarkGray
+>> "%PSFILE%" echo $pdisks = Get-PhysicalDisk
+>> "%PSFILE%" echo foreach ($pd in $pdisks) {
+>> "%PSFILE%" echo     $size = [math]::Round($pd.Size / 1GB, 0)
+>> "%PSFILE%" echo     $type = $pd.MediaType
+>> "%PSFILE%" echo     $model = $pd.FriendlyName
+>> "%PSFILE%" echo     $rel = $pd ^| Get-StorageReliabilityCounter -ErrorAction SilentlyContinue
+>> "%PSFILE%" echo     $poh = $rel.PowerOnHours
+>> "%PSFILE%" echo     $wear = $rel.Wear
+>> "%PSFILE%" echo     $health = "Bilinmiyor"
+>> "%PSFILE%" echo     if ($null -ne $wear) { $health = "%%" + (100 - $wear) }
+>> "%PSFILE%" echo     Write-Host "  Aygit       : $model ($type - $size GB)"
+>> "%PSFILE%" echo     if ($poh) { Write-Host "  Guc Acik    : $poh Saat" }
+>> "%PSFILE%" echo     if ($null -ne $wear) { Write-Host "  SSD Sagligi : $health" }
+>> "%PSFILE%" echo     Write-Host ""
+>> "%PSFILE%" echo }
+
+>> "%PSFILE%" echo Write-Host "[AG BAGLANTISI]" -ForegroundColor Cyan
+>> "%PSFILE%" echo $net = Get-NetAdapter ^| Where-Object Status -eq 'Up' ^| Select-Object -First 1
+>> "%PSFILE%" echo if ($net) {
+>> "%PSFILE%" echo     $ip = (Get-NetIPAddress -InterfaceAlias $net.Name -AddressFamily IPv4 -ErrorAction SilentlyContinue).IPAddress
+>> "%PSFILE%" echo     Write-Host "  Adaptor     : $($net.InterfaceDescription)"
+>> "%PSFILE%" echo     Write-Host "  Ag Adi      : $($net.Name)"
+>> "%PSFILE%" echo     Write-Host "  IPv4        : $ip"
+>> "%PSFILE%" echo } else { Write-Host "  Baglanti Bulunamadi" }
+
+powershell -NoProfile -ExecutionPolicy Bypass -File "%PSFILE%"
+del /q "%PSFILE%"
 
 echo.
 echo %GRAY%  ==========================================================================================%RESET%
-echo.
 echo %BLUE%  Ana menuye donmek icin bir tusa basin...%RESET%
 pause >nul
 goto :MainMenu
