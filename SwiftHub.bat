@@ -118,7 +118,7 @@ if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%PROGRAMDATA%\cyberQbit\Net
 goto :MainMenu
 
 :: ==============================================================================
-:: [4] SISTEM BILGISI (Gelistirilmis Derin Analiz Motoru v2)
+:: [4] SISTEM BILGISI (Gelistirilmis Derin Analiz Motoru v3)
 :: ==============================================================================
 :SysInfo
 cls
@@ -183,7 +183,7 @@ if exist "%PSFILE%" del /q "%PSFILE%"
 >> "%PSFILE%" echo     Write-Host ""
 >> "%PSFILE%" echo }
 
->> "%PSFILE%" echo Write-Host "[DEPOLAMA SURUCULERI (Disks ^& SMART)]" -ForegroundColor Cyan
+>> "%PSFILE%" echo Write-Host "[DEPOLAMA VE DISK ANALIZI]" -ForegroundColor Cyan
 >> "%PSFILE%" echo $vols = Get-CimInstance Win32_LogicalDisk ^| Where DriveType -eq 3
 >> "%PSFILE%" echo foreach ($v in $vols) {
 >> "%PSFILE%" echo     $free = [math]::Round($v.FreeSpace / 1GB, 2)
@@ -201,7 +201,8 @@ if exist "%PSFILE%" del /q "%PSFILE%"
 >> "%PSFILE%" echo     $poh = $rel.PowerOnHours
 >> "%PSFILE%" echo     Write-Host "  Aygit       : $model ($type - $size GB)"
 >> "%PSFILE%" echo     if ($poh) { Write-Host "  Guc Acik    : $poh Saat" }
->> "%PSFILE%" echo     Write-Host "  Durum       : $status (Windows Native API)"
+>> "%PSFILE%" echo     Write-Host "  Durum       : $status"
+>> "%PSFILE%" echo     if ($status -eq 'Healthy') { Write-Host "  Bilgi       : 'Healthy' durumu, diskin donanimsal olarak %%11 ile %%100 arasi saglikta oldugunu gosterir." -ForegroundColor DarkGray }
 >> "%PSFILE%" echo     Write-Host ""
 >> "%PSFILE%" echo }
 
