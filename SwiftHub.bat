@@ -74,7 +74,7 @@ echo.
 choice /c 12340 /n /m "%BLUE%  [root@%USERNAME%]~# %RESET%"
 set "menu=!errorlevel!"
 
-if "!menu!"=="5" goto :EOF
+if "!menu!"=="5" goto :Exit
 if "!menu!"=="4" goto :SysInfo
 if "!menu!"=="3" goto :LaunchNetSwift
 if "!menu!"=="2" goto :LaunchDevSwift
@@ -137,10 +137,19 @@ echo %BLUE%  Ana menuye donmek icin bir tusa basin...%RESET%
 pause >nul
 goto :MainMenu
 
-:EOF
+:: ==============================================================================
+:: KAPANIS SEKANSI VE ANIMASYONU
+:: ==============================================================================
+:Exit
 cls
 echo.
-echo %BLUE%  Shutting down SwiftHub Core...%RESET%
-echo %GRAY%  May your code be bug-free. %RESET%
-timeout /t 2 /nobreak >nul
+echo %CYAN%  [+] Sistem baglantisi kesiliyor...%RESET%
+powershell -NoProfile -Command "Start-Sleep -Milliseconds 300"
+echo %BLUE%  [+] Onbellek ve gecici hafiza temizleniyor...%RESET%
+powershell -NoProfile -Command "Start-Sleep -Milliseconds 300"
+echo %GREEN%  [OK] cyberQbit Ekosistemi guvenli bir sekilde kapatildi.%RESET%
+powershell -NoProfile -Command "Start-Sleep -Milliseconds 400"
+echo.
+echo %GRAY%  Gorusmek uzere, Komutan!%RESET%
+powershell -NoProfile -Command "Start-Sleep -Milliseconds 600"
 exit

@@ -28,8 +28,9 @@ if (!([Security.Principal.WindowsPrincipal][Security.Principal.WindowsIdentity]:
 
 Write-Host "[OK] Yetki dogrulandi. Core (Cekirdek) indiriliyor..." -ForegroundColor Green
 
-# SwiftHub.bat Byte-Level Indirme
-$batPath = "$env:TEMP\SwiftHub.bat"
+# SwiftHub.bat Byte-Level Indirme ve Guvenli Karargaha Tasima
+if (!(Test-Path "$env:PROGRAMDATA\cyberQbit")) { New-Item -ItemType Directory -Force -Path "$env:PROGRAMDATA\cyberQbit" | Out-Null }
+$batPath = "$env:PROGRAMDATA\cyberQbit\SwiftHub.bat"
 try {
     $bytes = (New-Object System.Net.WebClient).DownloadData("https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/SwiftHub.bat?t=$((Get-Date).Ticks)")
     $str = [System.Text.Encoding]::UTF8.GetString($bytes)
