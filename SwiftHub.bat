@@ -118,7 +118,7 @@ if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%PROGRAMDATA%\cyberQbit\Net
 goto :MainMenu
 
 :: ==============================================================================
-:: [4] SISTEM BILGISI (Gelistirilmis Derin Analiz Motoru v3)
+:: [4] SISTEM BILGISI (Gelistirilmis Derin Analiz Motoru v4 - Telemetri)
 :: ==============================================================================
 :SysInfo
 cls
@@ -190,19 +190,21 @@ if exist "%PSFILE%" del /q "%PSFILE%"
 >> "%PSFILE%" echo     $tot = [math]::Round($v.Size / 1GB, 2)
 >> "%PSFILE%" echo     Write-Host "  Surucu $($v.DeviceID)    : $free GB Bos / $tot GB Toplam"
 >> "%PSFILE%" echo }
->> "%PSFILE%" echo Write-Host "  --- Donanim Sagligi ---" -ForegroundColor DarkGray
+>> "%PSFILE%" echo Write-Host "  --- Donanim Telemetrisi ---" -ForegroundColor DarkGray
 >> "%PSFILE%" echo $pdisks = Get-PhysicalDisk
 >> "%PSFILE%" echo foreach ($pd in $pdisks) {
 >> "%PSFILE%" echo     $size = [math]::Round($pd.Size / 1GB, 0)
 >> "%PSFILE%" echo     $type = $pd.MediaType
 >> "%PSFILE%" echo     $model = $pd.FriendlyName
 >> "%PSFILE%" echo     $status = $pd.HealthStatus
->> "%PSFILE%" echo     $rel = $pd ^| Get-StorageReliabilityCounter -ErrorAction SilentlyContinue
->> "%PSFILE%" echo     $poh = $rel.PowerOnHours
 >> "%PSFILE%" echo     Write-Host "  Aygit       : $model ($type - $size GB)"
->> "%PSFILE%" echo     if ($poh) { Write-Host "  Guc Acik    : $poh Saat" }
 >> "%PSFILE%" echo     Write-Host "  Durum       : $status"
->> "%PSFILE%" echo     if ($status -eq 'Healthy') { Write-Host "  Bilgi       : 'Healthy' durumu, diskin donanimsal olarak %%11 ile %%100 arasi saglikta oldugunu gosterir." -ForegroundColor DarkGray }
+>> "%PSFILE%" echo     $rel = $pd ^| Get-StorageReliabilityCounter -ErrorAction SilentlyContinue
+>> "%PSFILE%" echo     if ($rel) {
+>> "%PSFILE%" echo         if ($rel.Temperature) { Write-Host "  Sicaklik    : $($rel.Temperature) Derece (Celsius)" }
+>> "%PSFILE%" echo         if ($rel.PowerOnHours) { Write-Host "  Calisma     : $($rel.PowerOnHours) Saat" }
+>> "%PSFILE%" echo         if ($null -ne $rel.Wear -and $rel.Wear -gt 0) { Write-Host "  Yipranma    : %%$($rel.Wear) (Windows API)" }
+>> "%PSFILE%" echo     }
 >> "%PSFILE%" echo     Write-Host ""
 >> "%PSFILE%" echo }
 
