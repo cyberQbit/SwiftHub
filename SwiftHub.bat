@@ -118,7 +118,7 @@ if %errorlevel% equ 0 ( start "" wt.exe cmd.exe /c ""%PROGRAMDATA%\cyberQbit\Net
 goto :MainMenu
 
 :: ==============================================================================
-:: [4] SISTEM BILGISI (Gelistirilmis Derin Analiz Motoru)
+:: [4] SISTEM BILGISI (Gelistirilmis Derin Analiz Motoru v2)
 :: ==============================================================================
 :SysInfo
 cls
@@ -152,9 +152,8 @@ if exist "%PSFILE%" del /q "%PSFILE%"
 >> "%PSFILE%" echo Write-Host "  Model       : $($cpu.Name)"
 >> "%PSFILE%" echo Write-Host "  Cekirdek    : $($cpu.NumberOfCores) Core / $($cpu.NumberOfLogicalProcessors) Thread"
 >> "%PSFILE%" echo $base = [math]::Round($cpu.MaxClockSpeed / 1000, 2)
->> "%PSFILE%" echo $current = [math]::Round($cpu.CurrentClockSpeed / 1000, 2)
 >> "%PSFILE%" echo Write-Host "  Baz Hizi    : $base GHz"
->> "%PSFILE%" echo Write-Host "  Anlik Hiz   : $current GHz (Turbo Aktifse Yukselir)"
+>> "%PSFILE%" echo Write-Host "  Turbo Hizi  : Dinamik (WMI/Anakart tarafindan yonetilir)"
 >> "%PSFILE%" echo Write-Host ""
 
 >> "%PSFILE%" echo Write-Host "[BELLEK (RAM)]" -ForegroundColor Cyan
@@ -169,7 +168,6 @@ if exist "%PSFILE%" del /q "%PSFILE%"
 >> "%PSFILE%" echo $gpus = Get-CimInstance Win32_VideoController
 >> "%PSFILE%" echo foreach ($g in $gpus) {
 >> "%PSFILE%" echo     $vramGB = [math]::Round($g.AdapterRAM / 1GB, 0)
->> "%PSFILE%" echo     # Windows 32-bit VRAM Limit Kiricisi (Kayit Defteri)
 >> "%PSFILE%" echo     if ($vramGB -eq 4 -or $vramGB -lt 0) {
 >> "%PSFILE%" echo         $reg = Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\*" -ErrorAction SilentlyContinue ^| Where-Object DriverDesc -eq $g.Name
 >> "%PSFILE%" echo         if ($reg."HardwareInformation.qwMemorySize") {
@@ -177,7 +175,11 @@ if exist "%PSFILE%" del /q "%PSFILE%"
 >> "%PSFILE%" echo         }
 >> "%PSFILE%" echo     }
 >> "%PSFILE%" echo     Write-Host "  Model       : $($g.Name) ($vramGB GB VRAM)"
->> "%PSFILE%" echo     Write-Host "  Ekran       : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz"
+>> "%PSFILE%" echo     if ($g.CurrentHorizontalResolution -and $g.CurrentRefreshRate) {
+>> "%PSFILE%" echo         Write-Host "  Ekran       : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz"
+>> "%PSFILE%" echo     } else {
+>> "%PSFILE%" echo         Write-Host "  Ekran       : Dahili Ekran Bagli Degil (Optimus / Render GPU)"
+>> "%PSFILE%" echo     }
 >> "%PSFILE%" echo     Write-Host ""
 >> "%PSFILE%" echo }
 
@@ -194,14 +196,12 @@ if exist "%PSFILE%" del /q "%PSFILE%"
 >> "%PSFILE%" echo     $size = [math]::Round($pd.Size / 1GB, 0)
 >> "%PSFILE%" echo     $type = $pd.MediaType
 >> "%PSFILE%" echo     $model = $pd.FriendlyName
+>> "%PSFILE%" echo     $status = $pd.HealthStatus
 >> "%PSFILE%" echo     $rel = $pd ^| Get-StorageReliabilityCounter -ErrorAction SilentlyContinue
 >> "%PSFILE%" echo     $poh = $rel.PowerOnHours
->> "%PSFILE%" echo     $wear = $rel.Wear
->> "%PSFILE%" echo     $health = "Bilinmiyor"
->> "%PSFILE%" echo     if ($null -ne $wear) { $health = "%%" + (100 - $wear) }
 >> "%PSFILE%" echo     Write-Host "  Aygit       : $model ($type - $size GB)"
 >> "%PSFILE%" echo     if ($poh) { Write-Host "  Guc Acik    : $poh Saat" }
->> "%PSFILE%" echo     if ($null -ne $wear) { Write-Host "  SSD Sagligi : $health" }
+>> "%PSFILE%" echo     Write-Host "  Durum       : $status (Windows Native API)"
 >> "%PSFILE%" echo     Write-Host ""
 >> "%PSFILE%" echo }
 
