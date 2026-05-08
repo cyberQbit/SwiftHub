@@ -262,4 +262,30 @@ $BtnSpeedTest.Add_Click({
 $BtnDnsCloudflare.Add_Click({ $n=Get-NetAdapter|Where Status -eq 'Up'|Select -First 1; Set-DnsClientServerAddress -InterfaceIndex $n.ifIndex -ServerAddresses ("1.1.1.1","1.0.0.1"); $TxtNetLog.Text="[+] DNS -> Cloudflare" })
 $BtnDnsGoogle.Add_Click({ $n=Get-NetAdapter|Where Status -eq 'Up'|Select -First 1; Set-DnsClientServerAddress -InterfaceIndex $n.ifIndex -ServerAddresses ("8.8.8.8","8.8.4.4"); $TxtNetLog.Text="[+] DNS -> Google" })
 $BtnDnsDefault.Add_Click({ $n=Get-NetAdapter|Where Status -eq 'Up'|Select -First 1; Set-DnsClientServerAddress -InterfaceIndex $n.ifIndex -ResetServerAddresses; $TxtNetLog.Text="[+] DNS Sifirlandi." })
-$BtnNetReset.Add
+$BtnNetReset.Add_Click({ ipconfig /flushdns | Out-Null; netsh winsock reset | Out-Null; $TxtNetLog.Text="[+] Ag Onbellegi Sifirlandi (Yeniden baslatin)." })
+
+# FIXES
+$BtnFixSFC.Add_Click({
+    $TxtFixLog.Text = "[*] DISM & SFC Tarama ve Onarimi baslatildi. Bu islem uzun surebilir..."; $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+    Start-Process "cmd.exe" -ArgumentList "/c DISM /Online /Cleanup-Image /RestoreHealth & sfc /scannow" -Wait -NoNewWindow
+    $TxtFixLog.Text = "[+] Sistem bilesen onarimi tamamlandi!"
+})
+$BtnFixWU.Add_Click({
+    $TxtFixLog.Text = "[*] Windows Update onbellegi temizleniyor..."; $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+    Stop-Service -Name wuauserv -Force -ErrorAction SilentlyContinue; Stop-Service -Name bits -Force -ErrorAction SilentlyContinue
+    Remove-Item -Path "$env:windir\SoftwareDistribution\Download\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Start-Service -Name wuauserv -ErrorAction SilentlyContinue; Start-Service -Name bits -ErrorAction SilentlyContinue
+    $TxtFixLog.Text = "[+] Update onbellegi sifirlandi!"
+})
+$BtnFixTemp.Add_Click({
+    $TxtFixLog.Text = "[*] Gereksiz dosyalar (Temp) siliniyor..."; $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+    Remove-Item -Path "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item -Path "$env:windir\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+    $TxtFixLog.Text = "[+] Gecici dosyalar temizlendi!"
+})
+
+# FEATURES
+$BtnFeatWSL.Add_Click({ Start-Process "dism.exe" -ArgumentList "/online /enable-feature /featurename:Microsoft-Windows-Subsystem-Linux /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] WSL Kuruldu. Yeniden baslatin." })
+$BtnFeatHyperV.Add_Click({ Start-Process "dism.exe" -ArgumentList "/online /enable-feature /featurename:Microsoft-Hyper-V-All /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] Hyper-V Kuruldu. Yeniden baslatin." })
+$BtnFeatSandbox.Add_Click({ Start-Process "dism.exe" -ArgumentList "/online /enable-feature /featurename:Containers-DisposableClientVM /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] Sandbox Kuruldu. Yeniden baslatin." })
+
+Update-Language; $window.ShowDialog() | Out-Null
