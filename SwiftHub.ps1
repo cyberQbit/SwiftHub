@@ -1,9 +1,10 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v3.1 - PURE POWERSHELL ARCHITECTURE (STABLE)
+# 🌌 SWIFTHUB CORE v3.2 - TITANIUM EDITION (PURE POWERSHELL)
 # ==============================================================================
-$ErrorActionPreference = 'SilentlyContinue' # Kirilgan kirmizi hatalar kapatildi
+$ErrorActionPreference = 'SilentlyContinue' 
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $Host.UI.RawUI.WindowTitle = "SwiftHub Core - Advanced System Gateway"
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8 # Terminali zorla UTF-8 yapar
 
 # --- GUVENLI BOLGE ---
 $hubDir = "$env:PROGRAMDATA\cyberQbit"
@@ -19,7 +20,7 @@ function Show-Header {
     Write-Host "   ███████║╚███╔███╔╝██║██║        ██║   ██║  ██║╚██████╔╝██████╔╝" -ForegroundColor Cyan
     Write-Host "   ╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ " -ForegroundColor Cyan
     Write-Host "   ===============================================================" -ForegroundColor DarkGray
-    Write-Host "         [ Architecture: Pure PowerShell | Single-Window ]" -ForegroundColor DarkCyan
+    Write-Host "         [ Architecture: Pure PowerShell | Titanium Loop ]" -ForegroundColor DarkCyan
     Write-Host ""
 }
 
@@ -34,34 +35,38 @@ function Show-Menu {
     Write-Host ""
 }
 
-# --- MODUL INDIRICI VE MEMORY PATCHER (Tek Pencere Kusursuz Entegrasyonu) ---
+# --- MODUL INDIRICI VE TITANIUM PATCHER ---
 function Invoke-Module ($Name, $Url) {
     Write-Host "`n   [*] $Name sunucudan cekiliyor... Lutfen bekleyin." -ForegroundColor Cyan
     $batPath = "$hubDir\$Name.bat"
     try {
-        $bytes = (New-Object System.Net.WebClient).DownloadData("$Url?t=$((Get-Date).Ticks)")
-        $str = [System.Text.Encoding]::UTF8.GetString($bytes)
+        $wc = New-Object System.Net.WebClient
+        $wc.Encoding = [System.Text.Encoding]::UTF8
+        $str = $wc.DownloadString("$Url?t=$((Get-Date).Ticks)")
         
-        # SİNSİ DOKUNUŞ v2 (Kusursuz Geri Dönüş):
-        # Modülün içindeki "SwiftHub'ı tekrar aç" veya "internet'ten indir" komutlarını
-        # havada yakalayıp sadece 'exit' (kapan) emriyle değiştiriyoruz.
-        # Böylece modül kapandığı an, halihazırda açık olan PS1 menümüze pürüzsüzce döneriz!
-        $str = $str -replace '(?i)start .*?SwiftHub\.bat.*', 'exit'
-        $str = $str -replace '(?i)powershell .*?irm aydinaydmr\.com\.tr/core.*', 'exit'
+        # 1. KUSURSUZ İMHA (Titanium Patcher): 
+        # İçinde "aydinaydmr", "SwiftHub" veya "run.ps1" geçen tüm satırları acımasızca yakalar ve sadece 'exit' yazar!
+        $str = $str -replace '(?im)^.*powershell.*(aydinaydmr|SwiftHub|run\.ps1).*$', 'exit'
+        $str = $str -replace '(?im)^.*start.*SwiftHub.*$', 'exit'
+        
+        # 2. KARAKTER KORUMA KALKANI:
+        # CMD çalışırken Türkçe karakterleri bozmasın diye en tepeye zorla şifreleme düzeltici ekliyoruz.
+        $str = "chcp 65001 >nul`r`n" + $str
         
         [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
         
         Write-Host "   [OK] Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
         Start-Sleep -Milliseconds 400
         
-        # Yeni pencere açmadan, doğrudan bu pencerenin İÇİNDE çalıştırıyoruz
-        cmd.exe /c "$batPath"
+        # 3. İZOLE EDİLMİŞ ÇALIŞTIRMA:
+        # CMD'nin yeni pencere açmasını %100 engeller ve işi bitene kadar PowerShell'i "Wait" (bekle) moduna sokar.
+        Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"`"$batPath`"`"" -Wait -NoNewWindow
         
-        # Modül kapandıktan sonra PowerShell'in toparlanıp ana menüyü çizmesi için nefes aralığı
+        # Modül kapanınca ekranın tertemiz çizilmesi için mini rötar.
         Start-Sleep -Milliseconds 200
         
     } catch {
-        Write-Host "`n   [X] $Name indirilemedi veya calismadi: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "`n   [X] $Name indirilemedi: $($_.Exception.Message)" -ForegroundColor Red
         Start-Sleep -Seconds 3
     }
 }
