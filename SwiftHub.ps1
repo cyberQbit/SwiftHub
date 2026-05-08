@@ -381,7 +381,7 @@ $BtnWinUtil.Add_Click({
 })
 
 # CONTEXT MENU INTEGRATION
-$BtnAddContext.Add_Click({ try { $reg = "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub"; New-Item -Path $reg -Force | Out-Null; Set-ItemProperty -Path $reg -Name "Icon" -Value "powershell.exe"; Set-ItemProperty -Path $reg -Name "MUIVerb" -Value "🌌 SwiftHub Titan"; New-Item -Path "$reg\command" -Force | Out-Null; Set-ItemProperty -Path "$reg\command" -Name "(default)" -Value "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"irm aydinaydmr.com.tr/core | iex`""; $TxtStatus.Text="[+] Sag Tika Eklendi! Masaustunde farenin sag tusuna basarak deneyin." } catch { $TxtStatus.Text="[X] Sag tik eklenemedi." } })
+$BtnAddContext.Add_Click({ try { $reg = "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub"; New-Item -Path $reg -Force | Out-Null; Set-ItemProperty -Path $reg -Name "Icon" -Value "powershell.exe"; Set-ItemProperty -Path $reg -Name "MUIVerb" -Value "🌌 SWIFTHUB CORE"; New-Item -Path "$reg\command" -Force | Out-Null; Set-ItemProperty -Path "$reg\command" -Name "(default)" -Value "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"irm aydinaydmr.com.tr/core | iex`""; $TxtStatus.Text="[+] Sag Tika Eklendi! Masaustunde farenin sag tusuna basarak deneyin." } catch { $TxtStatus.Text="[X] Sag tik eklenemedi." } })
 $BtnRemContext.Add_Click({ try { Remove-Item -Path "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub" -Recurse -Force; $TxtStatus.Text="[+] Sag Tik menusunden kaldirildi." } catch {} })
 
 # NUKLEER DEEP CLEAN (KUSURSUZ YAMA)
