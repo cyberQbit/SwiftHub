@@ -1,11 +1,11 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v3.0 - PURE POWERSHELL ARCHITECTURE
+# 🌌 SWIFTHUB CORE v3.1 - PURE POWERSHELL ARCHITECTURE (STABLE)
 # ==============================================================================
-$ErrorActionPreference = 'Stop'
+$ErrorActionPreference = 'SilentlyContinue' # Kirilgan kirmizi hatalar kapatildi
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
 $Host.UI.RawUI.WindowTitle = "SwiftHub Core - Advanced System Gateway"
 
-# --- GUVENLI BOLGE (Moduller Icin) ---
+# --- GUVENLI BOLGE ---
 $hubDir = "$env:PROGRAMDATA\cyberQbit"
 if (-not (Test-Path $hubDir)) { New-Item -ItemType Directory -Path $hubDir -Force | Out-Null }
 
@@ -19,7 +19,7 @@ function Show-Header {
     Write-Host "   ███████║╚███╔███╔╝██║██║        ██║   ██║  ██║╚██████╔╝██████╔╝" -ForegroundColor Cyan
     Write-Host "   ╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ " -ForegroundColor Cyan
     Write-Host "   ===============================================================" -ForegroundColor DarkGray
-    Write-Host "         [ Architecture: Pure PowerShell | Zero-Footprint ]" -ForegroundColor DarkCyan
+    Write-Host "         [ Architecture: Pure PowerShell | Single-Window ]" -ForegroundColor DarkCyan
     Write-Host ""
 }
 
@@ -34,61 +34,70 @@ function Show-Menu {
     Write-Host ""
 }
 
-# --- MODUL INDIRICI (Simdilik eski .bat modullerini cagirir, Phase 2'de degisecek) ---
+# --- MODUL INDIRICI VE MEMORY PATCHER (Tek Pencere Entegrasyonu) ---
 function Invoke-Module ($Name, $Url) {
     Write-Host "`n   [*] $Name sunucudan cekiliyor... Lutfen bekleyin." -ForegroundColor Cyan
     $batPath = "$hubDir\$Name.bat"
     try {
         $bytes = (New-Object System.Net.WebClient).DownloadData("$Url?t=$((Get-Date).Ticks)")
         $str = [System.Text.Encoding]::UTF8.GetString($bytes)
+        
+        # SİNSİ DOKUNUŞ: Modüllerin içindeki o eski "SwiftHub.bat'ı aç" satırlarını havada yok ediyoruz!
+        # Böylece modülden çıkınca hata vermez, PS1 döngümüz kaldığı yerden mükemmelce devam eder.
+        $str = $str -replace 'SwiftHub\.bat', 'SilinmisKodes.bat'
+        
         [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
         
         Write-Host "   [OK] Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
         Start-Sleep -Milliseconds 400
         
-        if (Get-Command wt.exe -ErrorAction SilentlyContinue) {
-            Start-Process wt.exe -ArgumentList "cmd.exe /c `"`"$batPath`"`""
-        } else {
-            Start-Process cmd.exe -ArgumentList "/c `"`"$batPath`"`""
-        }
+        # Eski Start-Process silindi. Doğrudan bu pencerenin içine gömüyoruz!
+        cmd.exe /c "$batPath"
+        
     } catch {
-        Write-Host "`n   [X] $Name indirilemedi: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "`n   [X] $Name indirilemedi veya calismadi!" -ForegroundColor Red
         Start-Sleep -Seconds 3
     }
 }
 
-# --- NATIVE SYSINFO MOTORU (Artik dosya yazmaya gerek yok!) ---
+# --- NATIVE SYSINFO MOTORU ---
 function Invoke-SysInfo {
     Show-Header
     Write-Host "   [*] Donanim sensorleri ve WMI verileri analiz ediliyor...`n" -ForegroundColor Blue
-    $ErrorActionPreference = 'SilentlyContinue'
-
+    
     Write-Host "   [ISLETIM SISTEMI]" -ForegroundColor Cyan
-    $os = Get-CimInstance Win32_OperatingSystem
-    Write-Host "     Model   : $($os.Caption) $($os.OSArchitecture)"
-    Write-Host "     Surum   : Version $($os.Version) (Build $($os.BuildNumber))"
-    $uptime = (Get-Date) - $os.LastBootUpTime
-    Write-Host "     Calisma : $($uptime.Days) Gun, $($uptime.Hours) Saat, $($uptime.Minutes) Dakika`n"
+    $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
+    if ($os) {
+        Write-Host "     Model   : $($os.Caption) $($os.OSArchitecture)"
+        Write-Host "     Surum   : Version $($os.Version) (Build $($os.BuildNumber))"
+        $uptime = (Get-Date) - $os.LastBootUpTime
+        Write-Host "     Calisma : $($uptime.Days) Gun, $($uptime.Hours) Saat, $($uptime.Minutes) Dakika`n"
+    }
 
     Write-Host "   [ISLEMCI (CPU)]" -ForegroundColor Cyan
-    $cpu = Get-CimInstance Win32_Processor
-    Write-Host "     Model       : $($cpu.Name)"
-    Write-Host "     Cekirdek    : $($cpu.NumberOfCores) Core / $($cpu.NumberOfLogicalProcessors) Thread"
-    Write-Host "     Baz Hizi    : $([math]::Round($cpu.MaxClockSpeed / 1000, 2)) GHz`n"
+    $cpu = Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue
+    if ($cpu) {
+        $cpuInfo = if ($cpu.Count -gt 1) { $cpu[0] } else { $cpu }
+        Write-Host "     Model       : $($cpuInfo.Name)"
+        Write-Host "     Cekirdek    : $($cpuInfo.NumberOfCores) Core / $($cpuInfo.NumberOfLogicalProcessors) Thread"
+        Write-Host "     Baz Hizi    : $([math]::Round($cpuInfo.MaxClockSpeed / 1000, 2)) GHz`n"
+    }
 
     Write-Host "   [BELLEK (RAM)]" -ForegroundColor Cyan
-    $ram = Get-CimInstance Win32_PhysicalMemory
-    $totalRam = [math]::Round(($ram | Measure-Object Capacity -Sum).Sum / 1GB, 2)
-    Write-Host "     Kapasite    : $totalRam GB"
-    Write-Host "     Hiz         : $(($ram | Select-Object -First 1).Speed) MHz`n"
+    $ram = Get-CimInstance Win32_PhysicalMemory -ErrorAction SilentlyContinue
+    if ($ram) {
+        $totalRam = [math]::Round(($ram | Measure-Object Capacity -Sum).Sum / 1GB, 2)
+        Write-Host "     Kapasite    : $totalRam GB"
+        Write-Host "     Hiz         : $(($ram | Select-Object -First 1).Speed) MHz`n"
+    }
 
     Write-Host "   [GRAFIK KARTI (GPU)]" -ForegroundColor Cyan
-    $gpus = Get-CimInstance Win32_VideoController
+    $gpus = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue
     foreach ($g in $gpus) {
         $vramGB = [math]::Round($g.AdapterRAM / 1GB, 0)
         if ($vramGB -eq 4 -or $vramGB -lt 0) {
-            $reg = Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\*" | Where-Object DriverDesc -eq $g.Name
-            if ($reg."HardwareInformation.qwMemorySize") { $vramGB = [math]::Round($reg."HardwareInformation.qwMemorySize" / 1GB, 0) }
+            $reg = Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\*" -ErrorAction SilentlyContinue | Where-Object DriverDesc -eq $g.Name
+            if ($reg -and $reg."HardwareInformation.qwMemorySize") { $vramGB = [math]::Round($reg."HardwareInformation.qwMemorySize" / 1GB, 0) }
         }
         Write-Host "     Model       : $($g.Name) ($vramGB GB VRAM)"
         if ($g.CurrentHorizontalResolution) { Write-Host "     Ekran       : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz" }
@@ -97,19 +106,22 @@ function Invoke-SysInfo {
     }
 
     Write-Host "   [DEPOLAMA VE DISK ANALIZI]" -ForegroundColor Cyan
-    Get-CimInstance Win32_LogicalDisk | Where DriveType -eq 3 | ForEach-Object { Write-Host "     Surucu $($_.DeviceID)    : $([math]::Round($_.FreeSpace/1GB,2)) GB Bos / $([math]::Round($_.Size/1GB,2)) GB Toplam" }
+    Get-CimInstance Win32_LogicalDisk -ErrorAction SilentlyContinue | Where DriveType -eq 3 | ForEach-Object { Write-Host "     Surucu $($_.DeviceID)    : $([math]::Round($_.FreeSpace/1GB,2)) GB Bos / $([math]::Round($_.Size/1GB,2)) GB Toplam" }
     
     Write-Host "     --- Donanim Telemetrisi ---" -ForegroundColor DarkGray
-    foreach ($pd in Get-PhysicalDisk) {
-        Write-Host "     Aygit       : $($pd.FriendlyName) ($($pd.MediaType) - $([math]::Round($pd.Size/1GB,0)) GB)"
-        Write-Host "     Durum       : $($pd.HealthStatus)"
-        $rel = $pd | Get-StorageReliabilityCounter
-        if ($rel) {
-            if ($rel.Temperature) { Write-Host "     Sicaklik    : $($rel.Temperature) °C" }
-            if ($rel.PowerOnHours) { Write-Host "     Calisma     : $($rel.PowerOnHours) Saat" }
-            if ($rel.Wear -gt 0) { Write-Host "     Yipranma    : %$($rel.Wear)" }
+    $pdisks = Get-PhysicalDisk -ErrorAction SilentlyContinue
+    if ($pdisks) {
+        foreach ($pd in $pdisks) {
+            Write-Host "     Aygit       : $($pd.FriendlyName) ($($pd.MediaType) - $([math]::Round($pd.Size/1GB,0)) GB)"
+            Write-Host "     Durum       : $($pd.HealthStatus)"
+            $rel = $pd | Get-StorageReliabilityCounter -ErrorAction SilentlyContinue
+            if ($rel) {
+                if ($rel.Temperature) { Write-Host "     Sicaklik    : $($rel.Temperature) °C" }
+                if ($rel.PowerOnHours) { Write-Host "     Calisma     : $($rel.PowerOnHours) Saat" }
+                if ($rel.Wear -gt 0) { Write-Host "     Yipranma    : %$($rel.Wear)" }
+            }
+            Write-Host ""
         }
-        Write-Host ""
     }
 
     Write-Host "   ===============================================================" -ForegroundColor DarkGray
@@ -117,7 +129,7 @@ function Invoke-SysInfo {
     Read-Host
 }
 
-# --- ANA DONGU (MAIN LOOP) ---
+# --- ANA DONGU ---
 while ($true) {
     Show-Menu
     $choice = Read-Host "   Seciminiz"
