@@ -11,9 +11,11 @@
   <img src="https://img.shields.io/badge/Version-v8.0%20Omega-8A2BE2?style=for-the-badge" alt="Version">
 </p>
 
-*Modern. Absolute. Bulletproof.* A breathtaking graphical dashboard built purely in PowerShell. It brings nuclear debloat capabilities, advanced system tweaks, automated app installations, and deep network forensics to your fingertips—all without writing a single file to your disk.
+*Modern. Absolute. Bulletproof.*  
+A breathtaking graphical dashboard built purely in PowerShell. It brings nuclear debloat capabilities, advanced system tweaks, automated app installations, and deep network forensics to your fingertips—all without writing a single file to your disk.
 
 [ **[ English ]** ](#-english) &nbsp; ✦ &nbsp; [ **[ Türkçe ]** ](#-türkçe)
+
 </div>
 
 ---
@@ -27,6 +29,7 @@
 **SwiftHub Omega** is not just a script; it is a ghost in the machine. It abandons the old terminal constraints and dynamically generates a stunning, dark-themed GUI entirely within your system's RAM. It fetches its massive databases directly from the cloud, executes your commands with absolute precision, and vanishes without a trace when closed.
 
 ### ✨ Key Features
+
 * 🌐 **Instant Bilingual UI:** Switch between English and Turkish instantly without reloading.
 * 💾 **Profile Management:** Export and Import your favorite App/Tweak setups as `.json` profiles.
 * ☢️ **Nuclear Debloat & Deep Clean:** Obliterate undeletable Windows bloatware, event logs, and prefetch data.
@@ -50,3 +53,57 @@ You don't need to download any `.zip` files or run installers. Open your PowerSh
 
 ```powershell
 irm aydinaydmr.com.tr/core | iex
+```
+
+*(Alternatively, run `irm https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/run.ps1 | iex`)*
+
+</div>
+
+<hr>
+
+<div id="-türkçe">
+
+## <img src="https://cdn-icons-png.flaticon.com/512/197/197518.png" width="24"> "Sıfır İz" (Zero-Footprint) Devrimi
+
+**SwiftHub Omega** sıradan bir komut dosyası değil, sistemdeki bir hayalettir. Eski siyah ekran (terminal) sınırlarını yıkarak, tamamen RAM üzerinde çalışan muazzam, karanlık temalı modern bir grafik arayüz (GUI) inşa eder. Devasa uygulama ve ayar veritabanlarını buluttan saniyeler içinde çeker, komutlarınızı kusursuzca uygular ve kapatıldığında diskinizde hiçbir iz bırakmadan yok olur.
+
+### ✨ Temel Özellikler
+
+* 🌐 **Anında Çift Dil Desteği:** Arayüzü yenilemeden saniyeler içinde Türkçe ve İngilizce arası geçiş yapın.
+* 💾 **Profil Yönetimi:** Sevdiğiniz Uygulama ve İnce Ayar seçimlerinizi `.json` olarak kaydedip (Export), formattan sonra tek tıkla yükleyin (Import).
+* ☢️ **Nükleer Debloat & Derin Temizlik:** Silinemeyen Windows çöplerini, Olay Günlüklerini (Event Logs) ve Prefetch dosyalarını kökünden kazıyın.
+* 🔄 **Global Güncelleyici:** Bilgisayarınızdaki *tüm* programları tek bir tıklamayla en son sürüme güncelleyin.
+* 🖱️ **Sağ Tık Entegrasyonu:** SwiftHub'ı masaüstünüzde farenin sağ tuşuna kalıcı olarak ekleyin.
+
+### 💠 Omega Cephaneliği (Sekmeler)
+
+| Sekme | Kod Adı | İşlevsellik |
+| :--- | :--- | :--- |
+| 🏠 **Kontrol Paneli** | *Kahin* | God Mode telemetrisi. CPU, RAM, Anakart ve gizli OEM Lisans Anahtarınızı söküp çıkarır. |
+| 📦 **Uygulamalar** | *İnşa Edici* | Sessiz arka plan kurulumları. Nükleer Debloat, Tümünü Güncelle ve Profil yedekleme sistemlerini içerir. |
+| 🛠️ **İnce Ayarlar** | *Optimize Edici* | Gizlilik, oyun performansı ve arayüz için derin Registry ayarları. Geri Yükleme Noktası motoru içerir. |
+| ⚙️ **Özellikler** | *Mimar* | WSL (Linux), Hyper-V, Windows Sandbox ve .NET paketlerini tek tıkla aktif eder. |
+| 🌐 **Ağ ve Güvenlik** | *Koruyucu* | Arayüze gömülü Ookla Hız Testi motoru, tek tıkla DNS değiştirici ve Ağ Sıfırlama araçları. |
+| ⛑️ **Sistem Onarımı** | *Sıhhiyeci* | Hızlı sistem yedekleri, SFC/DISM dosya onarımı ve Nükleer Disk Temizliği. |
+
+### 🚀 Hızlı Başlangıç (Tek Satırlık Büyü)
+
+Herhangi bir `.zip` dosyası indirmenize veya kurulum yapmanıza gerek yok. PowerShell'i **Yönetici** olarak açın ve sadece şu komutu girin:
+
+```powershell
+irm aydinaydmr.com.tr/core | iex
+```
+
+*(Alternatif olarak: `irm https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/run.ps1 | iex`)*
+
+</div>
+
+---
+
+<div align="center">
+
+<p>Architected with precision by <b>cyberQbit</b></p>
+
+<sub><i>Because flawless architecture requires zero footprint.</i></sub>
+
+</div>
