@@ -336,33 +336,60 @@ $BtnDebloat.Add_Click({ $TxtStatus.Text="[☢️] Nukleer Debloat basladi! (1-2 
 
 # YENI DEEP TELEMETRY (GENISLETILMIS GOD MODE)
 $BtnAnalyze.Add_Click({
-    $TxtSysInfo.Text="Derin Donanim Telemetrisi Okunuyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
+    $TxtSysInfo.Text="[!] Derin Donanim Telemetrisi Okunuyor... Lutfen Bekleyin..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
     
     $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
     $mb = Get-CimInstance Win32_BaseBoard -ErrorAction SilentlyContinue
+    $bios = Get-CimInstance Win32_BIOS -ErrorAction SilentlyContinue
     $cpu = Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue
-    $ram = Get-CimInstance Win32_PhysicalMemory -ErrorAction SilentlyContinue
+    $rams = Get-CimInstance Win32_PhysicalMemory -ErrorAction SilentlyContinue
     $gpus = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue
     $disks = Get-CimInstance Win32_DiskDrive -ErrorAction SilentlyContinue
 
-    $info = "[ISLETIM SISTEMI]`nModel     : $($os.Caption) $($os.OSArchitecture)`nSurum     : Version $($os.Version) (Build $($os.BuildNumber))`n"
-    $info += "`n[ANAKART]`nModel     : $($mb.Manufacturer) $($mb.Product)`n"
-    $info += "`n[ISLEMCI (CPU)]`nModel     : $($cpu[0].Name)`nCekirdek  : $($cpu[0].NumberOfCores) Core / $($cpu[0].NumberOfLogicalProcessors) Threads`n"
-    
-    $ramGb = [math]::Round(($ram | Measure-Object Capacity -Sum).Sum / 1GB, 2)
-    $ramSpeed = ($ram | Select-Object -First 1).Speed
-    $info += "`n[BELLEK (RAM)]`nKapasite  : $ramGb GB ($ramSpeed MHz)`n"
+    $info = "=========================================`n"
+    $info += " 🧬 DERIN SISTEM TELEMETRISI (GOD MODE) `n"
+    $info += "=========================================`n`n"
 
-    $info += "`n[GRAFIK (GPU)]`n"
-    foreach ($g in $gpus) {
-        $vram = [math]::Round($g.AdapterRAM / 1GB, 0)
-        $info += "Model     : $($g.Name) ($vram GB VRAM)`n"
+    $installDate = [management.managementDateTimeConverter]::ToDateTime($os.InstallDate).ToString("dd.MM.yyyy HH:mm")
+    $uptime = [math]::Round(((Get-Date) - $os.LastBootUpTime).TotalHours, 1)
+
+    $info += "[ISLETIM SISTEMI]`n"
+    $info += "Model           : $($os.Caption) $($os.OSArchitecture)`n"
+    $info += "Surum / Build   : Version $($os.Version) (Build $($os.BuildNumber))`n"
+    $info += "Kurulum Tarihi  : $installDate`n"
+    $info += "Sistem Calisma  : $uptime Saat`n`n"
+
+    $info += "[ANAKART & BIOS]`n"
+    $info += "Uretici & Model : $($mb.Manufacturer) $($mb.Product)`n"
+    $info += "Seri Numarasi   : $($mb.SerialNumber)`n"
+    $info += "BIOS Surumu     : $($bios.SMBIOSBIOSVersion) ($($bios.ReleaseDate.ToString('dd.MM.yyyy')))`n`n"
+
+    $info += "[ISLEMCI (CPU)]`n"
+    $info += "Model           : $($cpu.Name)`n"
+    $info += "Cekirdek / is   : $($cpu.NumberOfCores) Fiziksel / $($cpu.NumberOfLogicalProcessors) Mantiksal`n"
+    $info += "Taban Hizi      : $($cpu.MaxClockSpeed) MHz`n"
+    $info += "L2 / L3 Cache   : $($cpu.L2CacheSize) KB / $($cpu.L3CacheSize) KB`n"
+    $info += "Sanallastirma   : $(if($cpu.VirtualizationFirmwareEnabled){'Aktif'}else{'Kapali'})`n`n"
+
+    $ramGb = [math]::Round(($rams | Measure-Object Capacity -Sum).Sum / 1GB, 2)
+    $info += "[BELLEK (RAM) - Toplam $ramGb GB]`n"
+    foreach ($r in $rams) {
+        $info += "Modul : $([math]::Round($r.Capacity/1GB,0)) GB | $($r.Speed) MHz | $($r.Manufacturer) | $($r.PartNumber)`n"
     }
+    $info += "`n"
 
-    $info += "`n[DEPOLAMA (DISK)]`n"
+    $info += "[GRAFIK KARTLARI (GPU)]`n"
+    foreach ($g in $gpus) {
+        $info += "Model         : $($g.Name)`n"
+        $info += "Surucu Surumu : $($g.DriverVersion)`n"
+        $info += "Cozunurluk    : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz`n-"
+    }
+    $info += "`n"
+
+    $info += "[DEPOLAMA (DISK)]`n"
     foreach ($d in $disks) {
         $size = [math]::Round($d.Size / 1GB, 0)
-        $info += "Model     : $($d.Model) ($size GB)`n"
+        $info += "Surucu : $($d.Model) | $size GB | Partisyon: $($d.Partitions)`n"
     }
 
     $TxtSysInfo.Text = $info
