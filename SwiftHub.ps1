@@ -35,7 +35,7 @@ function Show-Menu {
     Write-Host ""
 }
 
-# --- MODUL INDIRICI VE TITANIUM PATCHER ---
+# --- MODUL INDIRICI VE TITANIUM PATCHER (I/O FIX EDITION) ---
 function Invoke-Module ($Name, $Url) {
     Write-Host "`n   [*] $Name sunucudan cekiliyor... Lutfen bekleyin." -ForegroundColor Cyan
     $batPath = "$hubDir\$Name.bat"
@@ -44,13 +44,11 @@ function Invoke-Module ($Name, $Url) {
         $wc.Encoding = [System.Text.Encoding]::UTF8
         $str = $wc.DownloadString("$Url?t=$((Get-Date).Ticks)")
         
-        # 1. KUSURSUZ İMHA (Titanium Patcher): 
-        # İçinde "aydinaydmr", "SwiftHub" veya "run.ps1" geçen tüm satırları acımasızca yakalar ve sadece 'exit' yazar!
+        # Gereksiz geri dönüs kodlarini silme
         $str = $str -replace '(?im)^.*powershell.*(aydinaydmr|SwiftHub|run\.ps1).*$', 'exit'
         $str = $str -replace '(?im)^.*start.*SwiftHub.*$', 'exit'
         
-        # 2. KARAKTER KORUMA KALKANI:
-        # CMD çalışırken Türkçe karakterleri bozmasın diye en tepeye zorla şifreleme düzeltici ekliyoruz.
+        # Şifreleme koruması
         $str = "chcp 65001 >nul`r`n" + $str
         
         [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
@@ -58,11 +56,12 @@ function Invoke-Module ($Name, $Url) {
         Write-Host "   [OK] Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
         Start-Sleep -Milliseconds 400
         
-        # 3. İZOLE EDİLMİŞ ÇALIŞTIRMA:
-        # CMD'nin yeni pencere açmasını %100 engeller ve işi bitene kadar PowerShell'i "Wait" (bekle) moduna sokar.
-        Start-Process -FilePath "cmd.exe" -ArgumentList "/c `"`"$batPath`"`"" -Wait -NoNewWindow
+        # 🚀 THE MAGIC FIX: DOĞRUDAN ÇAĞIRI (NATIVE CALL) 🚀
+        # Start-Process ÇÖPE ATILDI! Artık CMD, PowerShell'in ana damarından çalışıyor.
+        # Bu sayede 'choice' ve 'pause' komutları klavye ile %100 kusursuz haberleşebiliyor!
+        cmd.exe /c "$batPath"
         
-        # Modül kapanınca ekranın tertemiz çizilmesi için mini rötar.
+        # Modül kapanınca ekranın tertemiz çizilmesi için mini rötar
         Start-Sleep -Milliseconds 200
         
     } catch {
