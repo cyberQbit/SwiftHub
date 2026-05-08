@@ -16,6 +16,7 @@ $global:i18n = @{
         "MenuInfo" = "ℹ️ SwiftHub Rehberi"; "BtnLang" = "🌐 EN"; "StatusWait" = "Omega Core hazir. Emrinizi bekliyor...";
         "DashWelcome" = "SwiftHub OMEGA'ya Hos Geldiniz!"; "DashSub" = "Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin.";
         "BtnInstall" = "Secili Uygulamalari Kur"; "BtnApply" = "Secili Ayarlari Enjekte Et";
+        "BtnActivate" = "🔑 Windows ve Office Lisansla!";
         "BtnExport" = "💾 Profili Kaydet"; "BtnImport" = "📂 Profil Yukle";
         "BtnDebloat" = "☢️ Nukleer Debloat"; "BtnRestore" = "🛡️ Geri Yukleme Noktasi";
         "BtnUpdateAll" = "🔄 Tum Programlari Guncelle"; "BtnDeepClean" = "☢️ Nukleer Disk Temizligi";
@@ -36,6 +37,7 @@ $global:i18n = @{
         "MenuInfo" = "ℹ️ SwiftHub Guide"; "BtnLang" = "🌐 TR"; "StatusWait" = "Omega Core ready. Awaiting your command...";
         "DashWelcome" = "Welcome to SwiftHub OMEGA!"; "DashSub" = "Legendary speed, nuclear power, zero footprint. Start from the sidebar.";
         "BtnInstall" = "Install Selected Apps"; "BtnApply" = "Apply Selected Tweaks";
+        "BtnActivate" = "🔑 License Windows and Office!";
         "BtnExport" = "💾 Export Profile"; "BtnImport" = "📂 Import Profile";
         "BtnDebloat" = "☢️ Nuclear Debloat"; "BtnRestore" = "🛡️ Create Restore Point";
         "BtnUpdateAll" = "🔄 Update All Programs"; "BtnDeepClean" = "☢️ Nuclear Disk Clean";
@@ -107,7 +109,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                         <Grid Width="700">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Margin="0,0,5,0" Grid.Column="0"/>
-                            <Button Name="BtnWinUtil" Content="⚙️ Chris Titus WinUtil'i Baslat" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
+                            <Button Name="BtnWinUtil" Content="🔑 Windows ve Office Lisansla!" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
                         </Grid>
 
                         <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340" Width="700" Margin="0,15,0,0">
@@ -301,7 +303,7 @@ function Update-Language {
     $TxtTitle.Text=$d["AppTitle"]; $TxtSub.Text=$d["AppSub"]; $NavDash.Content=$d["MenuDash"]; $NavApps.Content=$d["MenuApps"]; $NavTweaks.Content=$d["MenuTweaks"]
     $NavFeatures.Content=$d["MenuFeatures"]; $NavNet.Content=$d["MenuNet"]; $NavFixes.Content=$d["MenuFixes"]; $NavInfo.Content=$d["MenuInfo"]
     $BtnLangToggle.Content=$d["BtnLang"]; $TxtStatus.Text=$d["StatusWait"]; $TxtDashWelcome.Text=$d["DashWelcome"]; $TxtDashSub.Text=$d["DashSub"]
-    $BtnInstallApps.Content=$d["BtnInstall"]; $BtnApplyTweaks.Content=$d["BtnApply"]; $BtnAppExport.Content=$d["BtnExport"]; $BtnAppImport.Content=$d["BtnImport"]
+    $BtnInstallApps.Content=$d["BtnInstall"]; $BtnApplyTweaks.Content=$d["BtnApply"]; $BtnWinUtil.Content=$d["BtnActivate"]; $BtnAppExport.Content=$d["BtnExport"]; $BtnAppImport.Content=$d["BtnImport"]
     $BtnTweakExport.Content=$d["BtnExport"]; $BtnTweakImport.Content=$d["BtnImport"]; $BtnDebloat.Content=$d["BtnDebloat"]; $BtnRestore.Content=$d["BtnRestore"]
     $TxtTitleNet.Text=$d["TitleNet"]; $TxtTitleFix.Text=$d["TitleFix"]; $TxtTitleFeat.Text=$d["TitleFeat"]
     
@@ -374,8 +376,8 @@ $BtnAnalyze.Add_Click({
 
 # CHRIS TITUS WINUTIL TETIKLEYICI
 $BtnWinUtil.Add_Click({
-    $TxtStatus.Text="[*] Chris Titus WinUtil baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
-    Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm christitus.com/win | iex`""
+    $TxtStatus.Text="[*] Aktivasyon araci baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
+    Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm https://get.activated.win | iex`""
 })
 
 # CONTEXT MENU INTEGRATION
