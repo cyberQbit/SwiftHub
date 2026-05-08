@@ -114,7 +114,7 @@ Add-Type -AssemblyName WindowsBase
                     </Grid.RowDefinitions>
 
                     <StackPanel Grid.Row="0" Margin="0,0,0,25">
-                        <TextBlock Text="INTERNET HIZ TESTI (Cloudflare API)" Foreground="#00CED1" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <TextBlock Text="INTERNET HIZ TESTI (OOKLA SPEEDTEST CLI - ZERO FOOTPRINT)" Foreground="#00CED1" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
                         <Button Name="BtnSpeedTest" Content="Baglanti Hizini Olc" Style="{StaticResource NetButtonStyle}"/>
                     </StackPanel>
 
@@ -140,7 +140,7 @@ Add-Type -AssemblyName WindowsBase
                     <StackPanel Grid.Row="2">
                         <TextBlock Text="SISTEM CIKTISI (LOG)" Foreground="#7A7A7A" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
                         <Border Background="#0F1015" BorderBrush="#2D303B" BorderThickness="1" CornerRadius="4" Height="140">
-                            <ScrollViewer Margin="15">
+                            <ScrollViewer Margin="20">
                                 <TextBlock Name="TxtNetLog" Text="Ag modulu hazir..." FontFamily="Consolas" FontSize="14" Foreground="#00FF66" TextWrapping="Wrap"/>
                             </ScrollViewer>
                         </Border>
