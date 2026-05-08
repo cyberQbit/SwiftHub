@@ -1,5 +1,5 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v4.1 - WINSWIFT GUI INTEGRATION
+# 🌌 SWIFTHUB CORE v4.2 - DEVSWIFT & WINSWIFT GUI INTEGRATION
 # ==============================================================================
 $ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -9,7 +9,7 @@ Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
 Add-Type -AssemblyName WindowsBase
 
-# 2. XAML TASARIMI (WinSwift Sekmesi Guncellendi)
+# 2. XAML TASARIMI (DevSwift Sekmesi Guncellendi)
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -60,26 +60,31 @@ Add-Type -AssemblyName WindowsBase
                         <RowDefinition Height="*"/>
                         <RowDefinition Height="Auto"/>
                     </Grid.RowDefinitions>
-                    
                     <Border Grid.Row="0" Background="#0F1015" BorderBrush="#2D303B" BorderThickness="1" CornerRadius="4">
                         <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
                             <StackPanel Name="PanelWinSwift"/>
                         </ScrollViewer>
                     </Border>
-                    
                     <Button Name="BtnApplyTweaks" Content="Secili Ayarlari Sisteme Enjekte Et" Height="45" Background="#00CED1" Foreground="#0F1015" FontWeight="Bold" FontSize="14" BorderThickness="0" Grid.Row="1" Margin="0,15,0,0">
-                        <Button.Resources>
-                            <Style TargetType="Border">
-                                <Setter Property="CornerRadius" Value="4"/>
-                            </Style>
-                        </Button.Resources>
+                        <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></Button.Resources>
                     </Button>
                 </Grid>
             </TabItem>
             
             <TabItem Header="⚡ DevSwift (Apps)">
                 <Grid Margin="20">
-                    <TextBlock Text="JSON Paket Yoneticisi Yakinda Buraya Baglanacak..." Foreground="#505050" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Light"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
+                    <Border Grid.Row="0" Background="#0F1015" BorderBrush="#2D303B" BorderThickness="1" CornerRadius="4">
+                        <ScrollViewer VerticalScrollBarVisibility="Auto" Margin="15">
+                            <StackPanel Name="PanelDevSwift"/>
+                        </ScrollViewer>
+                    </Border>
+                    <Button Name="BtnInstallApps" Content="Secili Programlari Kur" Height="45" Background="#00CED1" Foreground="#0F1015" FontWeight="Bold" FontSize="14" BorderThickness="0" Grid.Row="1" Margin="0,15,0,0">
+                        <Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="4"/></Style></Button.Resources>
+                    </Button>
                 </Grid>
             </TabItem>
 
@@ -112,22 +117,25 @@ $reader = (New-Object System.Xml.XmlNodeReader $xaml)
 $window = [Windows.Markup.XamlReader]::Load($reader)
 
 # --- ARAYUZ ELEMANLARI ---
-$BtnAnalyze = $window.FindName("BtnAnalyze")
-$TxtSysInfo = $window.FindName("TxtSysInfo")
 $PanelWinSwift = $window.FindName("PanelWinSwift")
 $BtnApplyTweaks = $window.FindName("BtnApplyTweaks")
 
-$global:winSwiftTweaks = @() # WPF'de secilenleri tutacak RAM listesi
+$PanelDevSwift = $window.FindName("PanelDevSwift")
+$BtnInstallApps = $window.FindName("BtnInstallApps")
+
+$BtnAnalyze = $window.FindName("BtnAnalyze")
+$TxtSysInfo = $window.FindName("TxtSysInfo")
+
+$global:winSwiftTweaks = @()
+$global:devSwiftApps = @()
 
 # ==============================================================================
-# 🚀 1. WINSWIFT DINAMIK CHECKBOX OLUSTURUCU (STARTUP)
+# 🚀 1. WINSWIFT DINAMIK CHECKBOX OLUSTURUCU
 # ==============================================================================
 try {
     $jsonUrl = "https://raw.githubusercontent.com/cyberQbit/WinSwift/main/tweaks.json?t=$((Get-Date).Ticks)"
     $jsonResponse = (New-Object System.Net.WebClient).DownloadString($jsonUrl) | ConvertFrom-Json
-    
     foreach ($cat in $jsonResponse.psobject.properties.name) {
-        # Kategori Basligi
         $header = New-Object System.Windows.Controls.TextBlock
         $header.Text = $cat.ToUpper()
         $header.Foreground = "#00CED1"
@@ -136,15 +144,12 @@ try {
         $header.Margin = "0,15,0,10"
         $PanelWinSwift.Children.Add($header) | Out-Null
         
-        # O kategorinin Alt Ayarlari (Checkboxlar)
         foreach ($tweak in $jsonResponse."$cat") {
             $cb = New-Object System.Windows.Controls.CheckBox
             $cb.Content = $tweak.Name
             $cb.Foreground = "White"
             $cb.FontSize = 14
             $cb.Margin = "10,0,0,8"
-            
-            # Listeye kaydet (Uygula butonuna basinca isimize yarayacak)
             $global:winSwiftTweaks += [PSCustomObject]@{ CheckBox = $cb; Script = $tweak.Script; Name = $tweak.Name }
             $PanelWinSwift.Children.Add($cb) | Out-Null
         }
@@ -157,8 +162,42 @@ try {
 }
 
 # ==============================================================================
-# 🚀 2. WINSWIFT UYGULA BUTONU EVENTI
+# 🚀 2. DEVSWIFT DINAMIK CHECKBOX OLUSTURUCU (YENI)
 # ==============================================================================
+try {
+    $jsonUrlApps = "https://raw.githubusercontent.com/cyberQbit/DevSwift/main/apps.json?t=$((Get-Date).Ticks)"
+    $jsonResponseApps = (New-Object System.Net.WebClient).DownloadString($jsonUrlApps) | ConvertFrom-Json
+    foreach ($cat in $jsonResponseApps.psobject.properties.name) {
+        $header = New-Object System.Windows.Controls.TextBlock
+        $header.Text = $cat.ToUpper()
+        $header.Foreground = "#00CED1"
+        $header.FontSize = 16
+        $header.FontWeight = "Bold"
+        $header.Margin = "0,15,0,10"
+        $PanelDevSwift.Children.Add($header) | Out-Null
+        
+        foreach ($app in $jsonResponseApps."$cat") {
+            $cb = New-Object System.Windows.Controls.CheckBox
+            $cb.Content = $app.Name
+            $cb.Foreground = "White"
+            $cb.FontSize = 14
+            $cb.Margin = "10,0,0,8"
+            $global:devSwiftApps += [PSCustomObject]@{ CheckBox = $cb; Id = $app.Id; Name = $app.Name }
+            $PanelDevSwift.Children.Add($cb) | Out-Null
+        }
+    }
+} catch {
+    $err = New-Object System.Windows.Controls.TextBlock
+    $err.Text = "[X] Bulut baglantisi basarisiz veya apps.json hatali!"
+    $err.Foreground = "Red"
+    $PanelDevSwift.Children.Add($err) | Out-Null
+}
+
+# ==============================================================================
+# 🚀 3. EVENTLER (BUTON TIKLAMALARI)
+# ==============================================================================
+
+# WINSWIFT UYGULA
 $BtnApplyTweaks.Add_Click({
     $BtnApplyTweaks.Content = "AYARLAR SISTEME ISLENIYOR... LUTFEN BEKLEYIN"
     $BtnApplyTweaks.IsEnabled = $false
@@ -170,16 +209,32 @@ $BtnApplyTweaks.Add_Click({
             try { Invoke-Expression $item.Script; $appliedCount++ } catch {}
         }
     }
-    
     [System.Windows.MessageBox]::Show("$appliedCount adet ayar basariyla sisteme islendi!", "SwiftHub Operasyonu Tamamlandi", 0, 64)
-    
     $BtnApplyTweaks.Content = "Secili Ayarlari Sisteme Enjekte Et"
     $BtnApplyTweaks.IsEnabled = $true
 })
 
-# ==============================================================================
-# 🚀 3. SYSINFO BUTONU EVENTI
-# ==============================================================================
+# DEVSWIFT KUR
+$BtnInstallApps.Add_Click({
+    $BtnInstallApps.Content = "PROGRAMLAR ARKA PLANDA KURULUYOR... LUTFEN BEKLEYIN"
+    $BtnInstallApps.IsEnabled = $false
+    $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+    
+    $installedCount = 0
+    foreach ($item in $global:devSwiftApps) {
+        if ($item.CheckBox.IsChecked) {
+            try { 
+                Start-Process -FilePath "winget" -ArgumentList "install --id $($item.Id) --accept-source-agreements --accept-package-agreements --silent" -Wait -NoNewWindow
+                $installedCount++ 
+            } catch {}
+        }
+    }
+    [System.Windows.MessageBox]::Show("$installedCount adet program basariyla kuruldu!", "SwiftHub Operasyonu Tamamlandi", 0, 64)
+    $BtnInstallApps.Content = "Secili Programlari Kur"
+    $BtnInstallApps.IsEnabled = $true
+})
+
+# SYSINFO ANALIZ
 $BtnAnalyze.Add_Click({
     $TxtSysInfo.Text = "Donanim sensorleri ve WMI verileri okunuyor... Lutfen bekleyin."
     $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
