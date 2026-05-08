@@ -1,159 +1,150 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v3.2 - TITANIUM EDITION (PURE POWERSHELL)
+# 🌌 SWIFTHUB CORE v4.0 - THE ULTIMATE UI (GRAND DASHBOARD)
 # ==============================================================================
-$ErrorActionPreference = 'SilentlyContinue' 
+$ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-$Host.UI.RawUI.WindowTitle = "SwiftHub Core - Advanced System Gateway"
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8 # Terminali zorla UTF-8 yapar
 
-# --- GUVENLI BOLGE ---
-$hubDir = "$env:PROGRAMDATA\cyberQbit"
-if (-not (Test-Path $hubDir)) { New-Item -ItemType Directory -Path $hubDir -Force | Out-Null }
+# 1. GEREKLI ARAYUZ (WPF) KUTUPHANELERINI YUKLE
+Add-Type -AssemblyName PresentationFramework
+Add-Type -AssemblyName PresentationCore
+Add-Type -AssemblyName WindowsBase
 
-# --- ARAYUZ FONKSIYONLARI ---
-function Show-Header {
-    Clear-Host
-    Write-Host "`n   ███████╗██╗    ██╗██╗███████╗████████╗██╗  ██╗██╗   ██╗██████╗ " -ForegroundColor Cyan
-    Write-Host "   ██╔════╝██║    ██║██║██╔════╝╚══██╔══╝██║  ██║██║   ██║██╔══██╗" -ForegroundColor Cyan
-    Write-Host "   ███████╗██║ █╗ ██║██║█████╗     ██║   ███████║██║   ██║██████╔╝" -ForegroundColor Cyan
-    Write-Host "   ╚════██║██║███╗██║██║██╔══╝     ██║   ██╔══██║██║   ██║██╔══██╗" -ForegroundColor Cyan
-    Write-Host "   ███████║╚███╔███╔╝██║██║        ██║   ██║  ██║╚██████╔╝██████╔╝" -ForegroundColor Cyan
-    Write-Host "   ╚══════╝ ╚══╝╚══╝ ╚═╝╚═╝        ╚═╝   ╚═╝  ╚═╝ ╚═════╝ ╚═════╝ " -ForegroundColor Cyan
-    Write-Host "   ===============================================================" -ForegroundColor DarkGray
-    Write-Host "         [ Architecture: Pure PowerShell | Titanium Loop ]" -ForegroundColor DarkCyan
-    Write-Host ""
-}
-
-function Show-Menu {
-    Show-Header
-    Write-Host "   [1] " -NoNewline; Write-Host "WinSwift Pro" -ForegroundColor Green; Write-Host "     (Sistem Optimizasyonu & Temizlik)" -ForegroundColor DarkGray
-    Write-Host "   [2] " -NoNewline; Write-Host "DevSwift Pro" -ForegroundColor Yellow; Write-Host "     (Gelismis Calisma Ortami Kurulumu)" -ForegroundColor DarkGray
-    Write-Host "   [3] " -NoNewline; Write-Host "NetSwift Pro" -ForegroundColor Magenta; Write-Host "     (Ag Yonetimi & Siber Guvenlik)" -ForegroundColor DarkGray
-    Write-Host "   [4] " -NoNewline; Write-Host "Sistem Bilgisi" -ForegroundColor Cyan; Write-Host "   (Derin Donanim & Telemetri Analizi)" -ForegroundColor DarkGray
-    Write-Host ""
-    Write-Host "   [0] " -NoNewline; Write-Host "Cikis Yap" -ForegroundColor Red
-    Write-Host ""
-}
-
-# --- MODUL INDIRICI VE TITANIUM PATCHER (PURE RAM EDITION) ---
-function Invoke-Module ($Name, $Url) {
-    Write-Host "`n   [*] $Name sunucudan cekiliyor... Lutfen bekleyin." -ForegroundColor Cyan
-    try {
-        $wc = New-Object System.Net.WebClient
-        $wc.Encoding = [System.Text.Encoding]::UTF8
-        $safeUrl = $Url.Trim() + "?t=$((Get-Date).Ticks)"
-        
-        # EGER DOSYA PS1 ISE: DISKE ASLA YAZMA, DOGRUDAN RAM'DE CALISTIR!
-        if ($Url -match '\.ps1$') {
-            $script = $wc.DownloadString($safeUrl)
-            Write-Host "   [OK] Modul RAM'e yuklendi! Baslatiliyor..." -ForegroundColor Green
-            Start-Sleep -Milliseconds 400
-            Invoke-Command -ScriptBlock ([scriptblock]::Create($script))
-        } 
-        # EGER DOSYA ESKI NESIL BAT ISE (NetSwift/DevSwift):
-        else {
-            $str = $wc.DownloadString($safeUrl)
-            $str = $str -replace '(?im)^.*powershell.*(aydinaydmr|SwiftHub|run\.ps1).*$', 'exit'
-            $str = $str -replace '(?im)^.*start.*SwiftHub.*$', 'exit'
-            $str = "chcp 65001 >nul`r`n" + $str
-            $batPath = "$hubDir\$Name.bat"
-            [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
-            Write-Host "   [OK] Legacy Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
-            Start-Sleep -Milliseconds 400
-            cmd.exe /c "$batPath"
-        }
-        Start-Sleep -Milliseconds 200
-    } catch {
-        Write-Host "`n   [X] $Name indirilemedi veya calistirilirken hata olustu: $($_.Exception.Message)" -ForegroundColor Red
-        Start-Sleep -Seconds 3
-    }
-}
-
-# --- NATIVE SYSINFO MOTORU ---
-function Invoke-SysInfo {
-    Show-Header
-    Write-Host "   [*] Donanim sensorleri ve WMI verileri analiz ediliyor...`n" -ForegroundColor Blue
+# 2. XAML (ARAYUZ TASARIMI) MOTORU - (Sifir Iz, Tamamen RAM'de Cizilir)
+[xml]$xaml = @"
+<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="SwiftHub Core - Advanced System Gateway" Height="650" Width="1000"
+        Background="#0F1015" Foreground="White" WindowStartupLocation="CenterScreen"
+        FontFamily="Segoe UI">
+    <Window.Resources>
+        <Style TargetType="TabItem">
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="TabItem">
+                        <Border Name="Border" Padding="20,12" Margin="2,0,2,0" Background="#1A1C23" CornerRadius="6,6,0,0">
+                            <ContentPresenter x:Name="ContentSite" VerticalAlignment="Center" HorizontalAlignment="Center" ContentSource="Header" Margin="10,2"/>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsSelected" Value="True">
+                                <Setter TargetName="Border" Property="Background" Value="#00CED1"/>
+                                <Setter Property="Foreground" Value="#0F1015"/>
+                            </Trigger>
+                            <Trigger Property="IsSelected" Value="False">
+                                <Setter Property="Foreground" Value="#A0A0A0"/>
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+            <Setter Property="FontSize" Value="15"/>
+            <Setter Property="FontWeight" Value="Bold"/>
+        </Style>
+    </Window.Resources>
     
-    Write-Host "   [ISLETIM SISTEMI]" -ForegroundColor Cyan
+    <Grid Margin="15">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+        
+        <StackPanel Grid.Row="0" Margin="5,0,0,20" Orientation="Horizontal">
+            <TextBlock Text="🌌 SWIFTHUB" FontSize="32" FontWeight="Black" Foreground="#00CED1" VerticalAlignment="Center"/>
+            <TextBlock Text=" ULTIMATE EDITION" FontSize="20" FontWeight="Light" Foreground="#7A7A7A" VerticalAlignment="Bottom" Margin="10,0,0,4"/>
+        </StackPanel>
+        
+        <TabControl Grid.Row="1" Background="#1A1C23" BorderBrush="#2D303B" BorderThickness="1">
+            
+            <TabItem Header="🔧 WinSwift (Tweaks)">
+                <Grid Margin="20">
+                    <TextBlock Text="Sistem Optimizasyon Motoru Yakinda Buraya Baglanacak..." Foreground="#505050" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Light"/>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="⚡ DevSwift (Apps)">
+                <Grid Margin="20">
+                    <TextBlock Text="JSON Paket Yoneticisi Yakinda Buraya Baglanacak..." Foreground="#505050" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Light"/>
+                </Grid>
+            </TabItem>
+
+            <TabItem Header="🌐 NetSwift (Network)">
+                <Grid Margin="20">
+                    <TextBlock Text="Ag ve Siber Guvenlik Motoru Yakinda Buraya Baglanacak..." Foreground="#505050" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Light"/>
+                </Grid>
+            </TabItem>
+            
+            <TabItem Header="📊 Sistem Telemetrisi">
+                <Grid Margin="20">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+                    
+                    <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Width="250" Height="45" HorizontalAlignment="Left" Background="#00CED1" Foreground="#0F1015" FontWeight="Bold" FontSize="14" BorderThickness="0" Grid.Row="0" Margin="0,0,0,15">
+                        <Button.Resources>
+                            <Style TargetType="Border">
+                                <Setter Property="CornerRadius" Value="4"/>
+                            </Style>
+                        </Button.Resources>
+                    </Button>
+                    
+                    <Border Grid.Row="1" Background="#0F1015" BorderBrush="#2D303B" BorderThickness="1" CornerRadius="4">
+                        <ScrollViewer Margin="15">
+                            <TextBlock Name="TxtSysInfo" Text="Analizi baslatmak icin yukaridaki butona basin..." FontFamily="Consolas" FontSize="14" Foreground="#00FF66" TextWrapping="Wrap"/>
+                        </ScrollViewer>
+                    </Border>
+                </Grid>
+            </TabItem>
+            
+        </TabControl>
+    </Grid>
+</Window>
+"@
+
+# 3. XAML'i NESNEYE CEVIR
+$reader = (New-Object System.Xml.XmlNodeReader $xaml)
+$window = [Windows.Markup.XamlReader]::Load($reader)
+
+# 4. ARAYUZ ELEMANLARINI BUL
+$BtnAnalyze = $window.FindName("BtnAnalyze")
+$TxtSysInfo = $window.FindName("TxtSysInfo")
+
+# 5. BUTON TIKLAMA OLAYLARI (EVENTS)
+$BtnAnalyze.Add_Click({
+    $TxtSysInfo.Text = "Donanim sensorleri ve WMI verileri okunuyor... Lutfen bekleyin."
+    $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render) # Ekrani aninda guncelle
+    
+    $info = ""
     $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
-    if ($os) {
-        Write-Host "     Model   : $($os.Caption) $($os.OSArchitecture)"
-        Write-Host "     Surum   : Version $($os.Version) (Build $($os.BuildNumber))"
-        $uptime = (Get-Date) - $os.LastBootUpTime
-        Write-Host "     Calisma : $($uptime.Days) Gun, $($uptime.Hours) Saat, $($uptime.Minutes) Dakika`n"
-    }
-
-    Write-Host "   [ISLEMCI (CPU)]" -ForegroundColor Cyan
+    $info += "[ISLETIM SISTEMI]`nModel   : $($os.Caption) $($os.OSArchitecture)`nSurum   : Version $($os.Version) (Build $($os.BuildNumber))`n`n"
+    
     $cpu = Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue
-    if ($cpu) {
-        $cpuInfo = if ($cpu.Count -gt 1) { $cpu[0] } else { $cpu }
-        Write-Host "     Model       : $($cpuInfo.Name)"
-        Write-Host "     Cekirdek    : $($cpuInfo.NumberOfCores) Core / $($cpuInfo.NumberOfLogicalProcessors) Thread"
-        Write-Host "     Baz Hizi    : $([math]::Round($cpuInfo.MaxClockSpeed / 1000, 2)) GHz`n"
-    }
-
-    Write-Host "   [BELLEK (RAM)]" -ForegroundColor Cyan
+    $cpuInfo = if ($cpu.Count -gt 1) { $cpu[0] } else { $cpu }
+    $info += "[ISLEMCI (CPU)]`nModel   : $($cpuInfo.Name)`nCekirdek: $($cpuInfo.NumberOfCores) Core / $($cpuInfo.NumberOfLogicalProcessors) Thread`n`n"
+    
     $ram = Get-CimInstance Win32_PhysicalMemory -ErrorAction SilentlyContinue
-    if ($ram) {
-        $totalRam = [math]::Round(($ram | Measure-Object Capacity -Sum).Sum / 1GB, 2)
-        Write-Host "     Kapasite    : $totalRam GB"
-        Write-Host "     Hiz         : $(($ram | Select-Object -First 1).Speed) MHz`n"
-    }
-
-    Write-Host "   [GRAFIK KARTI (GPU)]" -ForegroundColor Cyan
+    $totalRam = [math]::Round(($ram | Measure-Object Capacity -Sum).Sum / 1GB, 2)
+    $info += "[BELLEK (RAM)]`nKapasite: $totalRam GB`nHiz     : $(($ram | Select-Object -First 1).Speed) MHz`n`n"
+    
     $gpus = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue
+    $info += "[GRAFIK KARTI (GPU)]`n"
     foreach ($g in $gpus) {
         $vramGB = [math]::Round($g.AdapterRAM / 1GB, 0)
-        if ($vramGB -eq 4 -or $vramGB -lt 0) {
-            $reg = Get-ItemProperty "HKLM:\SYSTEM\CurrentControlSet\Control\Class\{4d36e968-e325-11ce-bfc1-08002be10318}\*" -ErrorAction SilentlyContinue | Where-Object DriverDesc -eq $g.Name
-            if ($reg -and $reg."HardwareInformation.qwMemorySize") { $vramGB = [math]::Round($reg."HardwareInformation.qwMemorySize" / 1GB, 0) }
-        }
-        Write-Host "     Model       : $($g.Name) ($vramGB GB VRAM)"
-        if ($g.CurrentHorizontalResolution) { Write-Host "     Ekran       : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz" }
-        else { Write-Host "     Ekran       : Dahili Ekran Bagli Degil (Optimus/Render GPU)" }
-        Write-Host ""
+        $info += "Model   : $($g.Name) ($vramGB GB VRAM)`n"
     }
-
-    Write-Host "   [DEPOLAMA VE DISK ANALIZI]" -ForegroundColor Cyan
-    Get-CimInstance Win32_LogicalDisk -ErrorAction SilentlyContinue | Where DriveType -eq 3 | ForEach-Object { Write-Host "     Surucu $($_.DeviceID)    : $([math]::Round($_.FreeSpace/1GB,2)) GB Bos / $([math]::Round($_.Size/1GB,2)) GB Toplam" }
     
-    Write-Host "     --- Donanim Telemetrisi ---" -ForegroundColor DarkGray
+    $info += "`n[DEPOLAMA TELEMETRISI]`n"
     $pdisks = Get-PhysicalDisk -ErrorAction SilentlyContinue
     if ($pdisks) {
         foreach ($pd in $pdisks) {
-            Write-Host "     Aygit       : $($pd.FriendlyName) ($($pd.MediaType) - $([math]::Round($pd.Size/1GB,0)) GB)"
-            Write-Host "     Durum       : $($pd.HealthStatus)"
+            $info += "Aygit   : $($pd.FriendlyName) ($([math]::Round($pd.Size/1GB,0)) GB)`nDurum   : $($pd.HealthStatus)`n"
             $rel = $pd | Get-StorageReliabilityCounter -ErrorAction SilentlyContinue
-            if ($rel) {
-                if ($rel.Temperature) { Write-Host "     Sicaklik    : $($rel.Temperature) °C" }
-                if ($rel.PowerOnHours) { Write-Host "     Calisma     : $($rel.PowerOnHours) Saat" }
-                if ($rel.Wear -gt 0) { Write-Host "     Yipranma    : %$($rel.Wear)" }
-            }
-            Write-Host ""
+            if ($rel -and $rel.Temperature) { $info += "Sicaklik: $($rel.Temperature) Derece`n" }
+            $info += "`n"
         }
     }
+    
+    $TxtSysInfo.Text = $info
+})
 
-    Write-Host "   ===============================================================" -ForegroundColor DarkGray
-    Write-Host "   Ana menuye donmek icin [ENTER] tusuna basin..." -ForegroundColor DarkCyan
-    Read-Host
-}
-
-# --- ANA DONGU ---
-while ($true) {
-    Show-Menu
-    $choice = Read-Host "   Seciminiz"
-    switch ($choice) {
-        '1' { Invoke-Module "WinSwift" "https://raw.githubusercontent.com/cyberQbit/WinSwift/main/WinSwift.ps1" }
-        '2' { Invoke-Module "DevSwift" "https://raw.githubusercontent.com/cyberQbit/DevSwift/main/DevSwift.bat" }
-        '3' { Invoke-Module "NetSwift" "https://raw.githubusercontent.com/cyberQbit/NetSwift/main/NetSwift.bat" }
-        '4' { Invoke-SysInfo }
-        '0' {
-            Write-Host "`n   [+] Sistem baglantisi kesiliyor..." -ForegroundColor Cyan; Start-Sleep -Milliseconds 300
-            Write-Host "   [+] Onbellek ve gecici hafiza temizleniyor..." -ForegroundColor Blue; Start-Sleep -Milliseconds 300
-            Write-Host "   [OK] cyberQbit Ekosistemi guvenli bir sekilde kapatildi." -ForegroundColor Green; Start-Sleep -Milliseconds 400
-            Write-Host "`n   Gorusmek uzere, Komutan!`n" -ForegroundColor DarkGray; Start-Sleep -Milliseconds 600
-            exit
-        }
-        default { Write-Host "   [!] Gecersiz secim!" -ForegroundColor Red; Start-Sleep -Seconds 1 }
-    }
-}
+# 6. ARAYUZU GOSTER VE CALISTIR
+$window.ShowDialog() | Out-Null
