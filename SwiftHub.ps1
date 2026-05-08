@@ -35,20 +35,23 @@ function Show-Menu {
     Write-Host ""
 }
 
-# --- MODUL INDIRICI VE TITANIUM PATCHER (I/O FIX EDITION) ---
+# --- MODUL INDIRICI (URL Korumali ve I/O Zirhli) ---
 function Invoke-Module ($Name, $Url) {
     Write-Host "`n   [*] $Name sunucudan cekiliyor... Lutfen bekleyin." -ForegroundColor Cyan
     $batPath = "$hubDir\$Name.bat"
     try {
         $wc = New-Object System.Net.WebClient
         $wc.Encoding = [System.Text.Encoding]::UTF8
-        $str = $wc.DownloadString("$Url?t=$((Get-Date).Ticks)")
         
-        # Gereksiz geri dönüs kodlarini silme
+        # SİNSİ DOKUNUŞ: URL'deki bosluklari veya yanlisliklari otomatik onarir
+        $safeUrl = $Url.Trim() + "?t=$((Get-Date).Ticks)"
+        $str = $wc.DownloadString($safeUrl)
+        
+        # Gereksiz kodlari ve cift pencereleri imha et
         $str = $str -replace '(?im)^.*powershell.*(aydinaydmr|SwiftHub|run\.ps1).*$', 'exit'
         $str = $str -replace '(?im)^.*start.*SwiftHub.*$', 'exit'
         
-        # Şifreleme koruması
+        # Karakter ve sfireleme korumasi
         $str = "chcp 65001 >nul`r`n" + $str
         
         [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
@@ -56,14 +59,10 @@ function Invoke-Module ($Name, $Url) {
         Write-Host "   [OK] Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
         Start-Sleep -Milliseconds 400
         
-        # 🚀 THE MAGIC FIX: DOĞRUDAN ÇAĞIRI (NATIVE CALL) 🚀
-        # Start-Process ÇÖPE ATILDI! Artık CMD, PowerShell'in ana damarından çalışıyor.
-        # Bu sayede 'choice' ve 'pause' komutları klavye ile %100 kusursuz haberleşebiliyor!
+        # DOGRUDAN ÇEKİRDEK ÇAĞRISI (Klavye ve Menü kopmalarini %100 onarir)
         cmd.exe /c "$batPath"
         
-        # Modül kapanınca ekranın tertemiz çizilmesi için mini rötar
         Start-Sleep -Milliseconds 200
-        
     } catch {
         Write-Host "`n   [X] $Name indirilemedi: $($_.Exception.Message)" -ForegroundColor Red
         Start-Sleep -Seconds 3
