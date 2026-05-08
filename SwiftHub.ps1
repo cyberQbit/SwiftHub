@@ -1,39 +1,39 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v8.2 - OMEGA EDITION (WINUTIL INTEGRATION & DEEP TELEMETRY)
+# 🌌 SWIFTHUB CORE v8.3 - OMEGA EDITION (UTF-8 ENCODING PATCH & BULLETPROOF UI)
 # ==============================================================================
 $ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
+[Console]::InputEncoding = [System.Text.Encoding]::UTF8
 
-# --- 1. DIL MOTORU (BILINGUAL DICTIONARY) ---
+# --- 1. DIL MOTORU (BILINGUAL DICTIONARY - EVRENSEL KARAKTERLER) ---
 $global:CurrentLang = "TR"
 $global:i18n = @{
     "TR" = @{
-        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.2";
+        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.3";
         "MenuDash" = "🏠 Kontrol Paneli"; "MenuApps" = "📦 Uygulamalar"; "MenuTweaks" = "🛠️ Ince Ayarlar";
         "MenuFeatures" = "⚙️ Windows Ozellikleri"; "MenuNet" = "🌐 Ag ve Guvenlik"; "MenuFixes" = "⛑️ Sistem Onarimi";
         "MenuInfo" = "ℹ️ SwiftHub Rehberi"; "BtnLang" = "🌐 EN"; "StatusWait" = "Omega Core hazir. Emrinizi bekliyor...";
-        "BtnWinUtil" = "🔑 Windows ve Office'i Lisansla!";
-        "DashWelcome" = "SwiftHub OMEGA'ya Hos Geldiniz!"; "DashSub" = "Efsanevi hiz, nükleer guc ve sifir iz. Sol menuden operasyona baslayin.";
+        "DashWelcome" = "SwiftHub OMEGA'ya Hos Geldiniz!"; "DashSub" = "Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin.";
         "BtnInstall" = "Secili Uygulamalari Kur"; "BtnApply" = "Secili Ayarlari Enjekte Et";
         "BtnExport" = "💾 Profili Kaydet"; "BtnImport" = "📂 Profil Yukle";
-        "BtnDebloat" = "☢️ Nükleer Debloat"; "BtnRestore" = "🛡️ Geri Yukleme Noktasi";
-        "BtnUpdateAll" = "🔄 Tüm Programları Güncelle"; "BtnDeepClean" = "☢️ Nükleer Disk Temizliği";
-        "BtnAddContext" = "🖱️ Sağ Tıka SwiftHub Ekle"; "BtnRemContext" = "Kaldır";
-        "TitleNet" = "🌐 AĞ VE SİBER GÜVENLİK"; "TitleFix" = "⛑️ SİSTEM ONARIMI & YEDEKLEME"; "TitleFeat" = "⚙️ WINDOWS ÖZELLİKLERİ";
+        "BtnDebloat" = "☢️ Nukleer Debloat"; "BtnRestore" = "🛡️ Geri Yukleme Noktasi";
+        "BtnUpdateAll" = "🔄 Tum Programlari Guncelle"; "BtnDeepClean" = "☢️ Nukleer Disk Temizligi";
+        "BtnAddContext" = "🖱️ Sag Tika SwiftHub Ekle"; "BtnRemContext" = "Kaldir";
+        "TitleNet" = "🌐 AG VE SIBER GUVENLIK"; "TitleFix" = "⛑️ SISTEM ONARIMI & YEDEKLEME"; "TitleFeat" = "⚙️ WINDOWS OZELLIKLERI";
         
-        "InfoTitle" = "📖 SWIFTHUB KULLANIM REHBERİ";
-        "InfoApps" = "📦 UYGULAMALAR: Saniyeler icinde program kurar. 'Tümünü Güncelle' butonu bilgisayarindaki tum eski programlari tek tıkla en son surume gunceller.";
-        "InfoTweaks" = "🛠️ INCE AYARLAR: Derin Registry ayarlaridir. 'Sağ Tık' butonlari ile SwiftHub'i masaustunde farenin sag tusuna kalici olarak ekleyebilirsiniz.";
-        "InfoDebloat" = "☢️ NÜKLEER TEMİZLİK: Debloat butonu silinmeyen Windows cöplerini; Disk Temizligi butonu ise Event loglari, prefetch ve update kalintilarini yok eder.";
-        "InfoNet" = "🌐 AĞ VE GÜVENLİK: DNS degistirerek yasakli sitelere girebilir, pinginizi dusurebilirsiniz. Ookla ile baglantinizi test edebilirsiniz.";
-        "InfoFixes" = "⛑️ SİSTEM ONARIMI: Mavi ekran sorunlarinda 'SFC & DISM' onarimi yapar. Ayrica anlik yedek alabilir ve OEM Lisansinizi 'God Mode' uzerinden bulabilirsiniz."
+        "InfoTitle" = "📖 SWIFTHUB KULLANIM REHBERI";
+        "InfoApps" = "📦 UYGULAMALAR: Saniyeler icinde program kurar. 'Tumunu Guncelle' butonu bilgisayarindaki tum eski programlari tek tikla en son surume gunceller.";
+        "InfoTweaks" = "🛠️ INCE AYARLAR: Derin Registry ayarlaridir. 'Sag Tik' butonlari ile SwiftHub'i masaustunde farenin sag tusuna kalici olarak ekleyebilirsiniz.";
+        "InfoDebloat" = "☢️ NUKLEER TEMIZLIK: Debloat butonu silinmeyen Windows coplerini; Disk Temizligi butonu ise Event loglari, prefetch ve update kalintilarini yok eder.";
+        "InfoNet" = "🌐 AG VE GUVENLIK: DNS degistirerek yasakli sitelere girebilir, pinginizi dusurebilirsiniz. Ookla ile baglantinizi test edebilirsiniz.";
+        "InfoFixes" = "⛑️ SISTEM ONARIMI: Mavi ekran sorunlarinda 'SFC & DISM' onarimi yapar. Ayrica anlik yedek alabilir ve OEM Lisansinizi 'God Mode' uzerinden bulabilirsiniz."
     };
     "EN" = @{
-        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.2";
+        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.3";
         "MenuDash" = "🏠 Dashboard"; "MenuApps" = "📦 Applications"; "MenuTweaks" = "🛠️ System Tweaks";
         "MenuFeatures" = "⚙️ Windows Features"; "MenuNet" = "🌐 Network & Security"; "MenuFixes" = "⛑️ System Repair";
         "MenuInfo" = "ℹ️ SwiftHub Guide"; "BtnLang" = "🌐 TR"; "StatusWait" = "Omega Core ready. Awaiting your command...";
-        "BtnWinUtil" = "🔑 License Windows and Office!";
         "DashWelcome" = "Welcome to SwiftHub OMEGA!"; "DashSub" = "Legendary speed, nuclear power, zero footprint. Start from the sidebar.";
         "BtnInstall" = "Install Selected Apps"; "BtnApply" = "Apply Selected Tweaks";
         "BtnExport" = "💾 Export Profile"; "BtnImport" = "📂 Import Profile";
@@ -53,7 +53,7 @@ $global:i18n = @{
 
 Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName PresentationCore; Add-Type -AssemblyName WindowsBase
 
-# --- 2. XAML TASARIMI ---
+# --- 2. XAML TASARIMI (EVRENSEL KARAKTERLER) ---
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="SwiftHub Omega" Height="800" Width="1250" Background="#0B0C10" Foreground="White" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize">
     <Window.Resources>
@@ -73,7 +73,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                     
                     <StackPanel Grid.Row="0" Margin="20,30,20,20">
                         <TextBlock Name="TxtTitle" Text="SWIFTHUB" FontSize="28" FontWeight="Black" Foreground="#00CED1"/>
-                        <TextBlock Name="TxtSub" Text="OMEGA CORE v8.2" FontSize="12" FontWeight="Bold" Foreground="#666"/>
+                        <TextBlock Name="TxtSub" Text="OMEGA CORE v8.3" FontSize="12" FontWeight="Bold" Foreground="#666"/>
                     </StackPanel>
                     
                     <StackPanel Grid.Row="1" Margin="10,0">
@@ -101,13 +101,13 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageDash" Visibility="Visible">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.2'ye Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
-                        <TextBlock Name="TxtDashSub" Text="Efsanevi hiz, nükleer guc ve sifir iz. Sol menuden operasyona baslayin." FontSize="16" Foreground="#8A8D93" TextAlignment="Center" Margin="0,0,0,30"/>
+                        <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.3'e Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Name="TxtDashSub" Text="Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin." FontSize="16" Foreground="#8A8D93" TextAlignment="Center" Margin="0,0,0,30"/>
                         
                         <Grid Width="700">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Margin="0,0,5,0" Grid.Column="0"/>
-                            <Button Name="BtnWinUtil" Content="⚙️ Chris Titus WinUtil'i Başlat" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
+                            <Button Name="BtnWinUtil" Content="⚙️ Chris Titus WinUtil'i Baslat" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
                         </Grid>
 
                         <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340" Width="700" Margin="0,15,0,0">
@@ -124,10 +124,10 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                     <Grid Grid.Row="1" Margin="0,15,0,0">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="1.5*"/></Grid.ColumnDefinitions>
                         <Button Name="BtnInstallApps" Content="Secili Uygulamalari Kur" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Grid.Column="0"/>
-                        <Button Name="BtnUpdateAll" Content="🔄 Tümünü Güncelle" Style="{StaticResource ActionBtn}" Background="#1E90FF" Grid.Column="1"/>
+                        <Button Name="BtnUpdateAll" Content="🔄 Tumunu Guncelle" Style="{StaticResource ActionBtn}" Background="#1E90FF" Grid.Column="1"/>
                         <Button Name="BtnAppExport" Content="💾 Profili Kaydet" Style="{StaticResource ActionBtn}" Grid.Column="2"/>
                         <Button Name="BtnAppImport" Content="📂 Profil Yukle" Style="{StaticResource ActionBtn}" Grid.Column="3"/>
-                        <Button Name="BtnDebloat" Content="☢️ Nükleer Debloat" Style="{StaticResource ActionBtn}" Background="#FF3B30" Grid.Column="4"/>
+                        <Button Name="BtnDebloat" Content="☢️ Nukleer Debloat" Style="{StaticResource ActionBtn}" Background="#FF3B30" Grid.Column="4"/>
                     </Grid>
                 </Grid>
 
@@ -147,7 +147,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageFeatures" Visibility="Hidden">
                     <StackPanel>
-                        <TextBlock Name="TxtTitleFeat" Text="⚙️ WINDOWS ÖZELLİKLERİ" FontSize="26" FontWeight="Black" Foreground="White" Margin="0,0,0,20"/>
+                        <TextBlock Name="TxtTitleFeat" Text="⚙️ WINDOWS OZELLIKLERI" FontSize="26" FontWeight="Black" Foreground="White" Margin="0,0,0,20"/>
                         <Button Name="BtnFeatWSL" Content="Linux Alt Sistemini (WSL) Kur" Style="{StaticResource ActionBtn}"/>
                         <Button Name="BtnFeatHyperV" Content="Hyper-V Sanallastirmayi Aktif Et" Style="{StaticResource ActionBtn}"/>
                         <Button Name="BtnFeatSandbox" Content="Windows Sandbox'i Aktif Et" Style="{StaticResource ActionBtn}"/>
@@ -155,12 +155,12 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                         
                         <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Padding="15" Margin="0,20,0,0">
                             <StackPanel>
-                                <TextBlock Text="🖱️ SAĞ TIK (CONTEXT MENU) ENTEGRASYONU" FontSize="16" FontWeight="Bold" Foreground="#00CED1" Margin="0,0,0,10"/>
-                                <TextBlock Text="Masaüstünde sağ tıkladığınızda SwiftHub'ın anında açılması için kalıcı olarak ekleyin." Foreground="#8A8D93" Margin="0,0,0,10"/>
+                                <TextBlock Text="🖱️ SAG TIK (CONTEXT MENU) ENTEGRASYONU" FontSize="16" FontWeight="Bold" Foreground="#00CED1" Margin="0,0,0,10"/>
+                                <TextBlock Text="Masaustunde sag tikladiginizda SwiftHub'in aninda acilmasi icin kalici olarak ekleyin." Foreground="#8A8D93" Margin="0,0,0,10"/>
                                 <Grid>
                                     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                    <Button Name="BtnAddContext" Content="Sağ Tıka SwiftHub Ekle" Style="{StaticResource ActionBtn}" Background="#1E90FF" Grid.Column="0"/>
-                                    <Button Name="BtnRemContext" Content="Kaldır" Style="{StaticResource ActionBtn}" Background="#4A0000" Grid.Column="1"/>
+                                    <Button Name="BtnAddContext" Content="Sag Tika SwiftHub Ekle" Style="{StaticResource ActionBtn}" Background="#1E90FF" Grid.Column="0"/>
+                                    <Button Name="BtnRemContext" Content="Kaldir" Style="{StaticResource ActionBtn}" Background="#4A0000" Grid.Column="1"/>
                                 </Grid>
                             </StackPanel>
                         </Border>
@@ -169,7 +169,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageNet" Visibility="Hidden">
                     <StackPanel>
-                        <TextBlock Name="TxtTitleNet" Text="🌐 AĞ VE SİBER GÜVENLİK" FontSize="26" FontWeight="Black" Foreground="White" Margin="0,0,0,20"/>
+                        <TextBlock Name="TxtTitleNet" Text="🌐 AG VE SIBER GUVENLIK" FontSize="26" FontWeight="Black" Foreground="White" Margin="0,0,0,20"/>
                         <Button Name="BtnSpeedTest" Content="Hiz Testi ve Analiz (Ookla Engine)" Style="{StaticResource ActionBtn}"/>
                         <Grid Margin="0,0,0,5">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
@@ -186,11 +186,11 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageFixes" Visibility="Hidden">
                     <StackPanel>
-                        <TextBlock Name="TxtTitleFix" Text="⛑️ SİSTEM ONARIMI &amp; YEDEKLEME" FontSize="26" FontWeight="Black" Foreground="White" Margin="0,0,0,20"/>
+                        <TextBlock Name="TxtTitleFix" Text="⛑️ SISTEM ONARIMI &amp; YEDEKLEME" FontSize="26" FontWeight="Black" Foreground="White" Margin="0,0,0,20"/>
                         <Grid Margin="0,0,0,15">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                            <Button Name="BtnQuickBackup" Content="🛡️ Sistem Yedeği Al (Hızlı)" Style="{StaticResource ActionBtn}" Background="#1E90FF" Grid.Column="0"/>
-                            <Button Name="BtnOpenRestore" Content="📂 Yedekleme Merkezini Aç (Geri Yükle)" Style="{StaticResource ActionBtn}" Background="#2D303B" Grid.Column="1"/>
+                            <Button Name="BtnQuickBackup" Content="🛡️ Sistem Yedegi Al (Hizli)" Style="{StaticResource ActionBtn}" Background="#1E90FF" Grid.Column="0"/>
+                            <Button Name="BtnOpenRestore" Content="📂 Yedekleme Merkezini Ac (Geri Yukle)" Style="{StaticResource ActionBtn}" Background="#2D303B" Grid.Column="1"/>
                         </Grid>
                         <Button Name="BtnFixSFC" Content="Sistem Dosyalarini Onar (SFC &amp; DISM)" Style="{StaticResource ActionBtn}"/>
                         <Button Name="BtnFixWU" Content="Windows Update Bilesenlerini Sifirla" Style="{StaticResource ActionBtn}"/>
@@ -198,7 +198,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                         <Grid Margin="0,0,0,0">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <Button Name="BtnFixTemp" Content="Temp ve Onbellegi Temizle" Style="{StaticResource ActionBtn}" Grid.Column="0"/>
-                            <Button Name="BtnDeepClean" Content="☢️ Nükleer Disk Temizliği (Logs/Prefetch)" Style="{StaticResource ActionBtn}" Background="#FF3B30" Grid.Column="1"/>
+                            <Button Name="BtnDeepClean" Content="☢️ Nukleer Disk Temizligi (Logs/Prefetch)" Style="{StaticResource ActionBtn}" Background="#FF3B30" Grid.Column="1"/>
                         </Grid>
                         
                         <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="130" Margin="5,10,5,0">
@@ -209,7 +209,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageInfo" Visibility="Hidden">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                    <TextBlock Name="TxtInfoTitle" Text="📖 SWIFTHUB KULLANIM REHBERİ" FontSize="26" FontWeight="Black" Foreground="#00CED1" Margin="0,0,0,20" Grid.Row="0"/>
+                    <TextBlock Name="TxtInfoTitle" Text="📖 SWIFTHUB KULLANIM REHBERI" FontSize="26" FontWeight="Black" Foreground="#00CED1" Margin="0,0,0,20" Grid.Row="0"/>
                     <Border Grid.Row="1" Background="#13151A" CornerRadius="8" Padding="20">
                         <ScrollViewer VerticalScrollBarVisibility="Auto">
                             <StackPanel>
@@ -247,7 +247,6 @@ $TxtSysInfo=$window.FindName("TxtSysInfo"); $TxtNetLog=$window.FindName("TxtNetL
 $TxtInfoTitle=$window.FindName("TxtInfoTitle"); $TxtInfoApps=$window.FindName("TxtInfoApps"); $TxtInfoTweaks=$window.FindName("TxtInfoTweaks")
 $TxtInfoDebloat=$window.FindName("TxtInfoDebloat"); $TxtInfoNet=$window.FindName("TxtInfoNet"); $TxtInfoFixes=$window.FindName("TxtInfoFixes")
 
-# YENI: WinUtil butonu eklendi
 $BtnAnalyze=$window.FindName("BtnAnalyze"); $BtnWinUtil=$window.FindName("BtnWinUtil")
 $BtnInstallApps=$window.FindName("BtnInstallApps"); $BtnApplyTweaks=$window.FindName("BtnApplyTweaks")
 $BtnSpeedTest=$window.FindName("BtnSpeedTest"); $BtnDnsCloudflare=$window.FindName("BtnDnsCloudflare"); $BtnDnsGoogle=$window.FindName("BtnDnsGoogle"); $BtnDnsDefault=$window.FindName("BtnDnsDefault"); $BtnNetReset=$window.FindName("BtnNetReset")
@@ -262,10 +261,12 @@ $BtnAddContext=$window.FindName("BtnAddContext"); $BtnRemContext=$window.FindNam
 $global:AppHeaders=@(); $global:AppItems=@(); $global:TweakHeaders=@(); $global:TweakItems=@()
 
 # ==============================================================================
-# 🚀 3. DINAMIK JSON MOTORU
+# 🚀 3. DINAMIK JSON MOTORU (UTF-8 FORCED WEBCLIENT)
 # ==============================================================================
 try {
-    $jsonResponseApps = (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/cyberQbit/DevSwift/main/apps.json?t=$((Get-Date).Ticks)") | ConvertFrom-Json
+    $wcApps = New-Object System.Net.WebClient
+    $wcApps.Encoding = [System.Text.Encoding]::UTF8
+    $jsonResponseApps = $wcApps.DownloadString("https://raw.githubusercontent.com/cyberQbit/DevSwift/main/apps.json?t=$((Get-Date).Ticks)") | ConvertFrom-Json
     foreach ($cat in $jsonResponseApps.psobject.properties.name) {
         $header = New-Object System.Windows.Controls.TextBlock; $header.Foreground = "#00CED1"; $header.FontSize = 17; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
         $global:AppHeaders += [PSCustomObject]@{ UI=$header; TR=$jsonResponseApps."$cat".TR; EN=$jsonResponseApps."$cat".EN }; $window.FindName("PanelAppsContainer").Children.Add($header) | Out-Null
@@ -279,7 +280,9 @@ try {
 } catch {}
 
 try {
-    $jsonResponseTweaks = (New-Object System.Net.WebClient).DownloadString("https://raw.githubusercontent.com/cyberQbit/WinSwift/main/tweaks.json?t=$((Get-Date).Ticks)") | ConvertFrom-Json
+    $wcTweaks = New-Object System.Net.WebClient
+    $wcTweaks.Encoding = [System.Text.Encoding]::UTF8
+    $jsonResponseTweaks = $wcTweaks.DownloadString("https://raw.githubusercontent.com/cyberQbit/WinSwift/main/tweaks.json?t=$((Get-Date).Ticks)") | ConvertFrom-Json
     foreach ($cat in $jsonResponseTweaks.psobject.properties.name) {
         $header = New-Object System.Windows.Controls.TextBlock; $header.Foreground = "#FF3366"; $header.FontSize = 17; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
         $global:TweakHeaders += [PSCustomObject]@{ UI=$header; TR=$jsonResponseTweaks."$cat".TR; EN=$jsonResponseTweaks."$cat".EN }; $window.FindName("PanelTweaksContainer").Children.Add($header) | Out-Null
@@ -303,7 +306,6 @@ function Update-Language {
     $TxtTitleNet.Text=$d["TitleNet"]; $TxtTitleFix.Text=$d["TitleFix"]; $TxtTitleFeat.Text=$d["TitleFeat"]
     
     $BtnUpdateAll.Content=$d["BtnUpdateAll"]; $BtnDeepClean.Content=$d["BtnDeepClean"]; $BtnAddContext.Content=$d["BtnAddContext"]; $BtnRemContext.Content=$d["BtnRemContext"]
-    $BtnWinUtil.Content=$d["BtnWinUtil"]
     
     $TxtInfoTitle.Text=$d["InfoTitle"]; $TxtInfoApps.Text=$d["InfoApps"]; $TxtInfoTweaks.Text=$d["InfoTweaks"]; $TxtInfoDebloat.Text=$d["InfoDebloat"]; $TxtInfoNet.Text=$d["InfoNet"]; $TxtInfoFixes.Text=$d["InfoFixes"]
     foreach ($h in $global:AppHeaders) { $h.UI.Text = $h."$($global:CurrentLang)" }
@@ -328,9 +330,9 @@ $NavInfo.Add_Click({ Reset-Nav; $NavInfo.Background="#1F222B"; $NavInfo.Foregrou
 
 # APP & UPDATE ALL
 $BtnInstallApps.Add_Click({ $TxtStatus.Text="[*] Kurulum basladi..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $c=0; foreach($i in $global:AppItems){if($i.CheckBox.IsChecked){try{Start-Process "winget" "-install --id $($i.Id) --accept-source-agreements --accept-package-agreements --silent" -Wait -NoNewWindow;$c++}catch{}}}; $TxtStatus.Text="[+] $c program kuruldu!" })
-$BtnUpdateAll.Add_Click({ $TxtStatus.Text="[*] Bilgisayardaki tüm programlar güncelleniyor. Bu işlem uzun sürebilir..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); Start-Process "winget" "upgrade --all --silent --accept-source-agreements --accept-package-agreements" -Wait -NoNewWindow; $TxtStatus.Text="[+] KUSURSUZ! Sistemdeki tüm programlar son sürüme güncellendi." })
+$BtnUpdateAll.Add_Click({ $TxtStatus.Text="[*] Bilgisayardaki tum programlar guncelleniyor. Bu islem uzun surebilir..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); Start-Process "winget" "upgrade --all --silent --accept-source-agreements --accept-package-agreements" -Wait -NoNewWindow; $TxtStatus.Text="[+] KUSURSUZ! Sistemdeki tum programlar son surume guncellendi." })
 $BtnApplyTweaks.Add_Click({ $TxtStatus.Text="[*] Ayarlar enjekte ediliyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $c=0; foreach($i in $global:TweakItems){if($i.CheckBox.IsChecked){try{Invoke-Expression $i.Script;$c++}catch{}}}; $TxtStatus.Text="[+] $c ayar uygulandi!" })
-$BtnDebloat.Add_Click({ $TxtStatus.Text="[☢️] Nukleer Debloat basladi! (1-2 dk surebilir)..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $bloatware=@("Microsoft.BingWeather","Microsoft.GetHelp","Microsoft.Getstarted","Microsoft.Microsoft3DViewer","Microsoft.MicrosoftOfficeHub","Microsoft.WindowsAlarms","Microsoft.WindowsCamera","microsoft.windowscommunicationsapps","Microsoft.WindowsFeedbackHub","Microsoft.WindowsMaps","Microsoft.WindowsSoundRecorder","Microsoft.XboxApp","Microsoft.XboxGamingOverlay","Microsoft.ZuneMusic","Microsoft.YourPhone"); $c=0; foreach($app in $bloatware){try{Get-AppxPackage -Name "*$app*" -AllUsers -ErrorAction SilentlyContinue|Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;$c++}catch{}}; $TxtStatus.Text="[+] Debloat Bitti! $c çöp paket silindi." })
+$BtnDebloat.Add_Click({ $TxtStatus.Text="[☢️] Nukleer Debloat basladi! (1-2 dk surebilir)..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $bloatware=@("Microsoft.BingWeather","Microsoft.GetHelp","Microsoft.Getstarted","Microsoft.Microsoft3DViewer","Microsoft.MicrosoftOfficeHub","Microsoft.WindowsAlarms","Microsoft.WindowsCamera","microsoft.windowscommunicationsapps","Microsoft.WindowsFeedbackHub","Microsoft.WindowsMaps","Microsoft.WindowsSoundRecorder","Microsoft.XboxApp","Microsoft.XboxGamingOverlay","Microsoft.ZuneMusic","Microsoft.YourPhone"); $c=0; foreach($app in $bloatware){try{Get-AppxPackage -Name "*$app*" -AllUsers -ErrorAction SilentlyContinue|Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;$c++}catch{}}; $TxtStatus.Text="[+] Debloat Bitti! $c cop paket silindi." })
 
 # YENI DERIN TELEMETRY (GENISLETILMIS GOD MODE) & LISANS BULUCU
 $BtnAnalyze.Add_Click({
@@ -361,23 +363,23 @@ $BtnAnalyze.Add_Click({
 
     $key=(Get-CimInstance -Query 'select * from SoftwareLicensingService' -ErrorAction SilentlyContinue).OA3xOriginalProductKey
     if([string]::IsNullOrWhiteSpace($key)){ $key="Bulunamadi (Dijital Lisans veya Retail)" }
-    $info += "`n`n[🔑 GİZLİ OEM LİSANS AVI]`nAnakart Anahtarı: $key`n"
+    $info += "`n`n[🔑 GIZLI OEM LISANS AVI]`nAnakart Anahtari: $key`n"
 
     $TxtSysInfo.Text = $info
 })
 
 # CHRIS TITUS WINUTIL TETIKLEYICI
 $BtnWinUtil.Add_Click({
-    $TxtStatus.Text="[*] Masaüstü Aktivasyon Aracı baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
-    Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm https://get.activated.win | iex`""
+    $TxtStatus.Text="[*] Chris Titus WinUtil baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
+    Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm christitus.com/win | iex`""
 })
 
 # CONTEXT MENU INTEGRATION
 $BtnAddContext.Add_Click({ try { $reg = "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub"; New-Item -Path $reg -Force | Out-Null; Set-ItemProperty -Path $reg -Name "Icon" -Value "powershell.exe"; Set-ItemProperty -Path $reg -Name "MUIVerb" -Value "🌌 SwiftHub Titan"; New-Item -Path "$reg\command" -Force | Out-Null; Set-ItemProperty -Path "$reg\command" -Name "(default)" -Value "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"irm aydinaydmr.com.tr/core | iex`""; $TxtStatus.Text="[+] Sag Tika Eklendi! Masaustunde farenin sag tusuna basarak deneyin." } catch { $TxtStatus.Text="[X] Sag tik eklenemedi." } })
-$BtnRemContext.Add_Click({ try { Remove-Item -Path "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub" -Recurse -Force; $TxtStatus.Text="[+] Sag Tik menüsünden kaldirildi." } catch {} })
+$BtnRemContext.Add_Click({ try { Remove-Item -Path "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub" -Recurse -Force; $TxtStatus.Text="[+] Sag Tik menusunden kaldirildi." } catch {} })
 
 # NUKLEER DEEP CLEAN
-$BtnDeepClean.Add_Click({ $TxtFixLog.Text = "[☢️] Nükleer Disk Temizliği devrede! Event loglar, prefetch ve update çöpleri yok ediliyor..."; $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render); try { wevtutil el | ForEach-Object { wevtutil cl $_ }; Remove-Item "$env:windir\Prefetch\*" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item "$env:windir\SoftwareDistribution\Download\*" -Recurse -Force -ErrorAction SilentlyContinue; Clear-RecycleBin -Force -ErrorAction SilentlyContinue; $TxtFixLog.Text = "[+] NÜKLEER TEMİZLİK BİTTİ! Disk gigabaytlarca rahatladi." } catch { $TxtFixLog.Text = "[X] Temizlik sirasinda bazi dosyalar kilitli olabilir." } })
+$BtnDeepClean.Add_Click({ $TxtFixLog.Text = "[☢️] Nukleer Disk Temizligi devrede! Event loglar, prefetch ve update copleri yok ediliyor..."; $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render); try { wevtutil el | ForEach-Object { wevtutil cl $_ }; Remove-Item "$env:windir\Prefetch\*" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item "$env:windir\SoftwareDistribution\Download\*" -Recurse -Force -ErrorAction SilentlyContinue; Clear-RecycleBin -Force -ErrorAction SilentlyContinue; $TxtFixLog.Text = "[+] NUKLEER TEMIZLIK BITTI! Disk gigabaytlarca rahatladi." } catch { $TxtFixLog.Text = "[X] Temizlik sirasinda bazi dosyalar kilitli olabilir." } })
 
 # DIGER BUTONLAR
 $BtnQuickBackup.Add_Click({ Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue; Checkpoint-Computer -Description "SwiftHub v8.0 Yedek" -RestorePointType "MODIFY_SETTINGS" -ErrorAction SilentlyContinue; $TxtStatus.Text="[+] Yedek alindi!" })
