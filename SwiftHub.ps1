@@ -374,7 +374,7 @@ $BtnAnalyze.Add_Click({
     $TxtSysInfo.Text = $info
 })
 
-# CHRIS TITUS WINUTIL TETIKLEYICI
+# MAS UTILITELARI VE AKTIVASYON ARACI
 $BtnWinUtil.Add_Click({
     $TxtStatus.Text="[*] Aktivasyon araci baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
     Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm https://get.activated.win | iex`""
