@@ -12,6 +12,7 @@ $global:i18n = @{
         "MenuDash" = "🏠 Kontrol Paneli"; "MenuApps" = "📦 Uygulamalar"; "MenuTweaks" = "🛠️ Ince Ayarlar";
         "MenuFeatures" = "⚙️ Windows Ozellikleri"; "MenuNet" = "🌐 Ag ve Guvenlik"; "MenuFixes" = "⛑️ Sistem Onarimi";
         "MenuInfo" = "ℹ️ SwiftHub Rehberi"; "BtnLang" = "🌐 EN"; "StatusWait" = "Omega Core hazir. Emrinizi bekliyor...";
+        "BtnWinUtil" = "🔑 Windows ve Office'i Lisansla!";
         "DashWelcome" = "SwiftHub OMEGA'ya Hos Geldiniz!"; "DashSub" = "Efsanevi hiz, nükleer guc ve sifir iz. Sol menuden operasyona baslayin.";
         "BtnInstall" = "Secili Uygulamalari Kur"; "BtnApply" = "Secili Ayarlari Enjekte Et";
         "BtnExport" = "💾 Profili Kaydet"; "BtnImport" = "📂 Profil Yukle";
@@ -32,6 +33,7 @@ $global:i18n = @{
         "MenuDash" = "🏠 Dashboard"; "MenuApps" = "📦 Applications"; "MenuTweaks" = "🛠️ System Tweaks";
         "MenuFeatures" = "⚙️ Windows Features"; "MenuNet" = "🌐 Network & Security"; "MenuFixes" = "⛑️ System Repair";
         "MenuInfo" = "ℹ️ SwiftHub Guide"; "BtnLang" = "🌐 TR"; "StatusWait" = "Omega Core ready. Awaiting your command...";
+        "BtnWinUtil" = "🔑 License Windows and Office!";
         "DashWelcome" = "Welcome to SwiftHub OMEGA!"; "DashSub" = "Legendary speed, nuclear power, zero footprint. Start from the sidebar.";
         "BtnInstall" = "Install Selected Apps"; "BtnApply" = "Apply Selected Tweaks";
         "BtnExport" = "💾 Export Profile"; "BtnImport" = "📂 Import Profile";
@@ -301,6 +303,7 @@ function Update-Language {
     $TxtTitleNet.Text=$d["TitleNet"]; $TxtTitleFix.Text=$d["TitleFix"]; $TxtTitleFeat.Text=$d["TitleFeat"]
     
     $BtnUpdateAll.Content=$d["BtnUpdateAll"]; $BtnDeepClean.Content=$d["BtnDeepClean"]; $BtnAddContext.Content=$d["BtnAddContext"]; $BtnRemContext.Content=$d["BtnRemContext"]
+    $BtnWinUtil.Content=$d["BtnWinUtil"]
     
     $TxtInfoTitle.Text=$d["InfoTitle"]; $TxtInfoApps.Text=$d["InfoApps"]; $TxtInfoTweaks.Text=$d["InfoTweaks"]; $TxtInfoDebloat.Text=$d["InfoDebloat"]; $TxtInfoNet.Text=$d["InfoNet"]; $TxtInfoFixes.Text=$d["InfoFixes"]
     foreach ($h in $global:AppHeaders) { $h.UI.Text = $h."$($global:CurrentLang)" }
@@ -365,8 +368,8 @@ $BtnAnalyze.Add_Click({
 
 # CHRIS TITUS WINUTIL TETIKLEYICI
 $BtnWinUtil.Add_Click({
-    $TxtStatus.Text="[*] Chris Titus WinUtil baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
-    Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm christitus.com/win | iex`""
+    $TxtStatus.Text="[*] Masaüstü Aktivasyon Aracı baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
+    Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm https://get.activated.win | iex`""
 })
 
 # CONTEXT MENU INTEGRATION
