@@ -34,7 +34,7 @@ function Show-Menu {
     Write-Host ""
 }
 
-# --- MODUL INDIRICI VE MEMORY PATCHER (Tek Pencere Entegrasyonu) ---
+# --- MODUL INDIRICI VE MEMORY PATCHER (Tek Pencere Kusursuz Entegrasyonu) ---
 function Invoke-Module ($Name, $Url) {
     Write-Host "`n   [*] $Name sunucudan cekiliyor... Lutfen bekleyin." -ForegroundColor Cyan
     $batPath = "$hubDir\$Name.bat"
@@ -42,20 +42,26 @@ function Invoke-Module ($Name, $Url) {
         $bytes = (New-Object System.Net.WebClient).DownloadData("$Url?t=$((Get-Date).Ticks)")
         $str = [System.Text.Encoding]::UTF8.GetString($bytes)
         
-        # SİNSİ DOKUNUŞ: Modüllerin içindeki o eski "SwiftHub.bat'ı aç" satırlarını havada yok ediyoruz!
-        # Böylece modülden çıkınca hata vermez, PS1 döngümüz kaldığı yerden mükemmelce devam eder.
-        $str = $str -replace 'SwiftHub\.bat', 'SilinmisKodes.bat'
+        # SİNSİ DOKUNUŞ v2 (Kusursuz Geri Dönüş):
+        # Modülün içindeki "SwiftHub'ı tekrar aç" veya "internet'ten indir" komutlarını
+        # havada yakalayıp sadece 'exit' (kapan) emriyle değiştiriyoruz.
+        # Böylece modül kapandığı an, halihazırda açık olan PS1 menümüze pürüzsüzce döneriz!
+        $str = $str -replace '(?i)start .*?SwiftHub\.bat.*', 'exit'
+        $str = $str -replace '(?i)powershell .*?irm aydinaydmr\.com\.tr/core.*', 'exit'
         
         [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
         
         Write-Host "   [OK] Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
         Start-Sleep -Milliseconds 400
         
-        # Eski Start-Process silindi. Doğrudan bu pencerenin içine gömüyoruz!
+        # Yeni pencere açmadan, doğrudan bu pencerenin İÇİNDE çalıştırıyoruz
         cmd.exe /c "$batPath"
         
+        # Modül kapandıktan sonra PowerShell'in toparlanıp ana menüyü çizmesi için nefes aralığı
+        Start-Sleep -Milliseconds 200
+        
     } catch {
-        Write-Host "`n   [X] $Name indirilemedi veya calismadi!" -ForegroundColor Red
+        Write-Host "`n   [X] $Name indirilemedi veya calismadi: $($_.Exception.Message)" -ForegroundColor Red
         Start-Sleep -Seconds 3
     }
 }
