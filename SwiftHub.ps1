@@ -1,5 +1,5 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v8.3 - OMEGA EDITION (UTF-8 ENCODING PATCH & BULLETPROOF UI)
+# 🌌 SWIFTHUB CORE v8.3 - OMEGA EDITION (UTF-8 ENCODING & BULLETPROOF DEEP CLEAN)
 # ==============================================================================
 $ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -53,7 +53,7 @@ $global:i18n = @{
 
 Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName PresentationCore; Add-Type -AssemblyName WindowsBase
 
-# --- 2. XAML TASARIMI (EVRENSEL KARAKTERLER) ---
+# --- 2. XAML TASARIMI ---
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="SwiftHub Omega" Height="800" Width="1250" Background="#0B0C10" Foreground="White" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize">
     <Window.Resources>
@@ -334,9 +334,10 @@ $BtnUpdateAll.Add_Click({ $TxtStatus.Text="[*] Bilgisayardaki tum programlar gun
 $BtnApplyTweaks.Add_Click({ $TxtStatus.Text="[*] Ayarlar enjekte ediliyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $c=0; foreach($i in $global:TweakItems){if($i.CheckBox.IsChecked){try{Invoke-Expression $i.Script;$c++}catch{}}}; $TxtStatus.Text="[+] $c ayar uygulandi!" })
 $BtnDebloat.Add_Click({ $TxtStatus.Text="[☢️] Nukleer Debloat basladi! (1-2 dk surebilir)..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $bloatware=@("Microsoft.BingWeather","Microsoft.GetHelp","Microsoft.Getstarted","Microsoft.Microsoft3DViewer","Microsoft.MicrosoftOfficeHub","Microsoft.WindowsAlarms","Microsoft.WindowsCamera","microsoft.windowscommunicationsapps","Microsoft.WindowsFeedbackHub","Microsoft.WindowsMaps","Microsoft.WindowsSoundRecorder","Microsoft.XboxApp","Microsoft.XboxGamingOverlay","Microsoft.ZuneMusic","Microsoft.YourPhone"); $c=0; foreach($app in $bloatware){try{Get-AppxPackage -Name "*$app*" -AllUsers -ErrorAction SilentlyContinue|Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;$c++}catch{}}; $TxtStatus.Text="[+] Debloat Bitti! $c cop paket silindi." })
 
-# YENI DERIN TELEMETRY (GENISLETILMIS GOD MODE) & LISANS BULUCU
+# DERIN TELEMETRY (GENISLETILMIS GOD MODE)
 $BtnAnalyze.Add_Click({
     $TxtSysInfo.Text="[!] Derin Donanim Telemetrisi Okunuyor... Lutfen Bekleyin..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
+    
     $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
     $mb = Get-CimInstance Win32_BaseBoard -ErrorAction SilentlyContinue
     $bios = Get-CimInstance Win32_BIOS -ErrorAction SilentlyContinue
@@ -346,6 +347,7 @@ $BtnAnalyze.Add_Click({
     $disks = Get-CimInstance Win32_DiskDrive -ErrorAction SilentlyContinue
 
     $info = "=========================================`n 🧬 DERIN SISTEM TELEMETRISI (GOD MODE) `n=========================================`n`n"
+    
     $installDate = [management.managementDateTimeConverter]::ToDateTime($os.InstallDate).ToString("dd.MM.yyyy HH:mm")
     $uptime = [math]::Round(((Get-Date) - $os.LastBootUpTime).TotalHours, 1)
 
@@ -356,8 +358,10 @@ $BtnAnalyze.Add_Click({
     $ramGb = [math]::Round(($rams | Measure-Object Capacity -Sum).Sum / 1GB, 2)
     $info += "[BELLEK (RAM) - Toplam $ramGb GB]`n"
     foreach ($r in $rams) { $info += "Modul : $([math]::Round($r.Capacity/1GB,0)) GB | $($r.Speed) MHz | $($r.Manufacturer) | $($r.PartNumber)`n" }
+    
     $info += "`n[GRAFIK KARTLARI (GPU)]`n"
     foreach ($g in $gpus) { $info += "Model         : $($g.Name)`nSurucu Surumu : $($g.DriverVersion)`nCozunurluk    : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz`n-" }
+    
     $info += "`n`n[DEPOLAMA (DISK)]`n"
     foreach ($d in $disks) { $size = [math]::Round($d.Size / 1GB, 0); $info += "Surucu : $($d.Model) | $size GB | Partisyon: $($d.Partitions)`n" }
 
@@ -378,8 +382,29 @@ $BtnWinUtil.Add_Click({
 $BtnAddContext.Add_Click({ try { $reg = "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub"; New-Item -Path $reg -Force | Out-Null; Set-ItemProperty -Path $reg -Name "Icon" -Value "powershell.exe"; Set-ItemProperty -Path $reg -Name "MUIVerb" -Value "🌌 SwiftHub Titan"; New-Item -Path "$reg\command" -Force | Out-Null; Set-ItemProperty -Path "$reg\command" -Name "(default)" -Value "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"irm aydinaydmr.com.tr/core | iex`""; $TxtStatus.Text="[+] Sag Tika Eklendi! Masaustunde farenin sag tusuna basarak deneyin." } catch { $TxtStatus.Text="[X] Sag tik eklenemedi." } })
 $BtnRemContext.Add_Click({ try { Remove-Item -Path "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub" -Recurse -Force; $TxtStatus.Text="[+] Sag Tik menusunden kaldirildi." } catch {} })
 
-# NUKLEER DEEP CLEAN
-$BtnDeepClean.Add_Click({ $TxtFixLog.Text = "[☢️] Nukleer Disk Temizligi devrede! Event loglar, prefetch ve update copleri yok ediliyor..."; $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render); try { wevtutil el | ForEach-Object { wevtutil cl $_ }; Remove-Item "$env:windir\Prefetch\*" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue; Remove-Item "$env:windir\SoftwareDistribution\Download\*" -Recurse -Force -ErrorAction SilentlyContinue; Clear-RecycleBin -Force -ErrorAction SilentlyContinue; $TxtFixLog.Text = "[+] NUKLEER TEMIZLIK BITTI! Disk gigabaytlarca rahatladi." } catch { $TxtFixLog.Text = "[X] Temizlik sirasinda bazi dosyalar kilitli olabilir." } })
+# NUKLEER DEEP CLEAN (KUSURSUZ YAMA)
+$BtnDeepClean.Add_Click({
+    $TxtFixLog.Text = "[☢️] Nukleer Disk Temizligi devrede! Kilitli servisler durduruluyor...";
+    $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+
+    Stop-Service wuauserv -Force -ErrorAction SilentlyContinue
+    Stop-Service bits -Force -ErrorAction SilentlyContinue
+    Stop-Service SysMain -Force -ErrorAction SilentlyContinue
+
+    wevtutil el | ForEach-Object { & wevtutil cl $_ 2>$null }
+
+    Remove-Item "$env:windir\Prefetch\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$env:windir\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Remove-Item "$env:windir\SoftwareDistribution\Download\*" -Recurse -Force -ErrorAction SilentlyContinue
+    Clear-RecycleBin -Force -ErrorAction SilentlyContinue
+
+    Start-Service wuauserv -ErrorAction SilentlyContinue
+    Start-Service bits -ErrorAction SilentlyContinue
+    Start-Service SysMain -ErrorAction SilentlyContinue
+
+    $TxtFixLog.Text = "[+] NUKLEER TEMIZLIK BITTI! Kilitli dosyalar guvenle atlanip disk rahatlatildi."
+})
 
 # DIGER BUTONLAR
 $BtnQuickBackup.Add_Click({ Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue; Checkpoint-Computer -Description "SwiftHub v8.0 Yedek" -RestorePointType "MODIFY_SETTINGS" -ErrorAction SilentlyContinue; $TxtStatus.Text="[+] Yedek alindi!" })
