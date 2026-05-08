@@ -35,36 +35,36 @@ function Show-Menu {
     Write-Host ""
 }
 
-# --- MODUL INDIRICI (URL Korumali ve I/O Zirhli) ---
+# --- MODUL INDIRICI VE TITANIUM PATCHER (PURE RAM EDITION) ---
 function Invoke-Module ($Name, $Url) {
     Write-Host "`n   [*] $Name sunucudan cekiliyor... Lutfen bekleyin." -ForegroundColor Cyan
-    $batPath = "$hubDir\$Name.bat"
     try {
         $wc = New-Object System.Net.WebClient
         $wc.Encoding = [System.Text.Encoding]::UTF8
-        
-        # SİNSİ DOKUNUŞ: URL'deki bosluklari veya yanlisliklari otomatik onarir
         $safeUrl = $Url.Trim() + "?t=$((Get-Date).Ticks)"
-        $str = $wc.DownloadString($safeUrl)
         
-        # Gereksiz kodlari ve cift pencereleri imha et
-        $str = $str -replace '(?im)^.*powershell.*(aydinaydmr|SwiftHub|run\.ps1).*$', 'exit'
-        $str = $str -replace '(?im)^.*start.*SwiftHub.*$', 'exit'
-        
-        # Karakter ve sfireleme korumasi
-        $str = "chcp 65001 >nul`r`n" + $str
-        
-        [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
-        
-        Write-Host "   [OK] Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
-        Start-Sleep -Milliseconds 400
-        
-        # DOGRUDAN ÇEKİRDEK ÇAĞRISI (Klavye ve Menü kopmalarini %100 onarir)
-        cmd.exe /c "$batPath"
-        
+        # EGER DOSYA PS1 ISE: DISKE ASLA YAZMA, DOGRUDAN RAM'DE CALISTIR!
+        if ($Url -match '\.ps1$') {
+            $script = $wc.DownloadString($safeUrl)
+            Write-Host "   [OK] Modul RAM'e yuklendi! Baslatiliyor..." -ForegroundColor Green
+            Start-Sleep -Milliseconds 400
+            Invoke-Command -ScriptBlock ([scriptblock]::Create($script))
+        } 
+        # EGER DOSYA ESKI NESIL BAT ISE (NetSwift/DevSwift):
+        else {
+            $str = $wc.DownloadString($safeUrl)
+            $str = $str -replace '(?im)^.*powershell.*(aydinaydmr|SwiftHub|run\.ps1).*$', 'exit'
+            $str = $str -replace '(?im)^.*start.*SwiftHub.*$', 'exit'
+            $str = "chcp 65001 >nul`r`n" + $str
+            $batPath = "$hubDir\$Name.bat"
+            [System.IO.File]::WriteAllLines($batPath, ($str -split '\r?\n'), (New-Object System.Text.UTF8Encoding $false))
+            Write-Host "   [OK] Legacy Modul yuklendi! Baslatiliyor..." -ForegroundColor Green
+            Start-Sleep -Milliseconds 400
+            cmd.exe /c "$batPath"
+        }
         Start-Sleep -Milliseconds 200
     } catch {
-        Write-Host "`n   [X] $Name indirilemedi: $($_.Exception.Message)" -ForegroundColor Red
+        Write-Host "`n   [X] $Name indirilemedi veya calistirilirken hata olustu: $($_.Exception.Message)" -ForegroundColor Red
         Start-Sleep -Seconds 3
     }
 }
@@ -143,7 +143,7 @@ while ($true) {
     Show-Menu
     $choice = Read-Host "   Seciminiz"
     switch ($choice) {
-        '1' { Invoke-Module "WinSwift" "https://raw.githubusercontent.com/cyberQbit/WinSwift/main/WinSwift.bat" }
+        '1' { Invoke-Module "WinSwift" "https://raw.githubusercontent.com/cyberQbit/WinSwift/main/WinSwift.ps1" }
         '2' { Invoke-Module "DevSwift" "https://raw.githubusercontent.com/cyberQbit/DevSwift/main/DevSwift.bat" }
         '3' { Invoke-Module "NetSwift" "https://raw.githubusercontent.com/cyberQbit/NetSwift/main/NetSwift.bat" }
         '4' { Invoke-SysInfo }
