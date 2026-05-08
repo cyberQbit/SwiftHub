@@ -1,5 +1,5 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v8.0 - OMEGA EDITION (THE FINAL MASTERPIECE)
+# 🌌 SWIFTHUB CORE v8.1 - OMEGA EDITION (DEEP TELEMETRY & UI FIXES)
 # ==============================================================================
 $ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -8,7 +8,7 @@ $ErrorActionPreference = 'SilentlyContinue'
 $global:CurrentLang = "TR"
 $global:i18n = @{
     "TR" = @{
-        "AppTitle" = "SWIFTHUB OMEGA v8.0"; "AppSub" = "MUTLAK SISTEM HAKIMIYETI";
+        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.1";
         "MenuDash" = "🏠 Kontrol Paneli"; "MenuApps" = "📦 Uygulamalar"; "MenuTweaks" = "🛠️ Ince Ayarlar";
         "MenuFeatures" = "⚙️ Windows Ozellikleri"; "MenuNet" = "🌐 Ag ve Guvenlik"; "MenuFixes" = "⛑️ Sistem Onarimi";
         "MenuInfo" = "ℹ️ SwiftHub Rehberi"; "BtnLang" = "🌐 EN"; "StatusWait" = "Omega Core hazir. Emrinizi bekliyor...";
@@ -28,7 +28,7 @@ $global:i18n = @{
         "InfoFixes" = "⛑️ SİSTEM ONARIMI: Mavi ekran sorunlarinda 'SFC & DISM' onarimi yapar. Ayrica anlik yedek alabilir ve OEM Lisansinizi 'God Mode' uzerinden bulabilirsiniz."
     };
     "EN" = @{
-        "AppTitle" = "SWIFTHUB OMEGA v8.0"; "AppSub" = "ABSOLUTE SYSTEM DOMINANCE";
+        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.1";
         "MenuDash" = "🏠 Dashboard"; "MenuApps" = "📦 Applications"; "MenuTweaks" = "🛠️ System Tweaks";
         "MenuFeatures" = "⚙️ Windows Features"; "MenuNet" = "🌐 Network & Security"; "MenuFixes" = "⛑️ System Repair";
         "MenuInfo" = "ℹ️ SwiftHub Guide"; "BtnLang" = "🌐 TR"; "StatusWait" = "Omega Core ready. Awaiting your command...";
@@ -68,10 +68,12 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
             <Border Grid.Column="0" Background="#13151A" CornerRadius="10,0,0,10">
                 <Grid>
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                    
                     <StackPanel Grid.Row="0" Margin="20,30,20,20">
-                        <TextBlock Name="TxtTitle" Text="SWIFTHUB OMEGA" FontSize="22" FontWeight="Black" Foreground="#00CED1"/>
-                        <TextBlock Name="TxtSub" Text="MUTLAK SISTEM" FontSize="11" FontWeight="Bold" Foreground="#666"/>
+                        <TextBlock Name="TxtTitle" Text="SWIFTHUB" FontSize="28" FontWeight="Black" Foreground="#00CED1"/>
+                        <TextBlock Name="TxtSub" Text="OMEGA CORE v8.1" FontSize="12" FontWeight="Bold" Foreground="#666"/>
                     </StackPanel>
+                    
                     <StackPanel Grid.Row="1" Margin="10,0">
                         <Button Name="NavDash" Content="🏠 Kontrol Paneli" Style="{StaticResource SidebarBtn}" Foreground="White" Background="#1F222B"/>
                         <Button Name="NavApps" Content="📦 Uygulamalar" Style="{StaticResource SidebarBtn}"/>
@@ -97,10 +99,16 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageDash" Visibility="Visible">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.0'a Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.1'e Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
                         <TextBlock Name="TxtDashSub" Text="Efsanevi hiz, nükleer guc ve sifir iz. Sol menuden operasyona baslayin." FontSize="16" Foreground="#8A8D93" TextAlignment="Center" Margin="0,0,0,30"/>
-                        <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode &amp; Lisans Avcisi)" Style="{StaticResource ActionBtn}" Width="400" Background="#00CED1" Foreground="#0B0C10"/>
-                        <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="320" Width="700">
+                        
+                        <Grid Width="700">
+                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                            <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Margin="0,0,5,0" Grid.Column="0"/>
+                            <Button Name="BtnFetchKey" Content="🔑 BIOS OEM Lisansını Bul" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
+                        </Grid>
+
+                        <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340" Width="700" Margin="0,15,0,0">
                             <ScrollViewer Margin="15"><TextBlock Name="TxtSysInfo" Text="Hazir..." Foreground="#00FF66" FontFamily="Consolas"/></ScrollViewer>
                         </Border>
                     </StackPanel>
@@ -238,7 +246,9 @@ $TxtSysInfo=$window.FindName("TxtSysInfo"); $TxtNetLog=$window.FindName("TxtNetL
 $TxtInfoTitle=$window.FindName("TxtInfoTitle"); $TxtInfoApps=$window.FindName("TxtInfoApps"); $TxtInfoTweaks=$window.FindName("TxtInfoTweaks")
 $TxtInfoDebloat=$window.FindName("TxtInfoDebloat"); $TxtInfoNet=$window.FindName("TxtInfoNet"); $TxtInfoFixes=$window.FindName("TxtInfoFixes")
 
-$BtnAnalyze=$window.FindName("BtnAnalyze"); $BtnInstallApps=$window.FindName("BtnInstallApps"); $BtnApplyTweaks=$window.FindName("BtnApplyTweaks")
+# YENI: FetchKey butonu eklendi
+$BtnAnalyze=$window.FindName("BtnAnalyze"); $BtnFetchKey=$window.FindName("BtnFetchKey")
+$BtnInstallApps=$window.FindName("BtnInstallApps"); $BtnApplyTweaks=$window.FindName("BtnApplyTweaks")
 $BtnSpeedTest=$window.FindName("BtnSpeedTest"); $BtnDnsCloudflare=$window.FindName("BtnDnsCloudflare"); $BtnDnsGoogle=$window.FindName("BtnDnsGoogle"); $BtnDnsDefault=$window.FindName("BtnDnsDefault"); $BtnNetReset=$window.FindName("BtnNetReset")
 $BtnFixSFC=$window.FindName("BtnFixSFC"); $BtnFixWU=$window.FindName("BtnFixWU"); $BtnFixTemp=$window.FindName("BtnFixTemp")
 $BtnFeatWSL=$window.FindName("BtnFeatWSL"); $BtnFeatHyperV=$window.FindName("BtnFeatHyperV"); $BtnFeatSandbox=$window.FindName("BtnFeatSandbox"); $BtnFeatNet2=$window.FindName("BtnFeatNet2")
@@ -247,7 +257,6 @@ $BtnAppExport=$window.FindName("BtnAppExport"); $BtnAppImport=$window.FindName("
 $BtnTweakExport=$window.FindName("BtnTweakExport"); $BtnTweakImport=$window.FindName("BtnTweakImport")
 $BtnQuickBackup=$window.FindName("BtnQuickBackup"); $BtnOpenRestore=$window.FindName("BtnOpenRestore")
 
-# YENI OMEGA BUTONLARI
 $BtnUpdateAll=$window.FindName("BtnUpdateAll"); $BtnDeepClean=$window.FindName("BtnDeepClean")
 $BtnAddContext=$window.FindName("BtnAddContext"); $BtnRemContext=$window.FindName("BtnRemContext")
 
@@ -325,13 +334,50 @@ $BtnUpdateAll.Add_Click({ $TxtStatus.Text="[*] Bilgisayardaki tüm programlar g�
 $BtnApplyTweaks.Add_Click({ $TxtStatus.Text="[*] Ayarlar enjekte ediliyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $c=0; foreach($i in $global:TweakItems){if($i.CheckBox.IsChecked){try{Invoke-Expression $i.Script;$c++}catch{}}}; $TxtStatus.Text="[+] $c ayar uygulandi!" })
 $BtnDebloat.Add_Click({ $TxtStatus.Text="[☢️] Nukleer Debloat basladi! (1-2 dk surebilir)..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $bloatware=@("Microsoft.BingWeather","Microsoft.GetHelp","Microsoft.Getstarted","Microsoft.Microsoft3DViewer","Microsoft.MicrosoftOfficeHub","Microsoft.WindowsAlarms","Microsoft.WindowsCamera","microsoft.windowscommunicationsapps","Microsoft.WindowsFeedbackHub","Microsoft.WindowsMaps","Microsoft.WindowsSoundRecorder","Microsoft.XboxApp","Microsoft.XboxGamingOverlay","Microsoft.ZuneMusic","Microsoft.YourPhone"); $c=0; foreach($app in $bloatware){try{Get-AppxPackage -Name "*$app*" -AllUsers -ErrorAction SilentlyContinue|Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;$c++}catch{}}; $TxtStatus.Text="[+] Debloat Bitti! $c çöp paket silindi." })
 
-# OEM KEY FETCHER (GOD MODE)
+# YENI DEEP TELEMETRY (GENISLETILMIS GOD MODE)
 $BtnAnalyze.Add_Click({
-    $TxtSysInfo.Text="Telemetri & Lisans Okunuyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
-    $os=Get-CimInstance Win32_OperatingSystem; $cpu=Get-CimInstance Win32_Processor; $mb=Get-CimInstance Win32_BaseBoard; $ram=Get-CimInstance Win32_PhysicalMemory
+    $TxtSysInfo.Text="Derin Donanim Telemetrisi Okunuyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
+    
+    $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
+    $mb = Get-CimInstance Win32_BaseBoard -ErrorAction SilentlyContinue
+    $cpu = Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue
+    $ram = Get-CimInstance Win32_PhysicalMemory -ErrorAction SilentlyContinue
+    $gpus = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue
+    $disks = Get-CimInstance Win32_DiskDrive -ErrorAction SilentlyContinue
+
+    $info = "[ISLETIM SISTEMI]`nModel     : $($os.Caption) $($os.OSArchitecture)`nSurum     : Version $($os.Version) (Build $($os.BuildNumber))`n"
+    $info += "`n[ANAKART]`nModel     : $($mb.Manufacturer) $($mb.Product)`n"
+    $info += "`n[ISLEMCI (CPU)]`nModel     : $($cpu[0].Name)`nCekirdek  : $($cpu[0].NumberOfCores) Core / $($cpu[0].NumberOfLogicalProcessors) Threads`n"
+    
+    $ramGb = [math]::Round(($ram | Measure-Object Capacity -Sum).Sum / 1GB, 2)
+    $ramSpeed = ($ram | Select-Object -First 1).Speed
+    $info += "`n[BELLEK (RAM)]`nKapasite  : $ramGb GB ($ramSpeed MHz)`n"
+
+    $info += "`n[GRAFIK (GPU)]`n"
+    foreach ($g in $gpus) {
+        $vram = [math]::Round($g.AdapterRAM / 1GB, 0)
+        $info += "Model     : $($g.Name) ($vram GB VRAM)`n"
+    }
+
+    $info += "`n[DEPOLAMA (DISK)]`n"
+    foreach ($d in $disks) {
+        $size = [math]::Round($d.Size / 1GB, 0)
+        $info += "Model     : $($d.Model) ($size GB)`n"
+    }
+
+    $TxtSysInfo.Text = $info
+})
+
+# OEM KEY FETCHER (AYRI BUTON)
+$BtnFetchKey.Add_Click({
+    $TxtSysInfo.Text="Anakart BIOS/UEFI uzerindeki OEM Lisansi araniyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
     $key=(Get-CimInstance -Query 'select * from SoftwareLicensingService' -ErrorAction SilentlyContinue).OA3xOriginalProductKey
-    if([string]::IsNullOrWhiteSpace($key)){$key="Bulunamadi (Dijital Lisans veya Retail)"}
-    $TxtSysInfo.Text="[OS] $($os.Caption)`n[Anakart] $($mb.Manufacturer) $($mb.Product)`n[CPU] $($cpu[0].Name)`n[RAM] $([math]::Round(($ram|Measure-Object Capacity -Sum).Sum/1GB,2)) GB`n`n[🔑 GİZLİ LİSANS AVI]`nOEM Anakart Anahtarı: $key`n`nOmega Hazir." 
+    if([string]::IsNullOrWhiteSpace($key)){
+        $msg="Sistemde BIOS'a gömülü bir OEM anahtari bulunamadi.`n(Lisansiniz Dijital veya Retail olabilir.)"
+    } else {
+        $msg="Bulunan Orijinal OEM Anahtari: $key"
+    }
+    $TxtSysInfo.Text="[🔑 GİZLİ LİSANS AVI]`n$msg"
 })
 
 # CONTEXT MENU INTEGRATION

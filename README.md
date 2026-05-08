@@ -1,7 +1,7 @@
 <div align="center">
   <img src="https://i.imgur.com/h3W4hsB.png" alt="SwiftHub Core Logo" width="640" style="border-radius: 8px; box-shadow: 0 10px 30px rgba(0, 206, 209, 0.3);">
 
-# 🌌 SwiftHub Core v8.0 OMEGA
+# 🌌 SwiftHub Core v8.1 OMEGA
 **The Ultimate "Zero-Footprint" System Management Dashboard**
 
 <p align="center">
