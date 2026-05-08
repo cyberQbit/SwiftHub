@@ -1,5 +1,5 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v8.3 - OMEGA EDITION (UTF-8 ENCODING & BULLETPROOF DEEP CLEAN)
+# 🌌 SWIFTHUB CORE v8.4 - OMEGA EDITION (FULL ITEM LOCALIZATION ENGINE)
 # ==============================================================================
 $ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -10,16 +10,16 @@ $ErrorActionPreference = 'SilentlyContinue'
 $global:CurrentLang = "TR"
 $global:i18n = @{
     "TR" = @{
-        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.3";
+        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.4";
         "MenuDash" = "🏠 Kontrol Paneli"; "MenuApps" = "📦 Uygulamalar"; "MenuTweaks" = "🛠️ Ince Ayarlar";
         "MenuFeatures" = "⚙️ Windows Ozellikleri"; "MenuNet" = "🌐 Ag ve Guvenlik"; "MenuFixes" = "⛑️ Sistem Onarimi";
         "MenuInfo" = "ℹ️ SwiftHub Rehberi"; "BtnLang" = "🌐 EN"; "StatusWait" = "Omega Core hazir. Emrinizi bekliyor...";
         "DashWelcome" = "SwiftHub OMEGA'ya Hos Geldiniz!"; "DashSub" = "Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin.";
         "BtnInstall" = "Secili Uygulamalari Kur"; "BtnApply" = "Secili Ayarlari Enjekte Et";
-        "BtnActivate" = "🔑 Windows ve Office Lisansla!";
         "BtnExport" = "💾 Profili Kaydet"; "BtnImport" = "📂 Profil Yukle";
         "BtnDebloat" = "☢️ Nukleer Debloat"; "BtnRestore" = "🛡️ Geri Yukleme Noktasi";
         "BtnUpdateAll" = "🔄 Tum Programlari Guncelle"; "BtnDeepClean" = "☢️ Nukleer Disk Temizligi";
+        "BtnWinUtil" = "🔑 Windows'unu ve Microsoft Office'i Lisansla!";
         "BtnAddContext" = "🖱️ Sag Tika SwiftHub Ekle"; "BtnRemContext" = "Kaldir";
         "TitleNet" = "🌐 AG VE SIBER GUVENLIK"; "TitleFix" = "⛑️ SISTEM ONARIMI & YEDEKLEME"; "TitleFeat" = "⚙️ WINDOWS OZELLIKLERI";
         
@@ -31,16 +31,16 @@ $global:i18n = @{
         "InfoFixes" = "⛑️ SISTEM ONARIMI: Mavi ekran sorunlarinda 'SFC & DISM' onarimi yapar. Ayrica anlik yedek alabilir ve OEM Lisansinizi 'God Mode' uzerinden bulabilirsiniz."
     };
     "EN" = @{
-        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.3";
+        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.4";
         "MenuDash" = "🏠 Dashboard"; "MenuApps" = "📦 Applications"; "MenuTweaks" = "🛠️ System Tweaks";
         "MenuFeatures" = "⚙️ Windows Features"; "MenuNet" = "🌐 Network & Security"; "MenuFixes" = "⛑️ System Repair";
         "MenuInfo" = "ℹ️ SwiftHub Guide"; "BtnLang" = "🌐 TR"; "StatusWait" = "Omega Core ready. Awaiting your command...";
         "DashWelcome" = "Welcome to SwiftHub OMEGA!"; "DashSub" = "Legendary speed, nuclear power, zero footprint. Start from the sidebar.";
         "BtnInstall" = "Install Selected Apps"; "BtnApply" = "Apply Selected Tweaks";
-        "BtnActivate" = "🔑 License Windows and Office!";
         "BtnExport" = "💾 Export Profile"; "BtnImport" = "📂 Import Profile";
         "BtnDebloat" = "☢️ Nuclear Debloat"; "BtnRestore" = "🛡️ Create Restore Point";
         "BtnUpdateAll" = "🔄 Update All Programs"; "BtnDeepClean" = "☢️ Nuclear Disk Clean";
+        "BtnWinUtil" = "🔑 License your Windows and Microsoft Office!";
         "BtnAddContext" = "🖱️ Add SwiftHub to Context Menu"; "BtnRemContext" = "Remove";
         "TitleNet" = "🌐 NETWORK & SECURITY"; "TitleFix" = "⛑️ SYSTEM REPAIR & BACKUP"; "TitleFeat" = "⚙️ WINDOWS FEATURES";
         
@@ -75,7 +75,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                     
                     <StackPanel Grid.Row="0" Margin="20,30,20,20">
                         <TextBlock Name="TxtTitle" Text="SWIFTHUB" FontSize="28" FontWeight="Black" Foreground="#00CED1"/>
-                        <TextBlock Name="TxtSub" Text="OMEGA CORE v8.3" FontSize="12" FontWeight="Bold" Foreground="#666"/>
+                        <TextBlock Name="TxtSub" Text="OMEGA CORE v8.4" FontSize="12" FontWeight="Bold" Foreground="#666"/>
                     </StackPanel>
                     
                     <StackPanel Grid.Row="1" Margin="10,0">
@@ -103,13 +103,13 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageDash" Visibility="Visible">
                     <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.3'e Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
+                        <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.4'e Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
                         <TextBlock Name="TxtDashSub" Text="Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin." FontSize="16" Foreground="#8A8D93" TextAlignment="Center" Margin="0,0,0,30"/>
                         
                         <Grid Width="700">
                             <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
                             <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Margin="0,0,5,0" Grid.Column="0"/>
-                            <Button Name="BtnWinUtil" Content="🔑 Windows ve Office Lisansla!" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
+                            <Button Name="BtnWinUtil" Content="⚙️ Chris Titus WinUtil'i Baslat" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
                         </Grid>
 
                         <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340" Width="700" Margin="0,15,0,0">
@@ -263,7 +263,7 @@ $BtnAddContext=$window.FindName("BtnAddContext"); $BtnRemContext=$window.FindNam
 $global:AppHeaders=@(); $global:AppItems=@(); $global:TweakHeaders=@(); $global:TweakItems=@()
 
 # ==============================================================================
-# 🚀 3. DINAMIK JSON MOTORU (UTF-8 FORCED WEBCLIENT)
+# 🚀 3. DINAMIK JSON MOTORU (GELISMIS YERELLESTIRME: NameTR / NameEN)
 # ==============================================================================
 try {
     $wcApps = New-Object System.Net.WebClient
@@ -273,9 +273,15 @@ try {
         $header = New-Object System.Windows.Controls.TextBlock; $header.Foreground = "#00CED1"; $header.FontSize = 17; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
         $global:AppHeaders += [PSCustomObject]@{ UI=$header; TR=$jsonResponseApps."$cat".TR; EN=$jsonResponseApps."$cat".EN }; $window.FindName("PanelAppsContainer").Children.Add($header) | Out-Null
         $wp = New-Object System.Windows.Controls.WrapPanel; $wp.Margin = "0,0,0,10"
+        
         foreach ($app in $jsonResponseApps."$cat".Items) {
-            $cb = New-Object System.Windows.Controls.CheckBox; $cb.Content = $app.Name
-            $global:AppItems += [PSCustomObject]@{ CheckBox=$cb; Id=$app.Id }; $wp.Children.Add($cb) | Out-Null
+            $cb = New-Object System.Windows.Controls.CheckBox
+            # JSON'da NameTR varsa onu kullan, yoksa eski yapi (Name) uzerinden devam et
+            $initialName = if ($app.NameTR) { $app.NameTR } else { $app.Name }
+            $cb.Content = $initialName
+            
+            $global:AppItems += [PSCustomObject]@{ CheckBox=$cb; Id=$app.Id; TR=$app.NameTR; EN=$app.NameEN }
+            $wp.Children.Add($cb) | Out-Null
         }
         $window.FindName("PanelAppsContainer").Children.Add($wp) | Out-Null
     }
@@ -289,30 +295,45 @@ try {
         $header = New-Object System.Windows.Controls.TextBlock; $header.Foreground = "#FF3366"; $header.FontSize = 17; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
         $global:TweakHeaders += [PSCustomObject]@{ UI=$header; TR=$jsonResponseTweaks."$cat".TR; EN=$jsonResponseTweaks."$cat".EN }; $window.FindName("PanelTweaksContainer").Children.Add($header) | Out-Null
         $wp = New-Object System.Windows.Controls.WrapPanel; $wp.Margin = "0,0,0,10"
+        
         foreach ($tweak in $jsonResponseTweaks."$cat".Items) {
-            $cb = New-Object System.Windows.Controls.CheckBox; $cb.Content = $tweak.Name; $cb.Width = 370
-            $global:TweakItems += [PSCustomObject]@{ CheckBox=$cb; Script=$tweak.Script }; $wp.Children.Add($cb) | Out-Null
+            $cb = New-Object System.Windows.Controls.CheckBox
+            # JSON'da NameTR varsa onu kullan, yoksa eski yapi (Name) uzerinden devam et
+            $initialName = if ($tweak.NameTR) { $tweak.NameTR } else { $tweak.Name }
+            $cb.Content = $initialName
+            $cb.Width = 370
+            
+            $global:TweakItems += [PSCustomObject]@{ CheckBox=$cb; Script=$tweak.Script; TR=$tweak.NameTR; EN=$tweak.NameEN }
+            $wp.Children.Add($cb) | Out-Null
         }
         $window.FindName("PanelTweaksContainer").Children.Add($wp) | Out-Null
     }
 } catch {}
 
-# --- 4. FONKSIYONLAR ---
+# --- 4. FONKSIYONLAR (Dinamik İsim Güncelleme) ---
 function Update-Language {
     $d = $global:i18n[$global:CurrentLang]
+    
+    # Sabit Arayüz Metinleri
     $TxtTitle.Text=$d["AppTitle"]; $TxtSub.Text=$d["AppSub"]; $NavDash.Content=$d["MenuDash"]; $NavApps.Content=$d["MenuApps"]; $NavTweaks.Content=$d["MenuTweaks"]
     $NavFeatures.Content=$d["MenuFeatures"]; $NavNet.Content=$d["MenuNet"]; $NavFixes.Content=$d["MenuFixes"]; $NavInfo.Content=$d["MenuInfo"]
     $BtnLangToggle.Content=$d["BtnLang"]; $TxtStatus.Text=$d["StatusWait"]; $TxtDashWelcome.Text=$d["DashWelcome"]; $TxtDashSub.Text=$d["DashSub"]
-    $BtnInstallApps.Content=$d["BtnInstall"]; $BtnApplyTweaks.Content=$d["BtnApply"]; $BtnWinUtil.Content=$d["BtnActivate"]; $BtnAppExport.Content=$d["BtnExport"]; $BtnAppImport.Content=$d["BtnImport"]
+    $BtnWinUtil.Content=$d["BtnWinUtil"]
+    $BtnInstallApps.Content=$d["BtnInstall"]; $BtnApplyTweaks.Content=$d["BtnApply"]; $BtnAppExport.Content=$d["BtnExport"]; $BtnAppImport.Content=$d["BtnImport"]
     $BtnTweakExport.Content=$d["BtnExport"]; $BtnTweakImport.Content=$d["BtnImport"]; $BtnDebloat.Content=$d["BtnDebloat"]; $BtnRestore.Content=$d["BtnRestore"]
     $TxtTitleNet.Text=$d["TitleNet"]; $TxtTitleFix.Text=$d["TitleFix"]; $TxtTitleFeat.Text=$d["TitleFeat"]
-    
     $BtnUpdateAll.Content=$d["BtnUpdateAll"]; $BtnDeepClean.Content=$d["BtnDeepClean"]; $BtnAddContext.Content=$d["BtnAddContext"]; $BtnRemContext.Content=$d["BtnRemContext"]
-    
     $TxtInfoTitle.Text=$d["InfoTitle"]; $TxtInfoApps.Text=$d["InfoApps"]; $TxtInfoTweaks.Text=$d["InfoTweaks"]; $TxtInfoDebloat.Text=$d["InfoDebloat"]; $TxtInfoNet.Text=$d["InfoNet"]; $TxtInfoFixes.Text=$d["InfoFixes"]
+    
+    # JSON'dan Gelen Kategori Başlıklarını Çevir
     foreach ($h in $global:AppHeaders) { $h.UI.Text = $h."$($global:CurrentLang)" }
     foreach ($h in $global:TweakHeaders) { $h.UI.Text = $h."$($global:CurrentLang)" }
+    
+    # JSON'dan Gelen İçerikleri (CheckBox İsimlerini) Dinamik Çevir
+    foreach ($i in $global:AppItems) { if ($i.TR -and $i.EN) { $i.CheckBox.Content = $i."$($global:CurrentLang)" } }
+    foreach ($t in $global:TweakItems) { if ($t.TR -and $t.EN) { $t.CheckBox.Content = $t."$($global:CurrentLang)" } }
 }
+
 function Reset-Nav {
     $NavDash.Background="Transparent"; $NavDash.Foreground="#8A8D93"; $NavApps.Background="Transparent"; $NavApps.Foreground="#8A8D93"; $NavTweaks.Background="Transparent"; $NavTweaks.Foreground="#8A8D93"
     $NavFeatures.Background="Transparent"; $NavFeatures.Foreground="#8A8D93"; $NavNet.Background="Transparent"; $NavNet.Foreground="#8A8D93"; $NavFixes.Background="Transparent"; $NavFixes.Foreground="#8A8D93"; $NavInfo.Background="Transparent"; $NavInfo.Foreground="#00CED1"
@@ -374,9 +395,9 @@ $BtnAnalyze.Add_Click({
     $TxtSysInfo.Text = $info
 })
 
-# MAS UTILITELARI VE AKTIVASYON ARACI
+# CHRIS TITUS WINUTIL TETIKLEYICI
 $BtnWinUtil.Add_Click({
-    $TxtStatus.Text="[*] Aktivasyon araci baslatiliyor... Lutfen acilan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
+    $TxtStatus.Text="[*] Aktivasyon aracı başlatılıyor... Lütfen açılan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
     Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm https://get.activated.win | iex`""
 })
 
@@ -409,7 +430,7 @@ $BtnDeepClean.Add_Click({
 })
 
 # DIGER BUTONLAR
-$BtnQuickBackup.Add_Click({ Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue; Checkpoint-Computer -Description "SwiftHub v8.0 Yedek" -RestorePointType "MODIFY_SETTINGS" -ErrorAction SilentlyContinue; $TxtStatus.Text="[+] Yedek alindi!" })
+$BtnQuickBackup.Add_Click({ Enable-ComputerRestore -Drive "C:\" -ErrorAction SilentlyContinue; Checkpoint-Computer -Description "SwiftHub v8.4 Yedek" -RestorePointType "MODIFY_SETTINGS" -ErrorAction SilentlyContinue; $TxtStatus.Text="[+] Yedek alindi!" })
 $BtnOpenRestore.Add_Click({ Start-Process "rstrui.exe" -ErrorAction SilentlyContinue })
 $BtnAppExport.Add_Click({ $dlg=New-Object Microsoft.Win32.SaveFileDialog; $dlg.Filter="JSON Profile|*.json"; $dlg.FileName="SwiftHub_Apps.json"; if($dlg.ShowDialog() -eq $true){ $global:AppItems|Where{$_.CheckBox.IsChecked}|Select Id|ConvertTo-Json -Depth 10|Out-File $dlg.FileName -Encoding UTF8; $TxtStatus.Text="[+] Profil kaydedildi!" } })
 $BtnAppImport.Add_Click({ $dlg=New-Object Microsoft.Win32.OpenFileDialog; $dlg.Filter="JSON Profile|*.json"; if($dlg.ShowDialog() -eq $true){ $j=Get-Content $dlg.FileName -Raw|ConvertFrom-Json; foreach($i in $global:AppItems){$i.CheckBox.IsChecked=$false; foreach($x in $j){if($i.Id -eq $x.Id){$i.CheckBox.IsChecked=$true}}}; $TxtStatus.Text="[+] Profil yuklendi!" } })
