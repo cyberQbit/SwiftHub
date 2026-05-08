@@ -240,17 +240,31 @@ $BtnInstallApps.Add_Click({
     [System.Windows.MessageBox]::Show("$c adet program basariyla kuruldu!", "SwiftHub", 0, 64); $BtnInstallApps.Content = "Secili Programlari Kur"; $BtnInstallApps.IsEnabled = $true
 })
 
-# NETSWIFT (YENI)
+# NETSWIFT - HIZ TESTI (WAF BYPASS & TAM KAMUFLAJ)
 $BtnSpeedTest.Add_Click({
-    $TxtNetLog.Text = "[*] Hiz testi baslatildi. Cloudflare uzerinden 15MB ozel paket indiriliyor, lutfen bekleyin..."
+    $TxtNetLog.Text = "[*] Hiz testi baslatildi. Cloudflare uzerinden 15MB paket indiriliyor (Bu sirada arayuz 3-5 saniye kilitlenebilir, lutfen bekleyin)..."
     $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+    
     try {
-        $u='https://speed.cloudflare.com/__down?bytes=15000000'; $f=[System.IO.Path]::GetTempFileName()
-        $start=Get-Date; $wc=New-Object System.Net.WebClient; $wc.Headers.Add('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
-        $wc.DownloadFile($u, $f); $end=Get-Date; $size=(Get-Item $f).Length
+        $u='https://speed.cloudflare.com/__down?bytes=15000000'
+        $f=[System.IO.Path]::GetTempFileName()
+        $start=Get-Date
+        $wc=New-Object System.Net.WebClient
+        
+        # KUSURSUZ KAMUFLAJ: Cloudflare WAF sistemini kandiran tam Chrome imzasi
+        $wc.Headers.Add('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36')
+        
+        $wc.DownloadFile($u, $f)
+        $end=Get-Date
+        $size=(Get-Item $f).Length
         $speed=[Math]::Round(($size * 8 / ($end - $start).TotalSeconds) / 1Mb, 2)
+        
         $TxtNetLog.Text = "[+] KUSURSUZ! OLCULEN INDIRME HIZI: $speed Mbps"
-    } catch { $TxtNetLog.Text = "[X] Hiz testi basarisiz oldu: $($_.Exception.Message)" } finally { if (Test-Path $f) { Remove-Item $f -Force } }
+    } catch { 
+        $TxtNetLog.Text = "[X] Hiz testi basarisiz oldu: $($_.Exception.Message)" 
+    } finally { 
+        if (Test-Path $f) { Remove-Item $f -Force } 
+    }
 })
 
 $BtnDnsCloudflare.Add_Click({
