@@ -8,7 +8,7 @@
   <img src="https://img.shields.io/badge/Architecture-Pure%20RAM%20Execution-00CED1?style=for-the-badge&logo=amd" alt="Architecture">
   <img src="https://img.shields.io/badge/Engine-Cloud%20JSON%20Fetch-1E90FF?style=for-the-badge&logo=cloud" alt="Engine">
   <img src="https://img.shields.io/badge/UI-Bilingual%20WPF%20(EN/TR)-FF3366?style=for-the-badge&logo=windows" alt="UI">
-  <img src="https://img.shields.io/badge/Version-v8.0%20Omega-8A2BE2?style=for-the-badge" alt="Version">
+  <img src="https://img.shields.io/badge/Version-v8.1%20Omega-8A2BE2?style=for-the-badge" alt="Version">
 </p>
 
 *Modern. Absolute. Bulletproof.*  
