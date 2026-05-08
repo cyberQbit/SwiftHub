@@ -8,7 +8,7 @@ $ErrorActionPreference = 'SilentlyContinue'
 $global:CurrentLang = "TR"
 $global:i18n = @{
     "TR" = @{
-        "AppTitle" = "SWIFTHUB TITAN v7.5"; "AppSub" = "GOD TIER SISTEM MERKEZI";
+        "AppTitle" = "SWIFTHUB Core"; "AppSub" = "GOD TIER SISTEM MERKEZI";
         "MenuDash" = "🏠 Kontrol Paneli"; "MenuApps" = "📦 Uygulamalar"; "MenuTweaks" = "🛠️ Ince Ayarlar";
         "MenuFeatures" = "⚙️ Windows Ozellikleri"; "MenuNet" = "🌐 Ag ve Guvenlik"; "MenuFixes" = "⛑️ Sistem Onarimi";
         "MenuInfo" = "ℹ️ SwiftHub Rehberi"; "BtnLang" = "🌐 EN"; "StatusWait" = "Sistem hazir. Mimarinin keyfini cikarin...";
@@ -27,7 +27,7 @@ $global:i18n = @{
         "InfoFixes" = "⛑️ SİSTEM ONARIMI: Mavi ekran veya cokme sorunlarinda 'SFC & DISM' butonu bozulan Windows dosyalarini onarir. Ayrica buradan sisteminizin anlik yedegini alabilir ve Windows Kurtarma ekranina hizlica ulasabilirsiniz."
     };
     "EN" = @{
-        "AppTitle" = "SWIFTHUB TITAN v7.5"; "AppSub" = "GOD TIER SYSTEM CENTER";
+        "AppTitle" = "SWIFTHUB Core"; "AppSub" = "GOD TIER SYSTEM CENTER";
         "MenuDash" = "🏠 Dashboard"; "MenuApps" = "📦 Applications"; "MenuTweaks" = "🛠️ System Tweaks";
         "MenuFeatures" = "⚙️ Windows Features"; "MenuNet" = "🌐 Network & Security"; "MenuFixes" = "⛑️ System Repair";
         "MenuInfo" = "ℹ️ SwiftHub Guide"; "BtnLang" = "🌐 TR"; "StatusWait" = "System ready. Enjoy the architecture...";
