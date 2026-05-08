@@ -40,7 +40,7 @@ A breathtaking graphical dashboard built purely in PowerShell. It brings nuclear
 
 | Tab | Designation | Functionality |
 | :--- | :--- | :--- |
-| 🏠 **Dashboard** | *The Oracle* | God Mode telemetry. Fetches CPU, RAM, Motherboard, BIOS, and hidden OEM License Keys. |
+| 🏠 **Dashboard** | *The Oracle* | God Mode telemetry. Fetches CPU, RAM, Motherboard, BIOS, and hidden OEM License Keys. Includes **1-Click Windows/Office Activation** (via [MAS](https://github.com/massgravel/Microsoft-Activation-Scripts)). |
 | 📦 **Applications** | *The Builder* | Winget-powered silent installers. Includes Nuclear Debloat, Update All, and Profile Export. |
 | 🛠️ **Tweaks** | *The Optimizer* | Deep Registry settings for privacy, gaming performance, and UI layout. Includes Restore Point creator. |
 | ⚙️ **Features** | *The Architect* | 1-Click activation for WSL, Hyper-V, Windows Sandbox, and .NET Frameworks. |
@@ -79,7 +79,7 @@ irm aydinaydmr.com.tr/core | iex
 
 | Sekme | Kod Adı | İşlevsellik |
 | :--- | :--- | :--- |
-| 🏠 **Kontrol Paneli** | *Kahin* | God Mode telemetrisi. CPU, RAM, Anakart ve gizli OEM Lisans Anahtarınızı söküp çıkarır. |
+| 🏠 **Kontrol Paneli** | *Kahin* | God Mode telemetrisi. CPU, RAM, Anakart ve gizli OEM Lisans Anahtarınızı söküp çıkarır. **Tek Tıkla Windows/Office Aktivasyonu** içerir ([MAS](https://github.com/massgravel/Microsoft-Activation-Scripts) altyapısı ile). |
 | 📦 **Uygulamalar** | *İnşa Edici* | Sessiz arka plan kurulumları. Nükleer Debloat, Tümünü Güncelle ve Profil yedekleme sistemlerini içerir. |
 | 🛠️ **İnce Ayarlar** | *Optimize Edici* | Gizlilik, oyun performansı ve arayüz için derin Registry ayarları. Geri Yükleme Noktası motoru içerir. |
 | ⚙️ **Özellikler** | *Mimar* | WSL (Linux), Hyper-V, Windows Sandbox ve .NET paketlerini tek tıkla aktif eder. |
