@@ -240,30 +240,42 @@ $BtnInstallApps.Add_Click({
     [System.Windows.MessageBox]::Show("$c adet program basariyla kuruldu!", "SwiftHub", 0, 64); $BtnInstallApps.Content = "Secili Programlari Kur"; $BtnInstallApps.IsEnabled = $true
 })
 
-# NETSWIFT - HIZ TESTI (WAF BYPASS & TAM KAMUFLAJ)
+# NETSWIFT - HIZ TESTI (OOKLA SPEEDTEST CLI - ZERO FOOTPRINT)
 $BtnSpeedTest.Add_Click({
-    $TxtNetLog.Text = "[*] Hiz testi baslatildi. Cloudflare uzerinden 15MB paket indiriliyor (Bu sirada arayuz 3-5 saniye kilitlenebilir, lutfen bekleyin)..."
+    $TxtNetLog.Text = "[*] Ookla Speedtest Motoru atesleniyor... Baglanti analiz ediliyor.`n(Bu islem sirasinda gercek ag testi yapildigi icin arayuz 20-30 saniye kilitlenecektir. Lutfen bekleyin...)"
     $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
     
     try {
-        $u='https://speed.cloudflare.com/__down?bytes=15000000'
-        $f=[System.IO.Path]::GetTempFileName()
-        $start=Get-Date
-        $wc=New-Object System.Net.WebClient
+        # Sifir Iz Kurali: Her seyi Temp (Gecici) hafizada yapiyoruz
+        $tempDir = "$env:TEMP\NetSwift_Ookla"
+        if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force }
+        New-Item -Path $tempDir -ItemType Directory | Out-Null
         
-        # KUSURSUZ KAMUFLAJ: Cloudflare WAF sistemini kandiran tam Chrome imzasi
-        $wc.Headers.Add('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36')
+        # Ookla CLI Indir ve Cikart
+        $zipPath = "$tempDir\speedtest.zip"
+        $wc = New-Object System.Net.WebClient
+        $wc.DownloadFile("https://install.speedtest.net/app/cli/ookla-speedtest-1.2.0-win64.zip", $zipPath)
+        Expand-Archive -Path $zipPath -DestinationPath $tempDir -Force
         
-        $wc.DownloadFile($u, $f)
-        $end=Get-Date
-        $size=(Get-Item $f).Length
-        $speed=[Math]::Round(($size * 8 / ($end - $start).TotalSeconds) / 1Mb, 2)
+        $exePath = "$tempDir\speedtest.exe"
         
-        $TxtNetLog.Text = "[+] KUSURSUZ! OLCULEN INDIRME HIZI: $speed Mbps"
+        # Sihirli Dokunus: Ekrana yazi basmasini engelleyip, veriyi JSON formatinda arkadan cekiyoruz!
+        $speedOutput = & $exePath --accept-license --accept-gdpr --format=json | ConvertFrom-Json
+        
+        # Ookla veriyi saniyedeki byte (Bytes/s) olarak verir. Biz onu Mbps'ye (Megabit) ceviriyoruz
+        $downMbps = [math]::Round(($speedOutput.download.bandwidth * 8 / 1000000), 2)
+        $upMbps = [math]::Round(($speedOutput.upload.bandwidth * 8 / 1000000), 2)
+        $ping = [math]::Round($speedOutput.ping.latency, 0)
+        $isp = $speedOutput.isp
+        $serverName = $speedOutput.server.name
+        
+        $TxtNetLog.Text = "[+] KUSURSUZ AĞ ANALİZİ (OOKLA MOTORU)!`n`n🌐 Saglayici: $isp`n🖥️ Sunucu: $serverName`n⚡ Ping: $ping ms`n⬇️ Indirme (Download): $downMbps Mbps`n⬆️ Yukleme (Upload): $upMbps Mbps"
+        
     } catch { 
         $TxtNetLog.Text = "[X] Hiz testi basarisiz oldu: $($_.Exception.Message)" 
     } finally { 
-        if (Test-Path $f) { Remove-Item $f -Force } 
+        # Islem bittiginde veya coktugunde izleri tamamen sil (Zero-Footprint)
+        if (Test-Path $tempDir) { Remove-Item $tempDir -Recurse -Force -ErrorAction SilentlyContinue } 
     }
 })
 
