@@ -1,5 +1,5 @@
 # ==============================================================================
-# 🌌 SWIFTHUB CORE v4.2 - DEVSWIFT & WINSWIFT GUI INTEGRATION
+# 🌌 SWIFTHUB CORE v5.0 - THE ULTIMATE MASTERPIECE (FULL GUI)
 # ==============================================================================
 $ErrorActionPreference = 'SilentlyContinue'
 [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
@@ -9,11 +9,11 @@ Add-Type -AssemblyName PresentationFramework
 Add-Type -AssemblyName PresentationCore
 Add-Type -AssemblyName WindowsBase
 
-# 2. XAML TASARIMI (DevSwift Sekmesi Guncellendi)
+# 2. XAML TASARIMI (NetSwift Sekmesi Eklendi, TUMU AKTIF)
 [xml]$xaml = @"
 <Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="SwiftHub Core - Advanced System Gateway" Height="650" Width="1000"
+        Title="SwiftHub Core - Advanced System Gateway" Height="680" Width="1050"
         Background="#0F1015" Foreground="White" WindowStartupLocation="CenterScreen"
         FontFamily="Segoe UI">
     <Window.Resources>
@@ -39,6 +39,23 @@ Add-Type -AssemblyName WindowsBase
             <Setter Property="FontSize" Value="15"/>
             <Setter Property="FontWeight" Value="Bold"/>
         </Style>
+        <Style TargetType="Button" x:Key="NetButtonStyle">
+            <Setter Property="Background" Value="#1A1C23"/>
+            <Setter Property="Foreground" Value="White"/>
+            <Setter Property="Height" Value="40"/>
+            <Setter Property="BorderBrush" Value="#2D303B"/>
+            <Setter Property="BorderThickness" Value="1"/>
+            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border Background="{TemplateBinding Background}" BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="{TemplateBinding BorderThickness}" CornerRadius="4">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Window.Resources>
     
     <Grid Margin="15">
@@ -49,7 +66,7 @@ Add-Type -AssemblyName WindowsBase
         
         <StackPanel Grid.Row="0" Margin="5,0,0,20" Orientation="Horizontal">
             <TextBlock Text="🌌 SWIFTHUB" FontSize="32" FontWeight="Black" Foreground="#00CED1" VerticalAlignment="Center"/>
-            <TextBlock Text=" ULTIMATE EDITION" FontSize="20" FontWeight="Light" Foreground="#7A7A7A" VerticalAlignment="Bottom" Margin="10,0,0,4"/>
+            <TextBlock Text=" TITANIUM CORE" FontSize="20" FontWeight="Light" Foreground="#7A7A7A" VerticalAlignment="Bottom" Margin="10,0,0,4"/>
         </StackPanel>
         
         <TabControl Grid.Row="1" Background="#1A1C23" BorderBrush="#2D303B" BorderThickness="1">
@@ -90,7 +107,44 @@ Add-Type -AssemblyName WindowsBase
 
             <TabItem Header="🌐 NetSwift (Network)">
                 <Grid Margin="20">
-                    <TextBlock Text="Ag ve Siber Guvenlik Motoru Yakinda Buraya Baglanacak..." Foreground="#505050" FontSize="24" HorizontalAlignment="Center" VerticalAlignment="Center" FontWeight="Light"/>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
+
+                    <StackPanel Grid.Row="0" Margin="0,0,0,25">
+                        <TextBlock Text="INTERNET HIZ TESTI (Cloudflare API)" Foreground="#00CED1" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <Button Name="BtnSpeedTest" Content="Baglanti Hizini Olc" Style="{StaticResource NetButtonStyle}"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="1" Margin="0,0,0,25">
+                        <TextBlock Text="DNS YONETIMI &amp; SIFIRLAMA" Foreground="#00CED1" FontSize="16" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="10"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Button Name="BtnDnsCloudflare" Grid.Column="0" Content="Cloudflare DNS" Style="{StaticResource NetButtonStyle}"/>
+                            <Button Name="BtnDnsGoogle" Grid.Column="2" Content="Google DNS" Style="{StaticResource NetButtonStyle}"/>
+                            <Button Name="BtnDnsDefault" Grid.Column="4" Content="Varsayilan DNS" Style="{StaticResource NetButtonStyle}"/>
+                            <Button Name="BtnNetReset" Grid.Column="6" Content="Agi Tamamen Onar" Background="#4A0000" Style="{StaticResource NetButtonStyle}"/>
+                        </Grid>
+                    </StackPanel>
+
+                    <StackPanel Grid.Row="2">
+                        <TextBlock Text="SISTEM CIKTISI (LOG)" Foreground="#7A7A7A" FontSize="14" FontWeight="Bold" Margin="0,0,0,10"/>
+                        <Border Background="#0F1015" BorderBrush="#2D303B" BorderThickness="1" CornerRadius="4" Height="140">
+                            <ScrollViewer Margin="15">
+                                <TextBlock Name="TxtNetLog" Text="Ag modulu hazir..." FontFamily="Consolas" FontSize="14" Foreground="#00FF66" TextWrapping="Wrap"/>
+                            </ScrollViewer>
+                        </Border>
+                    </StackPanel>
                 </Grid>
             </TabItem>
             
@@ -119,150 +173,117 @@ $window = [Windows.Markup.XamlReader]::Load($reader)
 # --- ARAYUZ ELEMANLARI ---
 $PanelWinSwift = $window.FindName("PanelWinSwift")
 $BtnApplyTweaks = $window.FindName("BtnApplyTweaks")
-
 $PanelDevSwift = $window.FindName("PanelDevSwift")
 $BtnInstallApps = $window.FindName("BtnInstallApps")
-
 $BtnAnalyze = $window.FindName("BtnAnalyze")
 $TxtSysInfo = $window.FindName("TxtSysInfo")
+
+# NETSWIFT ELEMANLARI
+$BtnSpeedTest = $window.FindName("BtnSpeedTest")
+$BtnDnsCloudflare = $window.FindName("BtnDnsCloudflare")
+$BtnDnsGoogle = $window.FindName("BtnDnsGoogle")
+$BtnDnsDefault = $window.FindName("BtnDnsDefault")
+$BtnNetReset = $window.FindName("BtnNetReset")
+$TxtNetLog = $window.FindName("TxtNetLog")
 
 $global:winSwiftTweaks = @()
 $global:devSwiftApps = @()
 
 # ==============================================================================
-# 🚀 1. WINSWIFT DINAMIK CHECKBOX OLUSTURUCU
+# 🚀 1. WINSWIFT & DEVSWIFT DINAMIK CHECKBOX OLUSTURUCULAR
 # ==============================================================================
 try {
     $jsonUrl = "https://raw.githubusercontent.com/cyberQbit/WinSwift/main/tweaks.json?t=$((Get-Date).Ticks)"
     $jsonResponse = (New-Object System.Net.WebClient).DownloadString($jsonUrl) | ConvertFrom-Json
     foreach ($cat in $jsonResponse.psobject.properties.name) {
-        $header = New-Object System.Windows.Controls.TextBlock
-        $header.Text = $cat.ToUpper()
-        $header.Foreground = "#00CED1"
-        $header.FontSize = 16
-        $header.FontWeight = "Bold"
-        $header.Margin = "0,15,0,10"
+        $header = New-Object System.Windows.Controls.TextBlock; $header.Text = $cat.ToUpper(); $header.Foreground = "#00CED1"; $header.FontSize = 16; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
         $PanelWinSwift.Children.Add($header) | Out-Null
-        
         foreach ($tweak in $jsonResponse."$cat") {
-            $cb = New-Object System.Windows.Controls.CheckBox
-            $cb.Content = $tweak.Name
-            $cb.Foreground = "White"
-            $cb.FontSize = 14
-            $cb.Margin = "10,0,0,8"
+            $cb = New-Object System.Windows.Controls.CheckBox; $cb.Content = $tweak.Name; $cb.Foreground = "White"; $cb.FontSize = 14; $cb.Margin = "10,0,0,8"
             $global:winSwiftTweaks += [PSCustomObject]@{ CheckBox = $cb; Script = $tweak.Script; Name = $tweak.Name }
             $PanelWinSwift.Children.Add($cb) | Out-Null
         }
     }
-} catch {
-    $err = New-Object System.Windows.Controls.TextBlock
-    $err.Text = "[X] Bulut baglantisi basarisiz veya tweaks.json hatali!"
-    $err.Foreground = "Red"
-    $PanelWinSwift.Children.Add($err) | Out-Null
-}
+} catch {}
 
-# ==============================================================================
-# 🚀 2. DEVSWIFT DINAMIK CHECKBOX OLUSTURUCU (YENI)
-# ==============================================================================
 try {
     $jsonUrlApps = "https://raw.githubusercontent.com/cyberQbit/DevSwift/main/apps.json?t=$((Get-Date).Ticks)"
     $jsonResponseApps = (New-Object System.Net.WebClient).DownloadString($jsonUrlApps) | ConvertFrom-Json
     foreach ($cat in $jsonResponseApps.psobject.properties.name) {
-        $header = New-Object System.Windows.Controls.TextBlock
-        $header.Text = $cat.ToUpper()
-        $header.Foreground = "#00CED1"
-        $header.FontSize = 16
-        $header.FontWeight = "Bold"
-        $header.Margin = "0,15,0,10"
+        $header = New-Object System.Windows.Controls.TextBlock; $header.Text = $cat.ToUpper(); $header.Foreground = "#00CED1"; $header.FontSize = 16; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
         $PanelDevSwift.Children.Add($header) | Out-Null
-        
         foreach ($app in $jsonResponseApps."$cat") {
-            $cb = New-Object System.Windows.Controls.CheckBox
-            $cb.Content = $app.Name
-            $cb.Foreground = "White"
-            $cb.FontSize = 14
-            $cb.Margin = "10,0,0,8"
+            $cb = New-Object System.Windows.Controls.CheckBox; $cb.Content = $app.Name; $cb.Foreground = "White"; $cb.FontSize = 14; $cb.Margin = "10,0,0,8"
             $global:devSwiftApps += [PSCustomObject]@{ CheckBox = $cb; Id = $app.Id; Name = $app.Name }
             $PanelDevSwift.Children.Add($cb) | Out-Null
         }
     }
-} catch {
-    $err = New-Object System.Windows.Controls.TextBlock
-    $err.Text = "[X] Bulut baglantisi basarisiz veya apps.json hatali!"
-    $err.Foreground = "Red"
-    $PanelDevSwift.Children.Add($err) | Out-Null
-}
+} catch {}
 
 # ==============================================================================
-# 🚀 3. EVENTLER (BUTON TIKLAMALARI)
+# 🚀 2. EVENTLER (BUTON TIKLAMALARI)
 # ==============================================================================
 
-# WINSWIFT UYGULA
+# WINSWIFT
 $BtnApplyTweaks.Add_Click({
-    $BtnApplyTweaks.Content = "AYARLAR SISTEME ISLENIYOR... LUTFEN BEKLEYIN"
-    $BtnApplyTweaks.IsEnabled = $false
+    $BtnApplyTweaks.Content = "AYARLAR SISTEME ISLENIYOR..."; $BtnApplyTweaks.IsEnabled = $false
     $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
-    
-    $appliedCount = 0
-    foreach ($item in $global:winSwiftTweaks) {
-        if ($item.CheckBox.IsChecked) {
-            try { Invoke-Expression $item.Script; $appliedCount++ } catch {}
-        }
-    }
-    [System.Windows.MessageBox]::Show("$appliedCount adet ayar basariyla sisteme islendi!", "SwiftHub Operasyonu Tamamlandi", 0, 64)
-    $BtnApplyTweaks.Content = "Secili Ayarlari Sisteme Enjekte Et"
-    $BtnApplyTweaks.IsEnabled = $true
+    $c = 0; foreach ($item in $global:winSwiftTweaks) { if ($item.CheckBox.IsChecked) { try { Invoke-Expression $item.Script; $c++ } catch {} } }
+    [System.Windows.MessageBox]::Show("$c adet ayar basariyla sisteme islendi!", "SwiftHub", 0, 64); $BtnApplyTweaks.Content = "Secili Ayarlari Sisteme Enjekte Et"; $BtnApplyTweaks.IsEnabled = $true
 })
 
-# DEVSWIFT KUR
+# DEVSWIFT
 $BtnInstallApps.Add_Click({
-    $BtnInstallApps.Content = "PROGRAMLAR ARKA PLANDA KURULUYOR... LUTFEN BEKLEYIN"
-    $BtnInstallApps.IsEnabled = $false
+    $BtnInstallApps.Content = "PROGRAMLAR ARKA PLANDA KURULUYOR..."; $BtnInstallApps.IsEnabled = $false
     $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
-    
-    $installedCount = 0
-    foreach ($item in $global:devSwiftApps) {
-        if ($item.CheckBox.IsChecked) {
-            try { 
-                Start-Process -FilePath "winget" -ArgumentList "install --id $($item.Id) --accept-source-agreements --accept-package-agreements --silent" -Wait -NoNewWindow
-                $installedCount++ 
-            } catch {}
-        }
-    }
-    [System.Windows.MessageBox]::Show("$installedCount adet program basariyla kuruldu!", "SwiftHub Operasyonu Tamamlandi", 0, 64)
-    $BtnInstallApps.Content = "Secili Programlari Kur"
-    $BtnInstallApps.IsEnabled = $true
+    $c = 0; foreach ($item in $global:devSwiftApps) { if ($item.CheckBox.IsChecked) { try { Start-Process -FilePath "winget" -ArgumentList "install --id $($item.Id) --accept-source-agreements --accept-package-agreements --silent" -Wait -NoNewWindow; $c++ } catch {} } }
+    [System.Windows.MessageBox]::Show("$c adet program basariyla kuruldu!", "SwiftHub", 0, 64); $BtnInstallApps.Content = "Secili Programlari Kur"; $BtnInstallApps.IsEnabled = $true
 })
 
-# SYSINFO ANALIZ
+# NETSWIFT (YENI)
+$BtnSpeedTest.Add_Click({
+    $TxtNetLog.Text = "[*] Hiz testi baslatildi. Cloudflare uzerinden 15MB ozel paket indiriliyor, lutfen bekleyin..."
+    $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+    try {
+        $u='https://speed.cloudflare.com/__down?bytes=15000000'; $f=[System.IO.Path]::GetTempFileName()
+        $start=Get-Date; $wc=New-Object System.Net.WebClient; $wc.Headers.Add('User-Agent','Mozilla/5.0 (Windows NT 10.0; Win64; x64)')
+        $wc.DownloadFile($u, $f); $end=Get-Date; $size=(Get-Item $f).Length
+        $speed=[Math]::Round(($size * 8 / ($end - $start).TotalSeconds) / 1Mb, 2)
+        $TxtNetLog.Text = "[+] KUSURSUZ! OLCULEN INDIRME HIZI: $speed Mbps"
+    } catch { $TxtNetLog.Text = "[X] Hiz testi basarisiz oldu: $($_.Exception.Message)" } finally { if (Test-Path $f) { Remove-Item $f -Force } }
+})
+
+$BtnDnsCloudflare.Add_Click({
+    $net = Get-NetAdapter | Where-Object Status -eq 'Up' | Select-Object -First 1
+    if ($net) { Set-DnsClientServerAddress -InterfaceIndex $net.ifIndex -ServerAddresses ("1.1.1.1","1.0.0.1"); $TxtNetLog.Text = "[+] DNS adresi Cloudflare (1.1.1.1) olarak degistirildi." } else { $TxtNetLog.Text = "[X] Aktif bir ag bagdastiricisi bulunamadi!" }
+})
+
+$BtnDnsGoogle.Add_Click({
+    $net = Get-NetAdapter | Where-Object Status -eq 'Up' | Select-Object -First 1
+    if ($net) { Set-DnsClientServerAddress -InterfaceIndex $net.ifIndex -ServerAddresses ("8.8.8.8","8.8.4.4"); $TxtNetLog.Text = "[+] DNS adresi Google (8.8.8.8) olarak degistirildi." } else { $TxtNetLog.Text = "[X] Aktif bir ag bagdastiricisi bulunamadi!" }
+})
+
+$BtnDnsDefault.Add_Click({
+    $net = Get-NetAdapter | Where-Object Status -eq 'Up' | Select-Object -First 1
+    if ($net) { Set-DnsClientServerAddress -InterfaceIndex $net.ifIndex -ResetServerAddresses; $TxtNetLog.Text = "[+] DNS ayarlari varsayilana (Otomatik/DHCP) donduruldu." } else { $TxtNetLog.Text = "[X] Aktif bir ag bagdastiricisi bulunamadi!" }
+})
+
+$BtnNetReset.Add_Click({
+    $TxtNetLog.Text = "[*] Ag onbellegi temizleniyor ve TCP/IP soketleri onariliyor..."
+    $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
+    ipconfig /flushdns | Out-Null; netsh winsock reset | Out-Null; netsh int ip reset | Out-Null
+    $TxtNetLog.Text = "[+] Ag protokolleri sifirlandi! (Degisikliklerin tam islemesi icin bilgisayari yeniden baslatmaniz onerilir.)"
+})
+
+# SYSINFO
 $BtnAnalyze.Add_Click({
     $TxtSysInfo.Text = "Donanim sensorleri ve WMI verileri okunuyor... Lutfen bekleyin."
     $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
-    $info = ""
-    $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
-    $info += "[ISLETIM SISTEMI]`nModel   : $($os.Caption) $($os.OSArchitecture)`nSurum   : Version $($os.Version) (Build $($os.BuildNumber))`n`n"
-    $cpu = Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue
-    $cpuInfo = if ($cpu.Count -gt 1) { $cpu[0] } else { $cpu }
-    $info += "[ISLEMCI (CPU)]`nModel   : $($cpuInfo.Name)`nCekirdek: $($cpuInfo.NumberOfCores) Core / $($cpuInfo.NumberOfLogicalProcessors) Thread`n`n"
-    $ram = Get-CimInstance Win32_PhysicalMemory -ErrorAction SilentlyContinue
-    $totalRam = [math]::Round(($ram | Measure-Object Capacity -Sum).Sum / 1GB, 2)
-    $info += "[BELLEK (RAM)]`nKapasite: $totalRam GB`nHiz     : $(($ram | Select-Object -First 1).Speed) MHz`n`n"
-    $gpus = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue
-    $info += "[GRAFIK KARTI (GPU)]`n"
-    foreach ($g in $gpus) {
-        $vramGB = [math]::Round($g.AdapterRAM / 1GB, 0)
-        $info += "Model   : $($g.Name) ($vramGB GB VRAM)`n"
-    }
-    $info += "`n[DEPOLAMA TELEMETRISI]`n"
-    $pdisks = Get-PhysicalDisk -ErrorAction SilentlyContinue
-    if ($pdisks) {
-        foreach ($pd in $pdisks) {
-            $info += "Aygit   : $($pd.FriendlyName) ($([math]::Round($pd.Size/1GB,0)) GB)`nDurum   : $($pd.HealthStatus)`n"
-            $rel = $pd | Get-StorageReliabilityCounter -ErrorAction SilentlyContinue
-            if ($rel -and $rel.Temperature) { $info += "Sicaklik: $($rel.Temperature) Derece`n" }
-            $info += "`n"
-        }
-    }
+    $info = "[ISLETIM SISTEMI]`nModel   : $((Get-CimInstance Win32_OperatingSystem).Caption)`n`n[ISLEMCI]`nModel   : $((Get-CimInstance Win32_Processor)[0].Name)`n`n[RAM]`nKapasite: $([math]::Round(((Get-CimInstance Win32_PhysicalMemory | Measure-Object Capacity -Sum).Sum / 1GB), 2)) GB`n`n"
+    $info += "[GPU]`n"
+    foreach ($g in Get-CimInstance Win32_VideoController) { $info += "Model   : $($g.Name) ($([math]::Round($g.AdapterRAM / 1GB, 0)) GB VRAM)`n" }
+    $info += "`n[DEPOLAMA]`n"
+    foreach ($pd in Get-PhysicalDisk) { $info += "Aygit   : $($pd.FriendlyName) ($([math]::Round($pd.Size/1GB,0)) GB) - $($pd.HealthStatus)`n" }
     $TxtSysInfo.Text = $info
 })
 
