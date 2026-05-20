@@ -106,15 +106,38 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                         <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.4'e Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
                         <TextBlock Name="TxtDashSub" Text="Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin." FontSize="16" Foreground="#8A8D93" TextAlignment="Center" Margin="0,0,0,30"/>
                         
-                        <Grid Width="700">
-                            <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
-                            <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Margin="0,0,5,0" Grid.Column="0"/>
-                            <Button Name="BtnWinUtil" Content="⚙️ Chris Titus WinUtil'i Baslat" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Margin="5,0,0,0" Grid.Column="1"/>
-                        </Grid>
+                        <Grid Width="750" Margin="0,10,0,0">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="1.5*"/>
+                                <ColumnDefinition Width="1*"/> </Grid.ColumnDefinitions>
 
-                        <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340" Width="700" Margin="0,15,0,0">
-                            <ScrollViewer Margin="15"><TextBlock Name="TxtSysInfo" Text="Hazir..." Foreground="#00FF66" FontFamily="Consolas"/></ScrollViewer>
-                        </Border>
+                            <Border Grid.Column="0" Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340" Margin="0,0,15,0">
+                                <Grid>
+                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                                    <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Margin="10" Grid.Row="0"/>
+                                    <ScrollViewer Grid.Row="1" Margin="15,0,15,15"><TextBlock Name="TxtSysInfo" Text="Hazir..." Foreground="#00FF66" FontFamily="Consolas"/></ScrollViewer>
+                                </Grid>
+                            </Border>
+
+                            <Border Grid.Column="1" Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340">
+                                <StackPanel Margin="20">
+                                    <TextBlock Text="📡 CANLI RADAR" Foreground="#FF3366" FontWeight="Black" FontSize="16" Margin="0,0,0,15"/>
+                                    
+                                    <TextBlock Text="CPU Kullanimi:" Foreground="#8A8D93" FontSize="12"/>
+                                    <TextBlock Name="TxtRadarCpu" Text="% 0" Foreground="White" FontWeight="Bold" FontSize="26" Margin="0,0,0,15"/>
+                                    
+                                    <TextBlock Text="Bos Bellek (RAM):" Foreground="#8A8D93" FontSize="12"/>
+                                    <TextBlock Name="TxtRadarRam" Text="0 MB" Foreground="White" FontWeight="Bold" FontSize="26" Margin="0,0,0,20"/>
+
+                                    <Border BorderBrush="#1F222B" BorderThickness="0,1,0,0" Margin="0,0,0,20"/>
+
+                                    <TextBlock Text="LOKAL SERVIS DURUMU" Foreground="#00CED1" FontWeight="Bold" FontSize="12" Margin="0,0,0,10"/>
+                                    <TextBlock Name="TxtPortSQL" Text="⚪ MSSQL (1433)" Foreground="White" FontSize="13" Margin="0,0,0,8"/>
+                                    <TextBlock Name="TxtPortWeb" Text="⚪ .NET API (5000)" Foreground="White" FontSize="13" Margin="0,0,0,8"/>
+                                    <TextBlock Name="TxtPortDocker" Text="⚪ Docker (2375)" Foreground="White" FontSize="13" Margin="0,0,0,8"/>
+                                </StackPanel>
+                            </Border>
+                        </Grid>
                     </StackPanel>
                 </Grid>
 
@@ -250,6 +273,8 @@ $TxtInfoTitle=$window.FindName("TxtInfoTitle"); $TxtInfoApps=$window.FindName("T
 $TxtInfoDebloat=$window.FindName("TxtInfoDebloat"); $TxtInfoNet=$window.FindName("TxtInfoNet"); $TxtInfoFixes=$window.FindName("TxtInfoFixes")
 
 $BtnAnalyze=$window.FindName("BtnAnalyze"); $BtnWinUtil=$window.FindName("BtnWinUtil")
+$TxtRadarCpu=$window.FindName("TxtRadarCpu"); $TxtRadarRam=$window.FindName("TxtRadarRam")
+$TxtPortSQL=$window.FindName("TxtPortSQL"); $TxtPortWeb=$window.FindName("TxtPortWeb"); $TxtPortDocker=$window.FindName("TxtPortDocker")
 $BtnInstallApps=$window.FindName("BtnInstallApps"); $BtnApplyTweaks=$window.FindName("BtnApplyTweaks")
 $BtnSpeedTest=$window.FindName("BtnSpeedTest"); $BtnDnsCloudflare=$window.FindName("BtnDnsCloudflare"); $BtnDnsGoogle=$window.FindName("BtnDnsGoogle"); $BtnDnsDefault=$window.FindName("BtnDnsDefault"); $BtnNetReset=$window.FindName("BtnNetReset")
 $BtnFixSFC=$window.FindName("BtnFixSFC"); $BtnFixWU=$window.FindName("BtnFixWU"); $BtnFixTemp=$window.FindName("BtnFixTemp")
@@ -448,5 +473,47 @@ $BtnFeatWSL.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featu
 $BtnFeatHyperV.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:Microsoft-Hyper-V-All /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] Hyper-V Kuruldu." })
 $BtnFeatSandbox.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:Containers-DisposableClientVM /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] Sandbox Kuruldu." })
 $BtnFeatNet2.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:NetFx3 /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] .NET 3.5 Kuruldu." })
+
+# ==============================================================================
+# 📡 CANLI RADAR MOTORU (Zero-Footprint Telemetry)
+# ==============================================================================
+
+# WMI yerine sistemin en hizli sayaclari olan PerformanceCounter kullaniyoruz
+$global:cpuCounter = New-Object System.Diagnostics.PerformanceCounter("Processor", "% Processor Time", "_Total")
+$global:ramCounter = New-Object System.Diagnostics.PerformanceCounter("Memory", "Available MBytes")
+$global:cpuCounter.NextValue() | Out-Null # Ilk degeri bosa okuyup onbellegi isitmak icin
+
+# Asenkron Port Dinleyici Fonksiyon
+function Check-LocalPort($port) {
+    try {
+        $tcp = New-Object System.Net.Sockets.TcpClient
+        $result = $tcp.BeginConnect("127.0.0.1", $port, $null, $null)
+        # Sadece 50 milisaniye bekle (Arayuzu kilitlememek icin ultra kisa timeout)
+        $success = $result.AsyncWaitHandle.WaitOne([TimeSpan]::FromMilliseconds(50))
+        if ($success) { $tcp.EndConnect($result); $tcp.Close(); return $true }
+        return $false
+    } catch { return $false }
+}
+
+$radarTimer = New-Object System.Windows.Threading.DispatcherTimer
+$radarTimer.Interval = [TimeSpan]::FromSeconds(2)
+$radarTimer.Add_Tick({
+    # 1. CPU ve RAM Verilerini Cek
+    $cpuVal = [math]::Round($global:cpuCounter.NextValue(), 0)
+    $ramVal = [math]::Round($global:ramCounter.NextValue(), 0)
+    
+    $TxtRadarCpu.Text = "% $cpuVal"
+    $TxtRadarRam.Text = "$ramVal MB"
+
+    # Akilli Uyari: Eger CPU %85'i gecerse yaziyi Kirmizi yap!
+    if ($cpuVal -gt 85) { $TxtRadarCpu.Foreground = "#FF3B30" } else { $TxtRadarCpu.Foreground = "White" }
+    if ($ramVal -lt 1024) { $TxtRadarRam.Foreground = "#FF3B30" } else { $TxtRadarRam.Foreground = "White" }
+
+    # 2. Kritik Portlari Dinle (Veritabani, API vb.)
+    if (Check-LocalPort 1433) { $TxtPortSQL.Text = "🟢 MSSQL (1433)" } else { $TxtPortSQL.Text = "🔴 MSSQL (1433)" }
+    if (Check-LocalPort 5000) { $TxtPortWeb.Text = "🟢 .NET API (5000)" } else { $TxtPortWeb.Text = "🔴 .NET API (5000)" }
+    if (Check-LocalPort 2375) { $TxtPortDocker.Text = "🟢 Docker (2375)" } else { $TxtPortDocker.Text = "🔴 Docker (2375)" }
+})
+$radarTimer.Start()
 
 Update-Language; $window.ShowDialog() | Out-Null
