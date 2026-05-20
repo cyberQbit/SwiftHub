@@ -138,6 +138,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                                 </StackPanel>
                             </Border>
                         </Grid>
+                        <Button Name="BtnWinUtil" Content="🔑 Windows'unu ve Microsoft Office'i Lisansla!" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Width="750" Margin="0,15,0,0"/>
                     </StackPanel>
                 </Grid>
 
