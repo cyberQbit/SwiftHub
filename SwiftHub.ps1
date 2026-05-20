@@ -236,49 +236,90 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
 
                 <Grid Name="PageRadar" Visibility="Hidden">
                     <StackPanel>
-                        <TextBlock Text="📡 DERIN DONANIM RADARI" FontSize="26" FontWeight="Black" Foreground="#FF3366" Margin="0,0,0,20"/>
+                        <TextBlock Text="📡 DERIN DONANIM RADARI (OMEGA TELEMETRY)" FontSize="26" FontWeight="Black" Foreground="#00CED1" Margin="0,0,0,15"/>
                         
                         <WrapPanel Orientation="Horizontal">
-                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="330" Height="220" Margin="0,0,15,15" Padding="15">
+                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="340" Height="230" Margin="0,0,15,15" Padding="15">
                                 <StackPanel>
-                                    <TextBlock Text="İŞLEMCİ (CPU)" Foreground="#00CED1" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
-                                    <TextBlock Name="TxtRadarCpuName" Text="Bekleniyor..." Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
+                                    <TextBlock Text="İŞLEMCİ (CPU)" Foreground="#FF3366" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                                    <TextBlock Name="TxtCpuName" Text="Okunuyor..." Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
                                     
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Kullanım:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtCpuLoad" Text="% 0" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Sıcaklık:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtCpuTemp" Text="0 °C" Foreground="#FF3B30" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Güç Tüketimi:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtCpuPower" Text="0 W" Foreground="#1E90FF" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
                                     <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="Kullanım:" Foreground="White" Grid.Column="0"/>
-                                        <TextBlock Name="TxtRadarCpuLoad" Text="% 0" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="Sıcaklık:" Foreground="White" Grid.Column="0"/>
-                                        <TextBlock Name="TxtRadarCpuTemp" Text="0 °C" Foreground="#FF3B30" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="Güç (Watt):" Foreground="White" Grid.Column="0"/>
-                                        <TextBlock Name="TxtRadarCpuPower" Text="0 W" Foreground="#1E90FF" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                        <TextBlock Text="Çekirdek Frekansı:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtCpuClock" Text="0 MHz" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
                                     </Grid>
                                 </StackPanel>
                             </Border>
 
-                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="330" Height="220" Margin="0,0,15,15" Padding="15">
+                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="340" Height="230" Margin="0,0,15,15" Padding="15">
                                 <StackPanel>
-                                    <TextBlock Text="EKRAN KARTI (GPU)" Foreground="#00CED1" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
-                                    <TextBlock Name="TxtRadarGpuName" Text="Bekleniyor..." Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
+                                    <TextBlock Text="EKRAN KARTI (GPU)" Foreground="#FF3366" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                                    <TextBlock Name="TxtGpuName" Text="Okunuyor..." Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
                                     
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Kullanım:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtGpuLoad" Text="% 0" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Sıcaklık:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtGpuTemp" Text="0 °C" Foreground="#FF3B30" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="VRAM Kullanımı:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtGpuVram" Text="0 / 0 MB" Foreground="#1E90FF" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
                                     <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="Kullanım:" Foreground="White" Grid.Column="0"/>
-                                        <TextBlock Name="TxtRadarGpuLoad" Text="% 0" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="Sıcaklık:" Foreground="White" Grid.Column="0"/>
-                                        <TextBlock Name="TxtRadarGpuTemp" Text="0 °C" Foreground="#FF3B30" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
-                                    </Grid>
-                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
-                                        <TextBlock Text="Fan Hızı (RPM):" Foreground="White" Grid.Column="0"/>
-                                        <TextBlock Name="TxtRadarGpuFan" Text="0 RPM" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                        <TextBlock Text="Fan Hızı:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtGpuFan" Text="0 RPM" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
                                     </Grid>
                                 </StackPanel>
                             </Border>
 
+                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="340" Height="230" Margin="0,0,15,15" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="BELLEK &amp; DEPOLAMA (I/O)" Foreground="#FF3366" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                                    <TextBlock Text="RAM &amp; NVMe/SSD Durumu" Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
+                                    
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="RAM Kullanımı:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtRamUsage" Text="0 / 0 GB" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Border BorderBrush="#1F222B" BorderThickness="0,1,0,0" Margin="0,5,0,10"/>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Aktif Disk:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtDiskName" Text="Okunuyor..." Foreground="#8A8D93" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Disk Okuma Hızı:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtDiskRead" Text="0 MB/s" Foreground="#1E90FF" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Disk Yazma Hızı:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtDiskWrite" Text="0 MB/s" Foreground="#FF3B30" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="340" Height="230" Margin="0,0,15,15" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="AĞ (NETWORK)" Foreground="#FF3366" FontWeight="Bold" FontSize="16" Margin="0,0,0,5"/>
+                                    <TextBlock Name="TxtNetAdapter" Text="Bağdaştırıcı Aranıyor..." Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
+                                    
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Tahmini Max Hız:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtNetMax" Text="0 Mbps" Foreground="#00CED1" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Border BorderBrush="#1F222B" BorderThickness="0,1,0,0" Margin="0,5,0,10"/>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Anlık Download:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtNetDown" Text="0 KB/s" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,0,0,8"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Anlık Upload:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtNetUp" Text="0 KB/s" Foreground="#1E90FF" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="İndirilen Veri:" Foreground="White" Grid.Column="0"/><TextBlock Name="TxtNetTotal" Text="0 GB" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
                         </WrapPanel>
                     </StackPanel>
                 </Grid>
@@ -325,8 +366,10 @@ $TxtInfoDebloat=$window.FindName("TxtInfoDebloat"); $TxtInfoNet=$window.FindName
 
 $BtnAnalyze=$window.FindName("BtnAnalyze"); $BtnWinUtil=$window.FindName("BtnWinUtil")
 $TxtRadarCpu=$window.FindName("TxtRadarCpu"); $TxtRadarRam=$window.FindName("TxtRadarRam")
-$TxtRadarCpuName=$window.FindName("TxtRadarCpuName"); $TxtRadarCpuLoad=$window.FindName("TxtRadarCpuLoad"); $TxtRadarCpuTemp=$window.FindName("TxtRadarCpuTemp"); $TxtRadarCpuPower=$window.FindName("TxtRadarCpuPower")
-$TxtRadarGpuName=$window.FindName("TxtRadarGpuName"); $TxtRadarGpuLoad=$window.FindName("TxtRadarGpuLoad"); $TxtRadarGpuTemp=$window.FindName("TxtRadarGpuTemp"); $TxtRadarGpuFan=$window.FindName("TxtRadarGpuFan")
+$TxtCpuName=$window.FindName("TxtCpuName"); $TxtCpuLoad=$window.FindName("TxtCpuLoad"); $TxtCpuTemp=$window.FindName("TxtCpuTemp"); $TxtCpuPower=$window.FindName("TxtCpuPower"); $TxtCpuClock=$window.FindName("TxtCpuClock")
+$TxtGpuName=$window.FindName("TxtGpuName"); $TxtGpuLoad=$window.FindName("TxtGpuLoad"); $TxtGpuTemp=$window.FindName("TxtGpuTemp"); $TxtGpuVram=$window.FindName("TxtGpuVram"); $TxtGpuFan=$window.FindName("TxtGpuFan")
+$TxtRamUsage=$window.FindName("TxtRamUsage"); $TxtDiskName=$window.FindName("TxtDiskName"); $TxtDiskRead=$window.FindName("TxtDiskRead"); $TxtDiskWrite=$window.FindName("TxtDiskWrite")
+$TxtNetAdapter=$window.FindName("TxtNetAdapter"); $TxtNetMax=$window.FindName("TxtNetMax"); $TxtNetDown=$window.FindName("TxtNetDown"); $TxtNetUp=$window.FindName("TxtNetUp"); $TxtNetTotal=$window.FindName("TxtNetTotal")
 $TxtPortSQL=$window.FindName("TxtPortSQL"); $TxtPortWeb=$window.FindName("TxtPortWeb"); $TxtPortDocker=$window.FindName("TxtPortDocker")
 $BtnInstallApps=$window.FindName("BtnInstallApps"); $BtnApplyTweaks=$window.FindName("BtnApplyTweaks")
 $BtnSpeedTest=$window.FindName("BtnSpeedTest"); $BtnDnsCloudflare=$window.FindName("BtnDnsCloudflare"); $BtnDnsGoogle=$window.FindName("BtnDnsGoogle"); $BtnDnsDefault=$window.FindName("BtnDnsDefault"); $BtnNetReset=$window.FindName("BtnNetReset")
@@ -558,45 +601,91 @@ try {
 
 if ($global:RadarActive) {
     $lhmTimer = New-Object System.Windows.Threading.DispatcherTimer
-    $lhmTimer.Interval = [TimeSpan]::FromSeconds(2)
+    $lhmTimer.Interval = [TimeSpan]::FromSeconds(1.5)
     $lhmTimer.Add_Tick({
-        # Eger Radar sayfasinda degilsek CPU yormamak icin guncelleme yapma
         if ($PageRadar.Visibility -ne "Visible") { return }
 
-        # Donanimlari taramaya basla
         foreach ($hardware in $global:computer.Hardware) {
-            $hardware.Update() # Anlik veriyi cek
-            
-            # ISLEMCI (CPU)
+            $hardware.Update()
+
+            # --- CPU ---
             if ($hardware.HardwareType -match "Cpu") {
-                $TxtRadarCpuName.Text = $hardware.Name
+                $TxtCpuName.Text = $hardware.Name
+                $cpuLoad = $null; $cpuTemp = $null; $cpuPwr = $null; $cpuClock = $null
                 foreach ($sensor in $hardware.Sensors) {
-                    if ($sensor.SensorType -eq "Load" -and $sensor.Name -eq "CPU Total") {
-                        $TxtRadarCpuLoad.Text = "% " + [math]::Round($sensor.Value, 1)
-                    }
-                    if ($sensor.SensorType -eq "Temperature" -and ($sensor.Name -match "Core \(Tctl/Tdie\)" -or $sensor.Name -match "Package")) { 
-                        $TxtRadarCpuTemp.Text = [math]::Round($sensor.Value, 0).ToString() + " °C"
-                    }
-                    if ($sensor.SensorType -eq "Power" -and $sensor.Name -eq "Package") {
-                        $TxtRadarCpuPower.Text = [math]::Round($sensor.Value, 1).ToString() + " W"
-                    }
+                    if ($sensor.SensorType -eq "Load" -and $sensor.Name -eq "CPU Total") { $cpuLoad = $sensor.Value }
+                    if ($sensor.SensorType -eq "Temperature" -and ($sensor.Name -match "Core \(Tctl/Tdie\)|Package")) { $cpuTemp = $sensor.Value }
+                    if ($sensor.SensorType -eq "Power" -and $sensor.Name -eq "Package") { $cpuPwr = $sensor.Value }
+                    if ($sensor.SensorType -eq "Clock" -and $sensor.Name -match "Core #1") { $cpuClock = $sensor.Value }
                 }
+                if ($cpuLoad -ne $null) { $TxtCpuLoad.Text = "% " + [math]::Round($cpuLoad, 1) }
+                if ($cpuTemp -ne $null) { $TxtCpuTemp.Text = [math]::Round($cpuTemp, 0).ToString() + " °C" }
+                if ($cpuPwr -ne $null)  { $TxtCpuPower.Text = [math]::Round($cpuPwr, 1).ToString() + " W" }
+                if ($cpuClock -ne $null){ $TxtCpuClock.Text = [math]::Round($cpuClock, 0).ToString() + " MHz" }
             }
 
-            # EKRAN KARTI (GPU)
+            # --- GPU ---
             if ($hardware.HardwareType -match "Gpu") {
-                $TxtRadarGpuName.Text = $hardware.Name
+                $TxtGpuName.Text = $hardware.Name
+                $gpuLoad = $null; $gpuTemp = $null; $gpuFan = $null; $gpuVram = $null; $gpuVramTot = $null
                 foreach ($sensor in $hardware.Sensors) {
-                    if ($sensor.SensorType -eq "Load" -and $sensor.Name -eq "GPU Core") {
-                        $TxtRadarGpuLoad.Text = "% " + [math]::Round($sensor.Value, 1)
-                    }
-                    if ($sensor.SensorType -eq "Temperature" -and $sensor.Name -eq "GPU Core") {
-                        $TxtRadarGpuTemp.Text = [math]::Round($sensor.Value, 0).ToString() + " °C"
-                    }
-                    if ($sensor.SensorType -eq "Fan" -and $sensor.Name -eq "GPU") {
-                        $TxtRadarGpuFan.Text = [math]::Round($sensor.Value, 0).ToString() + " RPM"
-                    }
+                    if ($sensor.SensorType -eq "Load" -and $sensor.Name -eq "GPU Core") { $gpuLoad = $sensor.Value }
+                    if ($sensor.SensorType -eq "Temperature" -and $sensor.Name -eq "GPU Core") { $gpuTemp = $sensor.Value }
+                    if ($sensor.SensorType -eq "Fan" -and $sensor.Name -eq "GPU") { $gpuFan = $sensor.Value }
+                    if ($sensor.SensorType -eq "SmallData" -and ($sensor.Name -match "GPU Memory Used|D3D Dedicated Memory Used")) { $gpuVram = $sensor.Value }
+                    if ($sensor.SensorType -eq "SmallData" -and ($sensor.Name -match "GPU Memory Total")) { $gpuVramTot = $sensor.Value }
                 }
+                if ($gpuLoad -ne $null) { $TxtGpuLoad.Text = "% " + [math]::Round($gpuLoad, 1) }
+                if ($gpuTemp -ne $null) { $TxtGpuTemp.Text = [math]::Round($gpuTemp, 0).ToString() + " °C" }
+                if ($gpuFan -ne $null)  { $TxtGpuFan.Text = [math]::Round($gpuFan, 0).ToString() + " RPM" }
+                
+                # Eger ekran karti (dahili) RAM'i direkt paylasiyorsa ve VRAM sensoru yoksa:
+                if ($gpuVram -ne $null) {
+                    if ($gpuVramTot -ne $null) {
+                        $TxtGpuVram.Text = ([math]::Round($gpuVram, 0).ToString() + " / " + [math]::Round($gpuVramTot, 0).ToString() + " MB")
+                    } else {
+                        $TxtGpuVram.Text = [math]::Round($gpuVram, 0).ToString() + " MB"
+                    }
+                } else { $TxtGpuVram.Text = "Paylasimli (N/A)" }
+            }
+
+            # --- RAM & STORAGE ---
+            if ($hardware.HardwareType -match "Memory") {
+                $ramUsed = $null; $ramAvail = $null
+                foreach ($sensor in $hardware.Sensors) {
+                    if ($sensor.SensorType -eq "Data" -and $sensor.Name -eq "Memory Used") { $ramUsed = $sensor.Value }
+                    if ($sensor.SensorType -eq "Data" -and $sensor.Name -eq "Memory Available") { $ramAvail = $sensor.Value }
+                }
+                if ($ramUsed -ne $null -and $ramAvail -ne $null) {
+                    $ramTotal = $ramUsed + $ramAvail
+                    $TxtRamUsage.Text = ([math]::Round($ramUsed, 1).ToString() + " / " + [math]::Round($ramTotal, 1).ToString() + " GB")
+                }
+            }
+            if ($hardware.HardwareType -match "Storage") {
+                $TxtDiskName.Text = $hardware.Name
+                $diskRead = 0; $diskWrite = 0
+                foreach ($sensor in $hardware.Sensors) {
+                    if ($sensor.SensorType -eq "Throughput" -and $sensor.Name -eq "Read Rate") { $diskRead = $sensor.Value }
+                    if ($sensor.SensorType -eq "Throughput" -and $sensor.Name -eq "Write Rate") { $diskWrite = $sensor.Value }
+                }
+                $TxtDiskRead.Text = [math]::Round(($diskRead / 1MB), 2).ToString() + " MB/s"
+                $TxtDiskWrite.Text = [math]::Round(($diskWrite / 1MB), 2).ToString() + " MB/s"
+            }
+
+            # --- NETWORK ---
+            if ($hardware.HardwareType -match "Network") {
+                $TxtNetAdapter.Text = $hardware.Name
+                $netUp = 0; $netDown = 0; $netMax = $null; $netTotal = $null
+                foreach ($sensor in $hardware.Sensors) {
+                    if ($sensor.SensorType -eq "Throughput" -and $sensor.Name -eq "Upload Speed") { $netUp = $sensor.Value }
+                    if ($sensor.SensorType -eq "Throughput" -and $sensor.Name -eq "Download Speed") { $netDown = $sensor.Value }
+                    if ($sensor.SensorType -eq "Throughput" -and $sensor.Name -eq "Bandwidth") { $netMax = $sensor.Value }
+                    if ($sensor.SensorType -eq "Data" -and $sensor.Name -eq "Data Downloaded") { $netTotal = $sensor.Value }
+                }
+                $TxtNetUp.Text = [math]::Round(($netUp / 1KB), 1).ToString() + " KB/s"
+                $TxtNetDown.Text = [math]::Round(($netDown / 1KB), 1).ToString() + " KB/s"
+                if ($netMax -ne $null) { $TxtNetMax.Text = [math]::Round(($netMax / 1MB), 0).ToString() + " Mbps" }
+                if ($netTotal -ne $null) { $TxtNetTotal.Text = [math]::Round($netTotal, 2).ToString() + " GB" }
             }
         }
     })
