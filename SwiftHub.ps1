@@ -575,13 +575,13 @@ $BtnFeatSandbox.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /f
 $BtnFeatNet2.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:NetFx3 /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] .NET 3.5 Kuruldu." })
 
 # ==============================================================================
-# 📡 OMEGA HARDWARE ENGINE (ASENKRON RUNSPACE & LHM TELEMETRY)
+# 📡 OMEGA HARDWARE ENGINE (ASENKRON RUNSPACE & LHM TELEMETRY) - V2 (HATA AYIKLAMALI)
 # ==============================================================================
 try {
     $TxtStatus.Text = "[*] LibreHardwareMonitor Asenkron Motoru Baslatiliyor..."
     $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render)
     
-    # 1. ORTAK BELLEK ALANI (Arayüz ve Arka Planin ayni anda okuyabilecegi guvenli havuz)
+    # 1. ORTAK BELLEK ALANI
     $global:RadarData = [hashtable]::Synchronized(@{
         CpuName="Donanim Aranıyor..."; CpuLoad="0"; CpuTemp="0"; CpuPower="0"; CpuClock="0"
         GpuName="Donanim Aranıyor..."; GpuLoad="0"; GpuTemp="0"; GpuVram="0 / 0 MB"; GpuFan="0"
@@ -589,101 +589,152 @@ try {
         NetDown="0"; NetUp="0"; NetTotal="0"
     })
 
-    # DLL'i GitHub uzerinden diske deymeden (Zero-Footprint) RAM'e cek
+    # DLL'i GitHub üzerinden RAM'e çek
     $lhmUrl = "https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/LibreHardwareMonitorLib.dll"
     $dllBytes = (New-Object System.Net.WebClient).DownloadData($lhmUrl)
 
-    # 2. AĞ MAX KAPSITESI OLCUMU (WMI ile sadece 1 kez okuyoruz ki UI hic donmasin)
+    # 2. AĞ MAX KAPSITESI OLCUMU 
     $activeNet = Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq 'Up' -and $_.Virtual -eq $false } | Select-Object -First 1
     if ($activeNet) {
         $TxtNetAdapter.Text = $activeNet.InterfaceDescription
         $TxtNetMax.Text = "$([math]::Round($activeNet.Speed / 1000000, 0)) Mbps"
     }
 
-    # 3. HAYALET İŞ PARÇACIĞI (BACKGROUND RUNSPACE) KURULUMU
+    # 3. HAYALET İŞ PARÇACIĞI (BACKGROUND RUNSPACE)
     $bgRunspace = [runspacefactory]::CreateRunspace()
     $bgRunspace.ApartmentState = "STA"
     $bgRunspace.Open()
-    # Ortak degiskenleri arka plan is parcacigina gonderiyoruz
     $bgRunspace.SessionStateProxy.SetVariable("RadarData", $global:RadarData)
     $bgRunspace.SessionStateProxy.SetVariable("dllBytes", $dllBytes)
 
     $bgPowerShell = [PowerShell]::Create()
     $bgPowerShell.Runspace = $bgRunspace
     [void]$bgPowerShell.AddScript({
-        [System.Reflection.Assembly]::Load($dllBytes) | Out-Null
-        $computer = New-Object LibreHardwareMonitor.Hardware.Computer
-        $computer.IsCpuEnabled = $true
-        $computer.IsGpuEnabled = $true
-        $computer.IsMemoryEnabled = $true
-        $computer.IsNetworkEnabled = $true
-        $computer.IsStorageEnabled = $true
-        $computer.Open()
-
-        # Sonsuz Arka Plan Dongusu (Sistemi asla kitlemez)
-        while ($true) {
-            try {
-                foreach ($hw in $computer.Hardware) {
-                    $hw.Update()
-                    
-                    # --- CPU ---
-                    if ($hw.HardwareType -match "Cpu") {
-                        $RadarData.CpuName = $hw.Name
-                        foreach ($sensor in $hw.Sensors) {
-                            if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "CPU Total") { $RadarData.CpuLoad = [math]::Round($sensor.Value, 1).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -match "Package|Core") { $RadarData.CpuTemp = [math]::Round($sensor.Value, 0).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Power" -and $sensor.Name -match "Package") { $RadarData.CpuPower = [math]::Round($sensor.Value, 1).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Clock" -and $sensor.Name -match "Core #1|Bus") { $RadarData.CpuClock = [math]::Round($sensor.Value, 0).ToString() }
-                        }
-                    }
-                    
-                    # --- GPU ---
-                    if ($hw.HardwareType -match "Gpu") {
-                        $RadarData.GpuName = $hw.Name
-                        $vUsed = 0; $vTot = 0
-                        foreach ($sensor in $hw.Sensors) {
-                            if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "GPU Core") { $RadarData.GpuLoad = [math]::Round($sensor.Value, 1).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -eq "GPU Core") { $RadarData.GpuTemp = [math]::Round($sensor.Value, 0).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Fan" -and $sensor.Name -eq "GPU") { $RadarData.GpuFan = [math]::Round($sensor.Value, 0).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -match "GPU Memory Used|D3D Dedicated Memory Used") { $vUsed = [math]::Round($sensor.Value, 0) }
-                            if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -match "GPU Memory Total") { $vTot = [math]::Round($sensor.Value, 0) }
-                        }
-                        if ($vTot -gt 0) { $RadarData.GpuVram = "$vUsed / $vTot MB" }
-                    }
-
-                    # --- RAM ---
-                    if ($hw.HardwareType -match "Memory") {
-                        $rUsed = 0; $rAvail = 0
-                        foreach ($sensor in $hw.Sensors) {
-                            if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Used") { $rUsed = $sensor.Value }
-                            if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Available") { $rAvail = $sensor.Value }
-                        }
-                        $RadarData.RamUsage = "$([math]::Round($rUsed, 1)) / $([math]::Round($rUsed+$rAvail, 1)) GB"
-                    }
-
-                    # --- DEPOLAMA (DISK I/O) ---
-                    if ($hw.HardwareType -match "Storage") {
-                        $RadarData.DiskName = $hw.Name
-                        foreach ($sensor in $hw.Sensors) {
-                            if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Read Rate") { $RadarData.DiskRead = [math]::Round($sensor.Value / 1048576, 2).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Write Rate") { $RadarData.DiskWrite = [math]::Round($sensor.Value / 1048576, 2).ToString() }
-                        }
-                    }
-
-                    # --- AĞ (NETWORK) ---
-                    if ($hw.HardwareType -match "Network") {
-                        foreach ($sensor in $hw.Sensors) {
-                            if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Download Speed") { $RadarData.NetDown = [math]::Round($sensor.Value / 1048576, 2).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Upload Speed") { $RadarData.NetUp = [math]::Round($sensor.Value / 1048576, 2).ToString() }
-                            if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Data Downloaded") { $RadarData.NetTotal = [math]::Round($sensor.Value, 2).ToString() }
-                        }
-                    }
-                }
-            } catch {} # Herhangi bir donanim aniden cikartilirsa (USB disk vb.) cokus olmasin
+        try {
+            # ÇÖZÜM 1: WMI modülünü zorla yükle (LHM için kritik)
+            Add-Type -AssemblyName System.Management
+            [System.Reflection.Assembly]::Load($dllBytes) | Out-Null
             
-            Start-Sleep -Milliseconds 1000 # Sistemi yormamak icin arkaplanda 1 saniye bekle
+            $computer = New-Object LibreHardwareMonitor.Hardware.Computer
+            $computer.IsCpuEnabled = $true
+            $computer.IsGpuEnabled = $true
+            $computer.IsMemoryEnabled = $true
+            $computer.IsNetworkEnabled = $true
+            $computer.IsStorageEnabled = $true
+            $computer.Open()
+
+            # Eger sürücü engellendiyse donanim sayisi 0 doner
+            if ($computer.Hardware.Count -eq 0) {
+                $RadarData.CpuName = "[!] HATA: Donanim bulunamadi. Windows Core Isolation (Çekirdek Yalıtımı) LHM'yi engelliyor olabilir."
+            }
+
+            while ($true) {
+                try {
+                    foreach ($hw in $computer.Hardware) {
+                        $hw.Update()
+                        
+                        # --- CPU ---
+                        if ($hw.HardwareType -match "Cpu") {
+                            $RadarData.CpuName = $hw.Name
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "CPU Total") { $RadarData.CpuLoad = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -match "Package|Core") { $RadarData.CpuTemp = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Power" -and $sensor.Name -match "Package") { $RadarData.CpuPower = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Clock" -and $sensor.Name -match "Core #1|Bus") { $RadarData.CpuClock = [math]::Round($sensor.Value, 0).ToString() }
+                            }
+                        }
+                        
+                        # --- GPU ---
+                        if ($hw.HardwareType -match "Gpu") {
+                            $RadarData.GpuName = $hw.Name
+                            $vUsed = 0; $vTot = 0
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "GPU Core") { $RadarData.GpuLoad = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -eq "GPU Core") { $RadarData.GpuTemp = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Fan" -and $sensor.Name -eq "GPU") { $RadarData.GpuFan = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and ($sensor.Name -match "GPU Memory Used|D3D Dedicated Memory Used")) { $vUsed = [math]::Round($sensor.Value, 0) }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and ($sensor.Name -match "GPU Memory Total")) { $vTot = [math]::Round($sensor.Value, 0) }
+                            }
+                            if ($vTot -gt 0) { $RadarData.GpuVram = "$vUsed / $vTot MB" }
+                        }
+
+                        # --- RAM ---
+                        if ($hw.HardwareType -match "Memory") {
+                            $rUsed = 0; $rAvail = 0
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Used") { $rUsed = $sensor.Value }
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Available") { $rAvail = $sensor.Value }
+                            }
+                            $RadarData.RamUsage = "$([math]::Round($rUsed, 1)) / $([math]::Round($rUsed+$rAvail, 1)) GB"
+                        }
+
+                        # --- DISK I/O ---
+                        if ($hw.HardwareType -match "Storage") {
+                            $RadarData.DiskName = $hw.Name
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Read Rate") { $RadarData.DiskRead = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Write Rate") { $RadarData.DiskWrite = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                            }
+                        }
+
+                        # --- NETWORK ---
+                        if ($hw.HardwareType -match "Network") {
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Download Speed") { $RadarData.NetDown = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Upload Speed") { $RadarData.NetUp = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Data Downloaded") { $RadarData.NetTotal = [math]::Round($sensor.Value, 2).ToString() }
+                            }
+                        }
+                    }
+                } catch {
+                    $RadarData.CpuName = "Dongu İçi Hata: $($_.Exception.Message)"
+                }
+                Start-Sleep -Milliseconds 1000
+            }
+        } catch {
+            # MOTOR ÇÖKERSE UI'A MESAJ YOLLA
+            $RadarData.CpuName = "MOTOR ÇÖKTÜ: $($_.Exception.Message)"
+            if ($_.Exception.InnerException) { $RadarData.GpuName = "DETAY: $($_.Exception.InnerException.Message)" }
         }
     })
+    
+    $global:bgHandle = $bgPowerShell.BeginInvoke()
+
+    # 4. WPF ARAYÜZ GÜNCELLEYİCİSİ 
+    $radarTimer = New-Object System.Windows.Threading.DispatcherTimer
+    $radarTimer.Interval = [TimeSpan]::FromMilliseconds(1000)
+    $radarTimer.Add_Tick({
+        if ($PageRadar.Visibility -ne "Visible") { return }
+
+        $TxtCpuName.Text = $global:RadarData.CpuName
+        $TxtCpuLoad.Text = "% " + $global:RadarData.CpuLoad
+        $TxtCpuTemp.Text = $global:RadarData.CpuTemp + " °C"
+        $TxtCpuPower.Text = $global:RadarData.CpuPower + " W"
+        $TxtCpuClock.Text = $global:RadarData.CpuClock + " MHz"
+
+        $TxtGpuName.Text = $global:RadarData.GpuName
+        $TxtGpuLoad.Text = "% " + $global:RadarData.GpuLoad
+        $TxtGpuTemp.Text = $global:RadarData.GpuTemp + " °C"
+        $TxtGpuFan.Text = $global:RadarData.GpuFan + " RPM"
+        $TxtGpuVram.Text = $global:RadarData.GpuVram
+
+        $TxtRamUsage.Text = $global:RadarData.RamUsage
+        
+        $TxtDiskName.Text = $global:RadarData.DiskName
+        $TxtDiskRead.Text = $global:RadarData.DiskRead + " MB/s"
+        $TxtDiskWrite.Text = $global:RadarData.DiskWrite + " MB/s"
+
+        $TxtNetDown.Text = $global:RadarData.NetDown + " MB/s"
+        $TxtNetUp.Text = $global:RadarData.NetUp + " MB/s"
+        $TxtNetTotal.Text = $global:RadarData.NetTotal + " GB"
+    })
+    $radarTimer.Start()
+
+    $TxtStatus.Text = "[+] Omega Telemetry: Asenkron Kokpit Modu Aktif!"
+
+} catch {
+    $TxtStatus.Text = "[X] RADAR HATASI: $($_.Exception.Message)"
+}
     
     # Asenkron gorevi sisteme saliyoruz!
     $global:bgHandle = $bgPowerShell.BeginInvoke()
