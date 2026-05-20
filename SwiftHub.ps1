@@ -1,168 +1,165 @@
-# ==============================================================================
-# 🌌 SWIFTHUB CORE v8.4 - OMEGA EDITION (FULL ITEM LOCALIZATION ENGINE)
-# ==============================================================================
-$ErrorActionPreference = 'SilentlyContinue'
-[Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
-[Console]::OutputEncoding = [System.Text.Encoding]::UTF8
-[Console]::InputEncoding = [System.Text.Encoding]::UTF8
+# ============================================================================
+# 📡 OMEGA HARDWARE ENGINE (V4 - CONCURRENT DICTIONARY & TRACER)
+# ============================================================================
+try {
+    $TxtStatus.Text = "[*] Omega Motoru: C# Multi-Thread Köprüsü Kuruluyor..."
+    $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render)
+    
+    # 1. KIRILMAZ ORTAK BELLEK (C# ConcurrentDictionary - Runspace ve UI ayni anda okuyabilir)
+    $global:RadarData = New-Object System.Collections.Concurrent.ConcurrentDictionary[string, string]
+    $keys = @("CpuName", "CpuLoad", "CpuTemp", "CpuPower", "CpuClock", "GpuName", "GpuLoad", "GpuTemp", "GpuVram", "GpuFan", "RamUsage", "DiskName", "DiskRead", "DiskWrite", "NetDown", "NetUp", "NetTotal")
+    foreach ($k in $keys) { $global:RadarData[$k] = "Okunuyor..." }
+    $global:RadarData["CpuName"] = "Adım 1: Motor Başlatılıyor..."
 
-# --- 1. DIL MOTORU (BILINGUAL DICTIONARY - EVRENSEL KARAKTERLER) ---
-$global:CurrentLang = "TR"
-$global:i18n = @{
-    "TR" = @{
-        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.4";
-        "MenuDash" = "🏠 Kontrol Paneli"; "MenuApps" = "📦 Uygulamalar"; "MenuTweaks" = "🛠️ Ince Ayarlar";
-        "MenuFeatures" = "⚙️ Windows Ozellikleri"; "MenuNet" = "🌐 Ag ve Guvenlik"; "MenuFixes" = "⛑️ Sistem Onarimi";
-        "MenuInfo" = "ℹ️ SwiftHub Rehberi"; "BtnLang" = "🌐 EN"; "StatusWait" = "Omega Core hazir. Emrinizi bekliyor...";
-        "DashWelcome" = "SwiftHub OMEGA'ya Hos Geldiniz!"; "DashSub" = "Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin.";
-        "BtnInstall" = "Secili Uygulamalari Kur"; "BtnApply" = "Secili Ayarlari Enjekte Et";
-        "BtnExport" = "💾 Profili Kaydet"; "BtnImport" = "📂 Profil Yukle";
-        "BtnDebloat" = "☢️ Nukleer Debloat"; "BtnRestore" = "🛡️ Geri Yukleme Noktasi";
-        "BtnUpdateAll" = "🔄 Tum Programlari Guncelle"; "BtnDeepClean" = "☢️ Nukleer Disk Temizligi";
-        "BtnWinUtil" = "🔑 Windows'unu ve Microsoft Office'i Lisansla!";
-        "BtnAddContext" = "🖱️ Sag Tika SwiftHub Ekle"; "BtnRemContext" = "Kaldir";
-        "TitleNet" = "🌐 AG VE SIBER GUVENLIK"; "TitleFix" = "⛑️ SISTEM ONARIMI & YEDEKLEME"; "TitleFeat" = "⚙️ WINDOWS OZELLIKLERI";
-        
-        "InfoTitle" = "📖 SWIFTHUB KULLANIM REHBERI";
-        "InfoApps" = "📦 UYGULAMALAR: Saniyeler icinde program kurar. 'Tumunu Guncelle' butonu bilgisayarindaki tum eski programlari tek tikla en son surume gunceller.";
-        "InfoTweaks" = "🛠️ INCE AYARLAR: Derin Registry ayarlaridir. 'Sag Tik' butonlari ile SwiftHub'i masaustunde farenin sag tusuna kalici olarak ekleyebilirsiniz.";
-        "InfoDebloat" = "☢️ NUKLEER TEMIZLIK: Debloat butonu silinmeyen Windows coplerini; Disk Temizligi butonu ise Event loglari, prefetch ve update kalintilarini yok eder.";
-        "InfoNet" = "🌐 AG VE GUVENLIK: DNS degistirerek yasakli sitelere girebilir, pinginizi dusurebilirsiniz. Ookla ile baglantinizi test edebilirsiniz.";
-        "InfoFixes" = "⛑️ SISTEM ONARIMI: Mavi ekran sorunlarinda 'SFC & DISM' onarimi yapar. Ayrica anlik yedek alabilir ve OEM Lisansinizi 'God Mode' uzerinden bulabilirsiniz."
-    };
-    "EN" = @{
-        "AppTitle" = "SWIFTHUB"; "AppSub" = "OMEGA CORE v8.4";
-        "MenuDash" = "🏠 Dashboard"; "MenuApps" = "📦 Applications"; "MenuTweaks" = "🛠️ System Tweaks";
-        "MenuFeatures" = "⚙️ Windows Features"; "MenuNet" = "🌐 Network & Security"; "MenuFixes" = "⛑️ System Repair";
-        "MenuInfo" = "ℹ️ SwiftHub Guide"; "BtnLang" = "🌐 TR"; "StatusWait" = "Omega Core ready. Awaiting your command...";
-        "DashWelcome" = "Welcome to SwiftHub OMEGA!"; "DashSub" = "Legendary speed, nuclear power, zero footprint. Start from the sidebar.";
-        "BtnInstall" = "Install Selected Apps"; "BtnApply" = "Apply Selected Tweaks";
-        "BtnExport" = "💾 Export Profile"; "BtnImport" = "📂 Import Profile";
-        "BtnDebloat" = "☢️ Nuclear Debloat"; "BtnRestore" = "🛡️ Create Restore Point";
-        "BtnUpdateAll" = "🔄 Update All Programs"; "BtnDeepClean" = "☢️ Nuclear Disk Clean";
-        "BtnWinUtil" = "🔑 License your Windows and Microsoft Office!";
-        "BtnAddContext" = "🖱️ Add SwiftHub to Context Menu"; "BtnRemContext" = "Remove";
-        "TitleNet" = "🌐 NETWORK & SECURITY"; "TitleFix" = "⛑️ SYSTEM REPAIR & BACKUP"; "TitleFeat" = "⚙️ WINDOWS FEATURES";
-        
-        "InfoTitle" = "📖 SWIFTHUB USER GUIDE";
-        "InfoApps" = "📦 APPLICATIONS: Installs programs silently. The 'Update All' button upgrades all outdated software on your PC to the latest version.";
-        "InfoTweaks" = "🛠️ TWEAKS: Deep Registry settings. Use the 'Context Menu' buttons to add SwiftHub permanently to your desktop right-click menu.";
-        "InfoDebloat" = "☢️ NUCLEAR CLEANUP: Debloat removes undeletable Windows apps; Disk Clean obliterates event logs, prefetch, and update leftovers.";
-        "InfoNet" = "🌐 NETWORK & SECURITY: Change DNS to bypass restrictions and lower ping. Test your connection with the built-in Ookla engine.";
-        "InfoFixes" = "⛑️ SYSTEM REPAIR: Fixes blue screens with SFC & DISM. You can also take backups and find your OEM License Key via 'God Mode'."
+    # 2. ÖLÜMSÜZ DİZİN VE GÜVENLİK
+    $engineDir = "$env:PROGRAMDATA\cyberQbit\Engine"
+    if (!(Test-Path $engineDir)) { New-Item -ItemType Directory -Force -Path $engineDir | Out-Null }
+    $dllPath = "$engineDir\LibreHardwareMonitorLib.dll"
+
+    if (!(Test-Path $dllPath)) {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        $lhmUrl = "https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/LibreHardwareMonitorLib.dll"
+        (New-Object System.Net.WebClient).DownloadFile($lhmUrl, $dllPath)
     }
-}
+    Unblock-File -Path $dllPath -ErrorAction SilentlyContinue
 
-Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName PresentationCore; Add-Type -AssemblyName WindowsBase
+    # 3. AĞ MAX KAPASİTESİ
+    $activeNet = Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq 'Up' -and $_.Virtual -eq $false } | Select-Object -First 1
+    if ($activeNet) {
+        $TxtNetAdapter.Text = $activeNet.InterfaceDescription
+        $TxtNetMax.Text = "$([math]::Round($activeNet.Speed / 1000000, 0)) Mbps"
+    }
 
-# --- 2. XAML TASARIMI ---
-[xml]$xaml = @"
-<Window xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation" xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml" Title="SwiftHub Omega" Height="800" Width="1250" Background="#0B0C10" Foreground="White" WindowStartupLocation="CenterScreen" FontFamily="Segoe UI" WindowStyle="None" AllowsTransparency="True" ResizeMode="NoResize">
-    <Window.Resources>
-        <Style TargetType="ScrollBar"><Setter Property="Background" Value="#0B0C10"/><Setter Property="Width" Value="10"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="ScrollBar"><Grid Background="{TemplateBinding Background}"><Track Name="PART_Track" IsDirectionReversed="true"><Track.Thumb><Thumb Background="#1F222B" BorderThickness="0"><Thumb.Template><ControlTemplate TargetType="Thumb"><Border Background="{TemplateBinding Background}" CornerRadius="4" Margin="2"/></ControlTemplate></Thumb.Template></Thumb></Track.Thumb></Track></Grid></ControlTemplate></Setter.Value></Setter></Style>
-        <Style TargetType="Button" x:Key="SidebarBtn"><Setter Property="Background" Value="Transparent"/><Setter Property="Foreground" Value="#8A8D93"/><Setter Property="FontSize" Value="15"/><Setter Property="FontWeight" Value="SemiBold"/><Setter Property="HorizontalContentAlignment" Value="Left"/><Setter Property="Padding" Value="20,0,0,0"/><Setter Property="Height" Value="50"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border Name="border" Background="{TemplateBinding Background}" CornerRadius="8"><ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}" VerticalAlignment="Center" Margin="{TemplateBinding Padding}"/></Border><ControlTemplate.Triggers><Trigger Property="IsMouseOver" Value="True"><Setter TargetName="border" Property="Background" Value="#1F222B"/><Setter Property="Foreground" Value="White"/></Trigger></ControlTemplate.Triggers></ControlTemplate></Setter.Value></Setter></Style>
-        <Style TargetType="Button" x:Key="ActionBtn"><Setter Property="Background" Value="#1F222B"/><Setter Property="Foreground" Value="White"/><Setter Property="Height" Value="45"/><Setter Property="BorderThickness" Value="0"/><Setter Property="Cursor" Value="Hand"/><Setter Property="Margin" Value="5"/><Setter Property="FontWeight" Value="Bold"/><Setter Property="Template"><Setter.Value><ControlTemplate TargetType="Button"><Border Background="{TemplateBinding Background}" CornerRadius="6"><ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/></Border></ControlTemplate></Setter.Value></Setter></Style>
-        <Style TargetType="CheckBox"><Setter Property="Foreground" Value="White"/><Setter Property="FontSize" Value="13"/><Setter Property="Margin" Value="0,5,15,5"/><Setter Property="Width" Value="220"/></Style>
-    </Window.Resources>
+    # 4. HAYALET İŞ PARÇACIĞI (BACKGROUND RUNSPACE)
+    $bgRunspace = [runspacefactory]::CreateRunspace()
+    $bgRunspace.ApartmentState = "STA"
+    $bgRunspace.Open()
 
-    <Border BorderBrush="#00CED1" BorderThickness="1" CornerRadius="10" Background="#0B0C10">
-        <Grid>
-            <Grid.ColumnDefinitions><ColumnDefinition Width="260"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+    $bgScript = {
+        param($Data, $dllPath) # Veriyi direkt parametre olarak içeri zorluyoruz
+        try {
+            $Data["CpuName"] = "Adım 2: Kütüphaneler Yükleniyor..."
+            Add-Type -AssemblyName System.Management
+            [System.Reflection.Assembly]::LoadFrom($dllPath) | Out-Null
+
+            $Data["CpuName"] = "Adım 3: Sensör Motoru (LHM) Kuruluyor..."
+            $computer = New-Object LibreHardwareMonitor.Hardware.Computer
+            $computer.IsCpuEnabled = $true
+            $computer.IsGpuEnabled = $true
+            $computer.IsMemoryEnabled = $true
+            $computer.IsNetworkEnabled = $true
+            $computer.IsStorageEnabled = $true
             
-            <Border Grid.Column="0" Background="#13151A" CornerRadius="10,0,0,10">
-                <Grid>
-                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                    
-                    <StackPanel Grid.Row="0" Margin="20,30,20,20">
-                        <TextBlock Name="TxtTitle" Text="SWIFTHUB" FontSize="28" FontWeight="Black" Foreground="#00CED1"/>
-                        <TextBlock Name="TxtSub" Text="OMEGA CORE v8.4" FontSize="12" FontWeight="Bold" Foreground="#666"/>
-                    </StackPanel>
-                    
-                    <StackPanel Grid.Row="1" Margin="10,0">
-                        <Button Name="NavDash" Content="🏠 Kontrol Paneli" Style="{StaticResource SidebarBtn}" Foreground="White" Background="#1F222B"/>
-                        <Button Name="NavApps" Content="📦 Uygulamalar" Style="{StaticResource SidebarBtn}"/>
-                        <Button Name="NavTweaks" Content="🛠️ Ince Ayarlar" Style="{StaticResource SidebarBtn}"/>
-                        <Button Name="NavFeatures" Content="⚙️ Windows Ozellikleri" Style="{StaticResource SidebarBtn}"/>
-                        <Button Name="NavNet" Content="🌐 Ag ve Guvenlik" Style="{StaticResource SidebarBtn}"/>
-                        <Button Name="NavFixes" Content="⛑️ Sistem Onarimi" Style="{StaticResource SidebarBtn}"/>
-                        <Button Name="NavRadar" Content="📡 Derin Radar" Style="{StaticResource SidebarBtn}"/>
-                    </StackPanel>
-                    <StackPanel Grid.Row="2" Margin="10,10,10,0">
-                        <Border BorderBrush="#1F222B" BorderThickness="0,1,0,0" Margin="10,0,10,10"/>
-                        <Button Name="NavInfo" Content="ℹ️ SwiftHub Rehberi" Style="{StaticResource SidebarBtn}" Foreground="#00CED1"/>
-                    </StackPanel>
-                    <Grid Grid.Row="3" Margin="15,20,15,20">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="*"/><ColumnDefinition Width="Auto"/></Grid.ColumnDefinitions>
-                        <Button Name="BtnExit" Content="Kapat (Exit)" Background="#FF3B30" Foreground="White" FontWeight="Bold" Height="40" BorderThickness="0" Cursor="Hand" Grid.Column="0" Margin="0,0,10,0"><Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style></Button.Resources></Button>
-                        <Button Name="BtnLangToggle" Content="🌐 EN" Background="#1F222B" Foreground="White" FontWeight="Bold" Height="40" Width="60" BorderThickness="0" Cursor="Hand" Grid.Column="1"><Button.Resources><Style TargetType="Border"><Setter Property="CornerRadius" Value="6"/></Style></Button.Resources></Button>
-                    </Grid>
-                </Grid>
-            </Border>
+            $Data["CpuName"] = "Adım 4: Donanımlara Bağlanılıyor (LHM.Open)..."
+            $computer.Open()
 
-            <Grid Grid.Column="1" Margin="30">
-                <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+            if ($computer.Hardware.Count -eq 0) {
+                $Data["CpuName"] = "HATA: Anti-Virüs/Core Isolation Engelledi!"
+                return
+            }
 
-                <Grid Name="PageDash" Visibility="Visible">
-                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
-                        <TextBlock Name="TxtDashWelcome" Text="SwiftHub v8.4'e Hos Geldiniz!" FontSize="40" FontWeight="Black" Foreground="White" TextAlignment="Center" Margin="0,0,0,10"/>
-                        <TextBlock Name="TxtDashSub" Text="Efsanevi hiz, nukleer guc ve sifir iz. Sol menuden operasyona baslayin." FontSize="16" Foreground="#8A8D93" TextAlignment="Center" Margin="0,0,0,30"/>
+            $Data["CpuName"] = "Adım 5: Bağlantı Başarılı. Veriler Çekiliyor..."
+            
+            while ($true) {
+                try {
+                    foreach ($hw in $computer.Hardware) {
+                        $hw.Update()
                         
-                        <Grid Width="750" Margin="0,10,0,0">
-                            <Grid.ColumnDefinitions>
-                                <ColumnDefinition Width="1.5*"/>
-                                <ColumnDefinition Width="1*"/> </Grid.ColumnDefinitions>
+                        if ($hw.HardwareType -match "Cpu") {
+                            $Data["CpuName"] = $hw.Name
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "CPU Total") { $Data["CpuLoad"] = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -match "Package|Core") { $Data["CpuTemp"] = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Power" -and $sensor.Name -match "Package") { $Data["CpuPower"] = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Clock" -and $sensor.Name -match "Core #1|Bus") { $Data["CpuClock"] = [math]::Round($sensor.Value, 0).ToString() }
+                            }
+                        }
+                        
+                        if ($hw.HardwareType -match "Gpu") {
+                            $Data["GpuName"] = $hw.Name
+                            $vUsed = 0; $vTot = 0
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "GPU Core") { $Data["GpuLoad"] = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -eq "GPU Core") { $Data["GpuTemp"] = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Fan" -and $sensor.Name -eq "GPU") { $Data["GpuFan"] = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -eq "GPU Memory Used") { $vUsed = [math]::Round($sensor.Value, 0) }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -eq "GPU Memory Total") { $vTot = [math]::Round($sensor.Value, 0) }
+                            }
+                            if ($vTot -gt 0) { $Data["GpuVram"] = "$vUsed / $vTot MB" }
+                        }
 
-                            <Border Grid.Column="0" Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340" Margin="0,0,15,0">
-                                <Grid>
-                                    <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                                    <Button Name="BtnAnalyze" Content="Sistemi Analiz Et (God Mode)" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Margin="10" Grid.Row="0"/>
-                                    <ScrollViewer Grid.Row="1" Margin="15,0,15,15"><TextBlock Name="TxtSysInfo" Text="Hazir..." Foreground="#00FF66" FontFamily="Consolas"/></ScrollViewer>
-                                </Grid>
-                            </Border>
+                        if ($hw.HardwareType -match "Memory") {
+                            $rUsed = 0; $rAvail = 0
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Used") { $rUsed = $sensor.Value }
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Available") { $rAvail = $sensor.Value }
+                            }
+                            $Data["RamUsage"] = "$([math]::Round($rUsed, 1)) / $([math]::Round($rUsed+$rAvail, 1)) GB"
+                        }
 
-                            <Border Grid.Column="1" Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="6" Height="340">
-                                <StackPanel Margin="20">
-                                    <TextBlock Text="📡 CANLI RADAR" Foreground="#FF3366" FontWeight="Black" FontSize="16" Margin="0,0,0,15"/>
-                                    
-                                    <TextBlock Text="CPU Kullanimi:" Foreground="#8A8D93" FontSize="12"/>
-                                    <TextBlock Name="TxtRadarCpu" Text="% 0" Foreground="White" FontWeight="Bold" FontSize="26" Margin="0,0,0,15"/>
-                                    
-                                    <TextBlock Text="Bos Bellek (RAM):" Foreground="#8A8D93" FontSize="12"/>
-                                    <TextBlock Name="TxtRadarRam" Text="0 MB" Foreground="White" FontWeight="Bold" FontSize="26" Margin="0,0,0,20"/>
+                        if ($hw.HardwareType -match "Storage") {
+                            $Data["DiskName"] = $hw.Name
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Read Rate") { $Data["DiskRead"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Write Rate") { $Data["DiskWrite"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                            }
+                        }
 
-                                    <Border BorderBrush="#1F222B" BorderThickness="0,1,0,0" Margin="0,0,0,20"/>
+                        if ($hw.HardwareType -match "Network") {
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Download Speed") { $Data["NetDown"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Upload Speed") { $Data["NetUp"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Data Downloaded") { $Data["NetTotal"] = [math]::Round($sensor.Value, 2).ToString() }
+                            }
+                        }
+                    }
+                } catch { }
+                Start-Sleep -Milliseconds 1000
+            }
+        } catch {
+            $Data["CpuName"] = "MOTOR ÇÖKTÜ: $($_.Exception.Message)"
+        }
+    }
+    
+    $bgPowerShell = [powershell]::Create().AddScript($bgScript).AddArgument($global:RadarData).AddArgument($dllPath)
+    $bgPowerShell.Runspace = $bgRunspace
+    $global:bgHandle = $bgPowerShell.BeginInvoke()
 
-                                    <TextBlock Text="LOKAL SERVIS DURUMU" Foreground="#00CED1" FontWeight="Bold" FontSize="12" Margin="0,0,0,10"/>
-                                    <TextBlock Name="TxtPortSQL" Text="⚪ MSSQL (1433)" Foreground="White" FontSize="13" Margin="0,0,0,8"/>
-                                    <TextBlock Name="TxtPortWeb" Text="⚪ .NET API (5000)" Foreground="White" FontSize="13" Margin="0,0,0,8"/>
-                                    <TextBlock Name="TxtPortDocker" Text="⚪ Docker (2375)" Foreground="White" FontSize="13" Margin="0,0,0,8"/>
-                                </StackPanel>
-                            </Border>
-                        </Grid>
-                        <Button Name="BtnWinUtil" Content="🔑 Windows'unu ve Microsoft Office'i Lisansla!" Style="{StaticResource ActionBtn}" Background="#1E90FF" Foreground="White" Width="750" Margin="0,15,0,0"/>
-                    </StackPanel>
-                </Grid>
+    # 5. WPF ARAYÜZ GÜNCELLEYİCİSİ (Sözlükten okur)
+    $radarTimer = New-Object System.Windows.Threading.DispatcherTimer
+    $radarTimer.Interval = [TimeSpan]::FromMilliseconds(1000)
+    $radarTimer.Add_Tick({
+        if ($PageRadar.Visibility -ne "Visible") { return }
 
-                <Grid Name="PageApps" Visibility="Hidden">
-                    <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                    <Border Grid.Row="0" Background="#13151A" CornerRadius="8" Padding="20">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Name="PanelAppsContainer"/></ScrollViewer>
-                    </Border>
-                    <Grid Grid.Row="1" Margin="0,15,0,0">
-                        <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.5*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="1.5*"/></Grid.ColumnDefinitions>
-                        <Button Name="BtnInstallApps" Content="Secili Uygulamalari Kur" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Grid.Column="0"/>
-                        <Button Name="BtnUpdateAll" Content="🔄 Tumunu Guncelle" Style="{StaticResource ActionBtn}" Background="#1E90FF" Grid.Column="1"/>
-                        <Button Name="BtnAppExport" Content="💾 Profili Kaydet" Style="{StaticResource ActionBtn}" Grid.Column="2"/>
-                        <Button Name="BtnAppImport" Content="📂 Profil Yukle" Style="{StaticResource ActionBtn}" Grid.Column="3"/>
-                        <Button Name="BtnDebloat" Content="☢️ Nukleer Debloat" Style="{StaticResource ActionBtn}" Background="#FF3B30" Grid.Column="4"/>
-                    </Grid>
-                </Grid>
+        $TxtCpuName.Text = $global:RadarData["CpuName"]
+        $TxtCpuLoad.Text = "% " + $global:RadarData["CpuLoad"]
+        $TxtCpuTemp.Text = $global:RadarData["CpuTemp"] + " °C"
+        $TxtCpuPower.Text = $global:RadarData["CpuPower"] + " W"
+        $TxtCpuClock.Text = $global:RadarData["CpuClock"] + " MHz"
 
-                <Grid Name="PageTweaks" Visibility="Hidden">
-                    <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                    <Border Grid.Row="0" Background="#13151A" CornerRadius="8" Padding="20">
-                        <ScrollViewer VerticalScrollBarVisibility="Auto"><StackPanel Name="PanelTweaksContainer"/></ScrollViewer>
-                    </Border>
+        $TxtGpuName.Text = $global:RadarData["GpuName"]
+        $TxtGpuLoad.Text = "% " + $global:RadarData["GpuLoad"]
+        $TxtGpuTemp.Text = $global:RadarData["GpuTemp"] + " °C"
+        $TxtGpuFan.Text = $global:RadarData["GpuFan"] + " RPM"
+        $TxtGpuVram.Text = $global:RadarData["GpuVram"]
+
+        $TxtRamUsage.Text = $global:RadarData["RamUsage"]
+        
+        $TxtDiskName.Text = $global:RadarData["DiskName"]
+        $TxtDiskRead.Text = $global:RadarData["DiskRead"] + " MB/s"
+        $TxtDiskWrite.Text = $global:RadarData["DiskWrite"] + " MB/s"
+
+        $TxtNetDown.Text = $global:RadarData["NetDown"] + " MB/s"
+        $TxtNetUp.Text = $global:RadarData["NetUp"] + " MB/s"
+        $TxtNetTotal.Text = $global:RadarData["NetTotal"] + " GB"
+    })
+    $radarTimer.Start()
+
+    $TxtStatus.Text = "[+] Omega Telemetry: Kusursuz Kokpit Modu Aktif!"
+
+} catch {
+    $TxtStatus.Text = "[X] RADAR HATASI: $($_.Exception.Message)"
+}
                     <Grid Grid.Row="1" Margin="0,15,0,0">
                         <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="*"/><ColumnDefinition Width="1.5*"/></Grid.ColumnDefinitions>
                         <Button Name="BtnApplyTweaks" Content="Secili Ayarlari Enjekte Et" Style="{StaticResource ActionBtn}" Background="#00CED1" Foreground="#0B0C10" Grid.Column="0"/>
@@ -383,171 +380,168 @@ $BtnAddContext=$window.FindName("BtnAddContext"); $BtnRemContext=$window.FindNam
 
 $global:AppHeaders=@(); $global:AppItems=@(); $global:TweakHeaders=@(); $global:TweakItems=@()
 
-# ==============================================================================
-# 🚀 3. DINAMIK JSON MOTORU (GELISMIS YERELLESTIRME: NameTR / NameEN)
-# ==============================================================================
+# ============================================================================
+# 📡 OMEGA HARDWARE ENGINE (V4 - CONCURRENT DICTIONARY & TRACER)
+# ============================================================================
 try {
-    $wcApps = New-Object System.Net.WebClient
-    $wcApps.Encoding = [System.Text.Encoding]::UTF8
-    $jsonResponseApps = $wcApps.DownloadString("https://raw.githubusercontent.com/cyberQbit/DevSwift/main/apps.json?t=$((Get-Date).Ticks)") | ConvertFrom-Json
-    foreach ($cat in $jsonResponseApps.psobject.properties.name) {
-        $header = New-Object System.Windows.Controls.TextBlock; $header.Foreground = "#00CED1"; $header.FontSize = 17; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
-        $global:AppHeaders += [PSCustomObject]@{ UI=$header; TR=$jsonResponseApps."$cat".TR; EN=$jsonResponseApps."$cat".EN }; $window.FindName("PanelAppsContainer").Children.Add($header) | Out-Null
-        $wp = New-Object System.Windows.Controls.WrapPanel; $wp.Margin = "0,0,0,10"
-        
-        foreach ($app in $jsonResponseApps."$cat".Items) {
-            $cb = New-Object System.Windows.Controls.CheckBox
-            # JSON'da NameTR varsa onu kullan, yoksa eski yapi (Name) uzerinden devam et
-            $initialName = if ($app.NameTR) { $app.NameTR } else { $app.Name }
-            $cb.Content = $initialName
-            
-            $global:AppItems += [PSCustomObject]@{ CheckBox=$cb; Id=$app.Id; TR=$app.NameTR; EN=$app.NameEN }
-            $wp.Children.Add($cb) | Out-Null
-        }
-        $window.FindName("PanelAppsContainer").Children.Add($wp) | Out-Null
+    $TxtStatus.Text = "[*] Omega Motoru: C# Multi-Thread Köprüsü Kuruluyor..."
+    $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render)
+    
+    # 1. KIRILMAZ ORTAK BELLEK (C# ConcurrentDictionary - Runspace ve UI ayni anda okuyabilir)
+    $global:RadarData = New-Object System.Collections.Concurrent.ConcurrentDictionary[string, string]
+    $keys = @("CpuName", "CpuLoad", "CpuTemp", "CpuPower", "CpuClock", "GpuName", "GpuLoad", "GpuTemp", "GpuVram", "GpuFan", "RamUsage", "DiskName", "DiskRead", "DiskWrite", "NetDown", "NetUp", "NetTotal")
+    foreach ($k in $keys) { $global:RadarData[$k] = "Okunuyor..." }
+    $global:RadarData["CpuName"] = "Adım 1: Motor Başlatılıyor..."
+
+    # 2. ÖLÜMSÜZ DİZİN VE GÜVENLİK
+    $engineDir = "$env:PROGRAMDATA\cyberQbit\Engine"
+    if (!(Test-Path $engineDir)) { New-Item -ItemType Directory -Force -Path $engineDir | Out-Null }
+    $dllPath = "$engineDir\LibreHardwareMonitorLib.dll"
+
+    if (!(Test-Path $dllPath)) {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        $lhmUrl = "https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/LibreHardwareMonitorLib.dll"
+        (New-Object System.Net.WebClient).DownloadFile($lhmUrl, $dllPath)
     }
-} catch {}
+    Unblock-File -Path $dllPath -ErrorAction SilentlyContinue
 
-try {
-    $wcTweaks = New-Object System.Net.WebClient
-    $wcTweaks.Encoding = [System.Text.Encoding]::UTF8
-    $jsonResponseTweaks = $wcTweaks.DownloadString("https://raw.githubusercontent.com/cyberQbit/WinSwift/main/tweaks.json?t=$((Get-Date).Ticks)") | ConvertFrom-Json
-    foreach ($cat in $jsonResponseTweaks.psobject.properties.name) {
-        $header = New-Object System.Windows.Controls.TextBlock; $header.Foreground = "#FF3366"; $header.FontSize = 17; $header.FontWeight = "Bold"; $header.Margin = "0,15,0,10"
-        $global:TweakHeaders += [PSCustomObject]@{ UI=$header; TR=$jsonResponseTweaks."$cat".TR; EN=$jsonResponseTweaks."$cat".EN }; $window.FindName("PanelTweaksContainer").Children.Add($header) | Out-Null
-        $wp = New-Object System.Windows.Controls.WrapPanel; $wp.Margin = "0,0,0,10"
-        
-        foreach ($tweak in $jsonResponseTweaks."$cat".Items) {
-            $cb = New-Object System.Windows.Controls.CheckBox
-            # JSON'da NameTR varsa onu kullan, yoksa eski yapi (Name) uzerinden devam et
-            $initialName = if ($tweak.NameTR) { $tweak.NameTR } else { $tweak.Name }
-            $cb.Content = $initialName
-            $cb.Width = 370
-            
-            $global:TweakItems += [PSCustomObject]@{ CheckBox=$cb; Script=$tweak.Script; TR=$tweak.NameTR; EN=$tweak.NameEN }
-            $wp.Children.Add($cb) | Out-Null
-        }
-        $window.FindName("PanelTweaksContainer").Children.Add($wp) | Out-Null
+    # 3. AĞ MAX KAPASİTESİ
+    $activeNet = Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq 'Up' -and $_.Virtual -eq $false } | Select-Object -First 1
+    if ($activeNet) {
+        $TxtNetAdapter.Text = $activeNet.InterfaceDescription
+        $TxtNetMax.Text = "$([math]::Round($activeNet.Speed / 1000000, 0)) Mbps"
     }
-} catch {}
 
-# --- 4. FONKSIYONLAR (Dinamik İsim Güncelleme) ---
-function Update-Language {
-    $d = $global:i18n[$global:CurrentLang]
+    # 4. HAYALET İŞ PARÇACIĞI (BACKGROUND RUNSPACE)
+    $bgRunspace = [runspacefactory]::CreateRunspace()
+    $bgRunspace.ApartmentState = "STA"
+    $bgRunspace.Open()
+
+    $bgScript = {
+        param($Data, $dllPath) # Veriyi direkt parametre olarak içeri zorluyoruz
+        try {
+            $Data["CpuName"] = "Adım 2: Kütüphaneler Yükleniyor..."
+            Add-Type -AssemblyName System.Management
+            [System.Reflection.Assembly]::LoadFrom($dllPath) | Out-Null
+
+            $Data["CpuName"] = "Adım 3: Sensör Motoru (LHM) Kuruluyor..."
+            $computer = New-Object LibreHardwareMonitor.Hardware.Computer
+            $computer.IsCpuEnabled = $true
+            $computer.IsGpuEnabled = $true
+            $computer.IsMemoryEnabled = $true
+            $computer.IsNetworkEnabled = $true
+            $computer.IsStorageEnabled = $true
+            
+            $Data["CpuName"] = "Adım 4: Donanımlara Bağlanılıyor (LHM.Open)..."
+            $computer.Open()
+
+            if ($computer.Hardware.Count -eq 0) {
+                $Data["CpuName"] = "HATA: Anti-Virüs/Core Isolation Engelledi!"
+                return
+            }
+
+            $Data["CpuName"] = "Adım 5: Bağlantı Başarılı. Veriler Çekiliyor..."
+            
+            while ($true) {
+                try {
+                    foreach ($hw in $computer.Hardware) {
+                        $hw.Update()
+                        
+                        if ($hw.HardwareType -match "Cpu") {
+                            $Data["CpuName"] = $hw.Name
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "CPU Total") { $Data["CpuLoad"] = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -match "Package|Core") { $Data["CpuTemp"] = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Power" -and $sensor.Name -match "Package") { $Data["CpuPower"] = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Clock" -and $sensor.Name -match "Core #1|Bus") { $Data["CpuClock"] = [math]::Round($sensor.Value, 0).ToString() }
+                            }
+                        }
+                        
+                        if ($hw.HardwareType -match "Gpu") {
+                            $Data["GpuName"] = $hw.Name
+                            $vUsed = 0; $vTot = 0
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "GPU Core") { $Data["GpuLoad"] = [math]::Round($sensor.Value, 1).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -eq "GPU Core") { $Data["GpuTemp"] = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Fan" -and $sensor.Name -eq "GPU") { $Data["GpuFan"] = [math]::Round($sensor.Value, 0).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -eq "GPU Memory Used") { $vUsed = [math]::Round($sensor.Value, 0) }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -eq "GPU Memory Total") { $vTot = [math]::Round($sensor.Value, 0) }
+                            }
+                            if ($vTot -gt 0) { $Data["GpuVram"] = "$vUsed / $vTot MB" }
+                        }
+
+                        if ($hw.HardwareType -match "Memory") {
+                            $rUsed = 0; $rAvail = 0
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Used") { $rUsed = $sensor.Value }
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Memory Available") { $rAvail = $sensor.Value }
+                            }
+                            $Data["RamUsage"] = "$([math]::Round($rUsed, 1)) / $([math]::Round($rUsed+$rAvail, 1)) GB"
+                        }
+
+                        if ($hw.HardwareType -match "Storage") {
+                            $Data["DiskName"] = $hw.Name
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Read Rate") { $Data["DiskRead"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Write Rate") { $Data["DiskWrite"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                            }
+                        }
+
+                        if ($hw.HardwareType -match "Network") {
+                            foreach ($sensor in $hw.Sensors) {
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Download Speed") { $Data["NetDown"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Upload Speed") { $Data["NetUp"] = [math]::Round($sensor.Value / 1048576, 2).ToString() }
+                                if ($sensor.SensorType.ToString() -eq "Data" -and $sensor.Name -eq "Data Downloaded") { $Data["NetTotal"] = [math]::Round($sensor.Value, 2).ToString() }
+                            }
+                        }
+                    }
+                } catch { }
+                Start-Sleep -Milliseconds 1000
+            }
+        } catch {
+            $Data["CpuName"] = "MOTOR ÇÖKTÜ: $($_.Exception.Message)"
+        }
+    }
     
-    # Sabit Arayüz Metinleri
-    $TxtTitle.Text=$d["AppTitle"]; $TxtSub.Text=$d["AppSub"]; $NavDash.Content=$d["MenuDash"]; $NavApps.Content=$d["MenuApps"]; $NavTweaks.Content=$d["MenuTweaks"]
-    $NavFeatures.Content=$d["MenuFeatures"]; $NavNet.Content=$d["MenuNet"]; $NavFixes.Content=$d["MenuFixes"]; $NavInfo.Content=$d["MenuInfo"]
-    $BtnLangToggle.Content=$d["BtnLang"]; $TxtStatus.Text=$d["StatusWait"]; $TxtDashWelcome.Text=$d["DashWelcome"]; $TxtDashSub.Text=$d["DashSub"]
-    $BtnWinUtil.Content=$d["BtnWinUtil"]
-    $BtnInstallApps.Content=$d["BtnInstall"]; $BtnApplyTweaks.Content=$d["BtnApply"]; $BtnAppExport.Content=$d["BtnExport"]; $BtnAppImport.Content=$d["BtnImport"]
-    $BtnTweakExport.Content=$d["BtnExport"]; $BtnTweakImport.Content=$d["BtnImport"]; $BtnDebloat.Content=$d["BtnDebloat"]; $BtnRestore.Content=$d["BtnRestore"]
-    $TxtTitleNet.Text=$d["TitleNet"]; $TxtTitleFix.Text=$d["TitleFix"]; $TxtTitleFeat.Text=$d["TitleFeat"]
-    $BtnUpdateAll.Content=$d["BtnUpdateAll"]; $BtnDeepClean.Content=$d["BtnDeepClean"]; $BtnAddContext.Content=$d["BtnAddContext"]; $BtnRemContext.Content=$d["BtnRemContext"]
-    $TxtInfoTitle.Text=$d["InfoTitle"]; $TxtInfoApps.Text=$d["InfoApps"]; $TxtInfoTweaks.Text=$d["InfoTweaks"]; $TxtInfoDebloat.Text=$d["InfoDebloat"]; $TxtInfoNet.Text=$d["InfoNet"]; $TxtInfoFixes.Text=$d["InfoFixes"]
-    
-    # JSON'dan Gelen Kategori Başlıklarını Çevir
-    foreach ($h in $global:AppHeaders) { $h.UI.Text = $h."$($global:CurrentLang)" }
-    foreach ($h in $global:TweakHeaders) { $h.UI.Text = $h."$($global:CurrentLang)" }
-    
-    # JSON'dan Gelen İçerikleri (CheckBox İsimlerini) Dinamik Çevir
-    foreach ($i in $global:AppItems) { if ($i.TR -and $i.EN) { $i.CheckBox.Content = $i."$($global:CurrentLang)" } }
-    foreach ($t in $global:TweakItems) { if ($t.TR -and $t.EN) { $t.CheckBox.Content = $t."$($global:CurrentLang)" } }
+    $bgPowerShell = [powershell]::Create().AddScript($bgScript).AddArgument($global:RadarData).AddArgument($dllPath)
+    $bgPowerShell.Runspace = $bgRunspace
+    $global:bgHandle = $bgPowerShell.BeginInvoke()
+
+    # 5. WPF ARAYÜZ GÜNCELLEYİCİSİ (Sözlükten okur)
+    $radarTimer = New-Object System.Windows.Threading.DispatcherTimer
+    $radarTimer.Interval = [TimeSpan]::FromMilliseconds(1000)
+    $radarTimer.Add_Tick({
+        if ($PageRadar.Visibility -ne "Visible") { return }
+
+        $TxtCpuName.Text = $global:RadarData["CpuName"]
+        $TxtCpuLoad.Text = "% " + $global:RadarData["CpuLoad"]
+        $TxtCpuTemp.Text = $global:RadarData["CpuTemp"] + " °C"
+        $TxtCpuPower.Text = $global:RadarData["CpuPower"] + " W"
+        $TxtCpuClock.Text = $global:RadarData["CpuClock"] + " MHz"
+
+        $TxtGpuName.Text = $global:RadarData["GpuName"]
+        $TxtGpuLoad.Text = "% " + $global:RadarData["GpuLoad"]
+        $TxtGpuTemp.Text = $global:RadarData["GpuTemp"] + " °C"
+        $TxtGpuFan.Text = $global:RadarData["GpuFan"] + " RPM"
+        $TxtGpuVram.Text = $global:RadarData["GpuVram"]
+
+        $TxtRamUsage.Text = $global:RadarData["RamUsage"]
+        
+        $TxtDiskName.Text = $global:RadarData["DiskName"]
+        $TxtDiskRead.Text = $global:RadarData["DiskRead"] + " MB/s"
+        $TxtDiskWrite.Text = $global:RadarData["DiskWrite"] + " MB/s"
+
+        $TxtNetDown.Text = $global:RadarData["NetDown"] + " MB/s"
+        $TxtNetUp.Text = $global:RadarData["NetUp"] + " MB/s"
+        $TxtNetTotal.Text = $global:RadarData["NetTotal"] + " GB"
+    })
+    $radarTimer.Start()
+
+    $TxtStatus.Text = "[+] Omega Telemetry: Kusursuz Kokpit Modu Aktif!"
+
+} catch {
+    $TxtStatus.Text = "[X] RADAR HATASI: $($_.Exception.Message)"
 }
-
-function Reset-Nav {
-    $NavDash.Background="Transparent"; $NavDash.Foreground="#8A8D93"; $NavApps.Background="Transparent"; $NavApps.Foreground="#8A8D93"; $NavTweaks.Background="Transparent"; $NavTweaks.Foreground="#8A8D93"
-    $NavFeatures.Background="Transparent"; $NavFeatures.Foreground="#8A8D93"; $NavNet.Background="Transparent"; $NavNet.Foreground="#8A8D93"; $NavFixes.Background="Transparent"; $NavFixes.Foreground="#8A8D93"; $NavRadar.Background="Transparent"; $NavRadar.Foreground="#8A8D93"; $NavInfo.Background="Transparent"; $NavInfo.Foreground="#00CED1"
-    $PageDash.Visibility="Hidden"; $PageApps.Visibility="Hidden"; $PageTweaks.Visibility="Hidden"; $PageFeatures.Visibility="Hidden"; $PageNet.Visibility="Hidden"; $PageFixes.Visibility="Hidden"; $PageRadar.Visibility="Hidden"; $PageInfo.Visibility="Hidden"
-}
-
-# --- 5. EVENTLER ---
-$BtnLangToggle.Add_Click({ if ($global:CurrentLang -eq "TR") { $global:CurrentLang = "EN" } else { $global:CurrentLang = "TR" }; Update-Language })
-$BtnExit.Add_Click({ 
-    try {
-        # Arka plan iş parçacıklarını zorla durdur
-        if ($global:bgHandle) { $bgPowerShell.Stop() }
-        # ProgramData'daki Engine klasörünü (DLL ve .sys sürücüsünü) yok et (Sıfır İz)
-        Remove-Item "$env:PROGRAMDATA\cyberQbit\Engine" -Recurse -Force -ErrorAction SilentlyContinue
-    } catch {}
-    [Environment]::Exit(0) 
-})
-$NavDash.Add_Click({ Reset-Nav; $NavDash.Background="#1F222B"; $NavDash.Foreground="White"; $PageDash.Visibility="Visible" })
-$NavApps.Add_Click({ Reset-Nav; $NavApps.Background="#1F222B"; $NavApps.Foreground="White"; $PageApps.Visibility="Visible" })
-$NavTweaks.Add_Click({ Reset-Nav; $NavTweaks.Background="#1F222B"; $NavTweaks.Foreground="White"; $PageTweaks.Visibility="Visible" })
-$NavFeatures.Add_Click({ Reset-Nav; $NavFeatures.Background="#1F222B"; $NavFeatures.Foreground="White"; $PageFeatures.Visibility="Visible" })
-$NavNet.Add_Click({ Reset-Nav; $NavNet.Background="#1F222B"; $NavNet.Foreground="White"; $PageNet.Visibility="Visible" })
-$NavFixes.Add_Click({ Reset-Nav; $NavFixes.Background="#1F222B"; $NavFixes.Foreground="White"; $PageFixes.Visibility="Visible" })
-$NavRadar.Add_Click({ Reset-Nav; $NavRadar.Background="#1F222B"; $NavRadar.Foreground="White"; $PageRadar.Visibility="Visible" })
-$NavInfo.Add_Click({ Reset-Nav; $NavInfo.Background="#1F222B"; $NavInfo.Foreground="White"; $PageInfo.Visibility="Visible" })
-
-# APP & UPDATE ALL
-$BtnInstallApps.Add_Click({ $TxtStatus.Text="[*] Kurulum basladi..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $c=0; foreach($i in $global:AppItems){if($i.CheckBox.IsChecked){try{Start-Process "winget" "-install --id $($i.Id) --accept-source-agreements --accept-package-agreements --silent" -Wait -NoNewWindow;$c++}catch{}}}; $TxtStatus.Text="[+] $c program kuruldu!" })
-$BtnUpdateAll.Add_Click({ $TxtStatus.Text="[*] Bilgisayardaki tum programlar guncelleniyor. Bu islem uzun surebilir..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); Start-Process "winget" "upgrade --all --silent --accept-source-agreements --accept-package-agreements" -Wait -NoNewWindow; $TxtStatus.Text="[+] KUSURSUZ! Sistemdeki tum programlar son surume guncellendi." })
-$BtnApplyTweaks.Add_Click({ $TxtStatus.Text="[*] Ayarlar enjekte ediliyor..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $c=0; foreach($i in $global:TweakItems){if($i.CheckBox.IsChecked){try{Invoke-Expression $i.Script;$c++}catch{}}}; $TxtStatus.Text="[+] $c ayar uygulandi!" })
-$BtnDebloat.Add_Click({ $TxtStatus.Text="[☢️] Nukleer Debloat basladi! (1-2 dk surebilir)..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render); $bloatware=@("Microsoft.BingWeather","Microsoft.GetHelp","Microsoft.Getstarted","Microsoft.Microsoft3DViewer","Microsoft.MicrosoftOfficeHub","Microsoft.WindowsAlarms","Microsoft.WindowsCamera","microsoft.windowscommunicationsapps","Microsoft.WindowsFeedbackHub","Microsoft.WindowsMaps","Microsoft.WindowsSoundRecorder","Microsoft.XboxApp","Microsoft.XboxGamingOverlay","Microsoft.ZuneMusic","Microsoft.YourPhone"); $c=0; foreach($app in $bloatware){try{Get-AppxPackage -Name "*$app*" -AllUsers -ErrorAction SilentlyContinue|Remove-AppxPackage -AllUsers -ErrorAction SilentlyContinue;$c++}catch{}}; $TxtStatus.Text="[+] Debloat Bitti! $c cop paket silindi." })
-
-# DERIN TELEMETRY (GENISLETILMIS GOD MODE)
-$BtnAnalyze.Add_Click({
-    $TxtSysInfo.Text="[!] Derin Donanim Telemetrisi Okunuyor... Lutfen Bekleyin..."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
-    
-    $os = Get-CimInstance Win32_OperatingSystem -ErrorAction SilentlyContinue
-    $mb = Get-CimInstance Win32_BaseBoard -ErrorAction SilentlyContinue
-    $bios = Get-CimInstance Win32_BIOS -ErrorAction SilentlyContinue
-    $cpu = Get-CimInstance Win32_Processor -ErrorAction SilentlyContinue
-    $rams = Get-CimInstance Win32_PhysicalMemory -ErrorAction SilentlyContinue
-    $gpus = Get-CimInstance Win32_VideoController -ErrorAction SilentlyContinue
-    $disks = Get-CimInstance Win32_DiskDrive -ErrorAction SilentlyContinue
-
-    $info = "=========================================`n 🧬 DERIN SISTEM TELEMETRISI (GOD MODE) `n=========================================`n`n"
-    
-    $installDate = [management.managementDateTimeConverter]::ToDateTime($os.InstallDate).ToString("dd.MM.yyyy HH:mm")
-    $uptime = [math]::Round(((Get-Date) - $os.LastBootUpTime).TotalHours, 1)
-
-    $info += "[ISLETIM SISTEMI]`nModel           : $($os.Caption) $($os.OSArchitecture)`nSurum / Build   : Version $($os.Version) (Build $($os.BuildNumber))`nKurulum Tarihi  : $installDate`nSistem Calisma  : $uptime Saat`n`n"
-    $info += "[ANAKART & BIOS]`nUretici & Model : $($mb.Manufacturer) $($mb.Product)`nSeri Numarasi   : $($mb.SerialNumber)`nBIOS Surumu     : $($bios.SMBIOSBIOSVersion) ($($bios.ReleaseDate.ToString('dd.MM.yyyy')))`n`n"
-    $info += "[ISLEMCI (CPU)]`nModel           : $($cpu.Name)`nCekirdek / is   : $($cpu.NumberOfCores) Fiziksel / $($cpu.NumberOfLogicalProcessors) Mantiksal`nTaban Hizi      : $($cpu.MaxClockSpeed) MHz`nL2 / L3 Cache   : $($cpu.L2CacheSize) KB / $($cpu.L3CacheSize) KB`nSanallastirma   : $(if($cpu.VirtualizationFirmwareEnabled){'Aktif'}else{'Kapali'})`n`n"
-
-    $ramGb = [math]::Round(($rams | Measure-Object Capacity -Sum).Sum / 1GB, 2)
-    $info += "[BELLEK (RAM) - Toplam $ramGb GB]`n"
-    foreach ($r in $rams) { $info += "Modul : $([math]::Round($r.Capacity/1GB,0)) GB | $($r.Speed) MHz | $($r.Manufacturer) | $($r.PartNumber)`n" }
-    
-    $info += "`n[GRAFIK KARTLARI (GPU)]`n"
-    foreach ($g in $gpus) { $info += "Model         : $($g.Name)`nSurucu Surumu : $($g.DriverVersion)`nCozunurluk    : $($g.CurrentHorizontalResolution)x$($g.CurrentVerticalResolution) @ $($g.CurrentRefreshRate)Hz`n-" }
-    
-    $info += "`n`n[DEPOLAMA (DISK)]`n"
-    foreach ($d in $disks) { $size = [math]::Round($d.Size / 1GB, 0); $info += "Surucu : $($d.Model) | $size GB | Partisyon: $($d.Partitions)`n" }
-
-    $key=(Get-CimInstance -Query 'select * from SoftwareLicensingService' -ErrorAction SilentlyContinue).OA3xOriginalProductKey
-    if([string]::IsNullOrWhiteSpace($key)){ $key="Bulunamadi (Dijital Lisans veya Retail)" }
-    $info += "`n`n[🔑 GIZLI OEM LISANS AVI]`nAnakart Anahtari: $key`n"
-
-    $TxtSysInfo.Text = $info
-})
-
-# CHRIS TITUS WINUTIL TETIKLEYICI
-$BtnWinUtil.Add_Click({
-    $TxtStatus.Text="[*] Aktivasyon aracı başlatılıyor... Lütfen açılan yeni terminal penceresini kontrol edin."; $window.Dispatcher.Invoke([Action]{},[Windows.Threading.DispatcherPriority]::Render);
-    Start-Process "powershell.exe" -ArgumentList "-NoProfile -ExecutionPolicy Bypass -Command `"irm https://get.activated.win | iex`""
-})
-
-# CONTEXT MENU INTEGRATION
-$BtnAddContext.Add_Click({ try { $reg = "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub"; New-Item -Path $reg -Force | Out-Null; Set-ItemProperty -Path $reg -Name "Icon" -Value "powershell.exe"; Set-ItemProperty -Path $reg -Name "MUIVerb" -Value "🌌 SWIFTHUB CORE"; New-Item -Path "$reg\command" -Force | Out-Null; Set-ItemProperty -Path "$reg\command" -Name "(default)" -Value "powershell.exe -NoProfile -ExecutionPolicy Bypass -WindowStyle Hidden -Command `"irm aydinaydmr.com.tr/core | iex`""; $TxtStatus.Text="[+] Sag Tika Eklendi! Masaustunde farenin sag tusuna basarak deneyin." } catch { $TxtStatus.Text="[X] Sag tik eklenemedi." } })
-$BtnRemContext.Add_Click({ try { Remove-Item -Path "HKCU:\Software\Classes\DesktopBackground\Shell\SwiftHub" -Recurse -Force; $TxtStatus.Text="[+] Sag Tik menusunden kaldirildi." } catch {} })
-
-# NUKLEER DEEP CLEAN (KUSURSUZ YAMA)
-$BtnDeepClean.Add_Click({
-    $TxtFixLog.Text = "[☢️] Nukleer Disk Temizligi devrede! Kilitli servisler durduruluyor...";
-    $window.Dispatcher.Invoke([Action]{}, [Windows.Threading.DispatcherPriority]::Render)
-
-    Stop-Service wuauserv -Force -ErrorAction SilentlyContinue
-    Stop-Service bits -Force -ErrorAction SilentlyContinue
-    Stop-Service SysMain -Force -ErrorAction SilentlyContinue
-
-    wevtutil el | ForEach-Object { & wevtutil cl $_ 2>$null }
-
-    Remove-Item "$env:windir\Prefetch\*" -Recurse -Force -ErrorAction SilentlyContinue
-    Remove-Item "$env:TEMP\*" -Recurse -Force -ErrorAction SilentlyContinue
     Remove-Item "$env:windir\Temp\*" -Recurse -Force -ErrorAction SilentlyContinue
     Remove-Item "$env:windir\SoftwareDistribution\Download\*" -Recurse -Force -ErrorAction SilentlyContinue
     Clear-RecycleBin -Force -ErrorAction SilentlyContinue
