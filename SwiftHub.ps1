@@ -465,10 +465,10 @@ function Reset-Nav {
 $BtnLangToggle.Add_Click({ if ($global:CurrentLang -eq "TR") { $global:CurrentLang = "EN" } else { $global:CurrentLang = "TR" }; Update-Language })
 $BtnExit.Add_Click({ 
     try {
-        # Arkaplan is parcaciklarini zorla durdur
+        # Arka plan iş parçacıklarını zorla durdur
         if ($global:bgHandle) { $bgPowerShell.Stop() }
-        # Temp klasorundeki DLL ve sys dosyalarini (Sifir Iz) yok et
-        Remove-Item "$env:TEMP\SwiftHub_Radar" -Recurse -Force -ErrorAction SilentlyContinue
+        # ProgramData'daki Engine klasörünü (DLL ve .sys sürücüsünü) yok et (Sıfır İz)
+        Remove-Item "$env:PROGRAMDATA\cyberQbit\Engine" -Recurse -Force -ErrorAction SilentlyContinue
     } catch {}
     [Environment]::Exit(0) 
 })
@@ -580,7 +580,7 @@ $BtnFeatSandbox.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /f
 $BtnFeatNet2.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:NetFx3 /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] .NET 3.5 Kuruldu." })
 
 # ==============================================================================
-# 📡 OMEGA HARDWARE ENGINE (HYBRID-DROP & ASYNC RUNSPACE)
+# 📡 OMEGA HARDWARE ENGINE (V3 - UNBREAKABLE KERNEL DROP & ASYNC RUNSPACE)
 # ==============================================================================
 try {
     $TxtStatus.Text = "[*] Omega Motoru: Kernel (Çekirdek) Bağlantısı Kuruluyor..."
@@ -594,16 +594,21 @@ try {
         NetDown="0"; NetUp="0"; NetTotal="0"
     })
 
-    # 2. HİBRİT-HAYALET DROP (Kernel sürücüsü için fiziksel yol zorunludur)
-    $tempDir = "$env:TEMP\SwiftHub_Radar"
-    if (!(Test-Path $tempDir)) { New-Item -ItemType Directory -Force -Path $tempDir | Out-Null }
-    $dllPath = "$tempDir\LibreHardwareMonitorLib.dll"
+    # 2. ÖLÜMSÜZ DİZİN (Kullanıcının Temp temizlemesinden etkilenmez)
+    $engineDir = "$env:PROGRAMDATA\cyberQbit\Engine"
+    if (!(Test-Path $engineDir)) { New-Item -ItemType Directory -Force -Path $engineDir | Out-Null }
+    $dllPath = "$engineDir\LibreHardwareMonitorLib.dll"
 
-    # DLL yoksa indir (Her seferinde indirmeyerek açılışı 3 kat hızlandırır)
+    # DLL yoksa güvenli bir şekilde indir
     if (!(Test-Path $dllPath)) {
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
         $lhmUrl = "https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/LibreHardwareMonitorLib.dll"
         (New-Object System.Net.WebClient).DownloadFile($lhmUrl, $dllPath)
     }
+
+    # EN KRİTİK NOKTA: Windows'un internetten inen dosyalara koyduğu "Mark of the Web" kilidini kır.
+    # Bu olmazsa PowerShell güvenlik sebebiyle DLL'i çalıştıramaz ve çöker.
+    Unblock-File -Path $dllPath -ErrorAction SilentlyContinue
 
     # 3. AĞ MAX KAPASİTESİ
     $activeNet = Get-NetAdapter -ErrorAction SilentlyContinue | Where-Object { $_.Status -eq 'Up' -and $_.Virtual -eq $false } | Select-Object -First 1
@@ -615,6 +620,7 @@ try {
     # 4. HAYALET İŞ PARÇACIĞI (BACKGROUND RUNSPACE)
     $bgRunspace = [runspacefactory]::CreateRunspace()
     $bgRunspace.ApartmentState = "STA"
+    $bgRunspace.ThreadOptions = "ReuseThread" # Stabiliteyi artırır
     $bgRunspace.Open()
     $bgRunspace.SessionStateProxy.SetVariable("RadarData", $global:RadarData)
     $bgRunspace.SessionStateProxy.SetVariable("dllPath", $dllPath)
@@ -623,9 +629,9 @@ try {
     $bgPowerShell.Runspace = $bgRunspace
     [void]$bgPowerShell.AddScript({
         try {
-            # WMI Kütüphanesini ve DLL'i fiziksel yoldan yükle
+            # WMI Kütüphanesini ve Unblock edilmiş DLL'i Kernel seviyesinde yükle
             Add-Type -AssemblyName System.Management
-            Add-Type -Path $dllPath
+            [System.Reflection.Assembly]::LoadFrom($dllPath) | Out-Null
 
             $computer = New-Object LibreHardwareMonitor.Hardware.Computer
             $computer.IsCpuEnabled = $true
@@ -633,10 +639,10 @@ try {
             $computer.IsMemoryEnabled = $true
             $computer.IsNetworkEnabled = $true
             $computer.IsStorageEnabled = $true
-            $computer.Open() # Artık kernel sürücüsünü TEMP'e rahatça çıkartabilir
+            $computer.Open()
 
             if ($computer.Hardware.Count -eq 0) {
-                $RadarData.CpuName = "HATA: Yönetici İzni Yok veya Sürücü Engellendi!"
+                $RadarData.CpuName = "HATA: Anti-Virüs veya Core Isolation Sürücüyü Engelledi!"
             }
 
             while ($true) {
@@ -644,7 +650,6 @@ try {
                     foreach ($hw in $computer.Hardware) {
                         $hw.Update()
                         
-                        # --- CPU ---
                         if ($hw.HardwareType -match "Cpu") {
                             $RadarData.CpuName = $hw.Name
                             foreach ($sensor in $hw.Sensors) {
@@ -655,7 +660,6 @@ try {
                             }
                         }
                         
-                        # --- GPU ---
                         if ($hw.HardwareType -match "Gpu") {
                             $RadarData.GpuName = $hw.Name
                             $vUsed = 0; $vTot = 0
@@ -663,13 +667,12 @@ try {
                                 if ($sensor.SensorType.ToString() -eq "Load" -and $sensor.Name -eq "GPU Core") { $RadarData.GpuLoad = [math]::Round($sensor.Value, 1).ToString() }
                                 if ($sensor.SensorType.ToString() -eq "Temperature" -and $sensor.Name -eq "GPU Core") { $RadarData.GpuTemp = [math]::Round($sensor.Value, 0).ToString() }
                                 if ($sensor.SensorType.ToString() -eq "Fan" -and $sensor.Name -eq "GPU") { $RadarData.GpuFan = [math]::Round($sensor.Value, 0).ToString() }
-                                if ($sensor.SensorType.ToString() -eq "SmallData" -and ($sensor.Name -match "GPU Memory Used|D3D Dedicated Memory Used")) { $vUsed = [math]::Round($sensor.Value, 0) }
-                                if ($sensor.SensorType.ToString() -eq "SmallData" -and ($sensor.Name -match "GPU Memory Total")) { $vTot = [math]::Round($sensor.Value, 0) }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -eq "GPU Memory Used") { $vUsed = [math]::Round($sensor.Value, 0) }
+                                if ($sensor.SensorType.ToString() -eq "SmallData" -and $sensor.Name -eq "GPU Memory Total") { $vTot = [math]::Round($sensor.Value, 0) }
                             }
                             if ($vTot -gt 0) { $RadarData.GpuVram = "$vUsed / $vTot MB" }
                         }
 
-                        # --- RAM ---
                         if ($hw.HardwareType -match "Memory") {
                             $rUsed = 0; $rAvail = 0
                             foreach ($sensor in $hw.Sensors) {
@@ -679,7 +682,6 @@ try {
                             $RadarData.RamUsage = "$([math]::Round($rUsed, 1)) / $([math]::Round($rUsed+$rAvail, 1)) GB"
                         }
 
-                        # --- DISK I/O ---
                         if ($hw.HardwareType -match "Storage") {
                             $RadarData.DiskName = $hw.Name
                             foreach ($sensor in $hw.Sensors) {
@@ -688,7 +690,6 @@ try {
                             }
                         }
 
-                        # --- NETWORK ---
                         if ($hw.HardwareType -match "Network") {
                             foreach ($sensor in $hw.Sensors) {
                                 if ($sensor.SensorType.ToString() -eq "Throughput" -and $sensor.Name -eq "Download Speed") { $RadarData.NetDown = [math]::Round($sensor.Value / 1048576, 2).ToString() }
@@ -697,9 +698,7 @@ try {
                             }
                         }
                     }
-                } catch {
-                    $RadarData.CpuName = "Dongu İçi Hata: $($_.Exception.Message)"
-                }
+                } catch { }
                 Start-Sleep -Milliseconds 1000
             }
         } catch {
@@ -739,85 +738,7 @@ try {
     })
     $radarTimer.Start()
 
-    $TxtStatus.Text = "[+] Omega Telemetry: Hibrit Kokpit Modu Aktif!"
-
-} catch {
-    $TxtStatus.Text = "[X] RADAR HATASI: $($_.Exception.Message)"
-}
-    
-    $global:bgHandle = $bgPowerShell.BeginInvoke()
-
-    # 4. WPF ARAYÜZ GÜNCELLEYİCİSİ 
-    $radarTimer = New-Object System.Windows.Threading.DispatcherTimer
-    $radarTimer.Interval = [TimeSpan]::FromMilliseconds(1000)
-    $radarTimer.Add_Tick({
-        if ($PageRadar.Visibility -ne "Visible") { return }
-
-        $TxtCpuName.Text = $global:RadarData.CpuName
-        $TxtCpuLoad.Text = "% " + $global:RadarData.CpuLoad
-        $TxtCpuTemp.Text = $global:RadarData.CpuTemp + " °C"
-        $TxtCpuPower.Text = $global:RadarData.CpuPower + " W"
-        $TxtCpuClock.Text = $global:RadarData.CpuClock + " MHz"
-
-        $TxtGpuName.Text = $global:RadarData.GpuName
-        $TxtGpuLoad.Text = "% " + $global:RadarData.GpuLoad
-        $TxtGpuTemp.Text = $global:RadarData.GpuTemp + " °C"
-        $TxtGpuFan.Text = $global:RadarData.GpuFan + " RPM"
-        $TxtGpuVram.Text = $global:RadarData.GpuVram
-
-        $TxtRamUsage.Text = $global:RadarData.RamUsage
-        
-        $TxtDiskName.Text = $global:RadarData.DiskName
-        $TxtDiskRead.Text = $global:RadarData.DiskRead + " MB/s"
-        $TxtDiskWrite.Text = $global:RadarData.DiskWrite + " MB/s"
-
-        $TxtNetDown.Text = $global:RadarData.NetDown + " MB/s"
-        $TxtNetUp.Text = $global:RadarData.NetUp + " MB/s"
-        $TxtNetTotal.Text = $global:RadarData.NetTotal + " GB"
-    })
-    $radarTimer.Start()
-
-    $TxtStatus.Text = "[+] Omega Telemetry: Asenkron Kokpit Modu Aktif!"
-
-} catch {
-    $TxtStatus.Text = "[X] RADAR HATASI: $($_.Exception.Message)"
-}
-    
-    # Asenkron gorevi sisteme saliyoruz!
-    $global:bgHandle = $bgPowerShell.BeginInvoke()
-
-    # 4. WPF ARAYÜZ GÜNCELLEYİCİSİ (Sadece belleği okuduğu için SIFIR DONMA yapar)
-    $radarTimer = New-Object System.Windows.Threading.DispatcherTimer
-    $radarTimer.Interval = [TimeSpan]::FromMilliseconds(1000)
-    $radarTimer.Add_Tick({
-        # Eger Radar sayfasinda degilsek, UI guncellemesini atla (performans)
-        if ($PageRadar.Visibility -ne "Visible") { return }
-
-        $TxtCpuName.Text = $global:RadarData.CpuName
-        $TxtCpuLoad.Text = "% " + $global:RadarData.CpuLoad
-        $TxtCpuTemp.Text = $global:RadarData.CpuTemp + " °C"
-        $TxtCpuPower.Text = $global:RadarData.CpuPower + " W"
-        $TxtCpuClock.Text = $global:RadarData.CpuClock + " MHz"
-
-        $TxtGpuName.Text = $global:RadarData.GpuName
-        $TxtGpuLoad.Text = "% " + $global:RadarData.GpuLoad
-        $TxtGpuTemp.Text = $global:RadarData.GpuTemp + " °C"
-        $TxtGpuFan.Text = $global:RadarData.GpuFan + " RPM"
-        $TxtGpuVram.Text = $global:RadarData.GpuVram
-
-        $TxtRamUsage.Text = $global:RadarData.RamUsage
-        
-        $TxtDiskName.Text = $global:RadarData.DiskName
-        $TxtDiskRead.Text = $global:RadarData.DiskRead + " MB/s"
-        $TxtDiskWrite.Text = $global:RadarData.DiskWrite + " MB/s"
-
-        $TxtNetDown.Text = $global:RadarData.NetDown + " MB/s"
-        $TxtNetUp.Text = $global:RadarData.NetUp + " MB/s"
-        $TxtNetTotal.Text = $global:RadarData.NetTotal + " GB"
-    })
-    $radarTimer.Start()
-
-    $TxtStatus.Text = "[+] Omega Telemetry: Asenkron Kokpit Modu Aktif!"
+    $TxtStatus.Text = "[+] Omega Telemetry: Kusursuz Kokpit Modu Aktif!"
 
 } catch {
     $TxtStatus.Text = "[X] RADAR HATASI: $($_.Exception.Message)"
