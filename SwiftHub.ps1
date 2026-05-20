@@ -85,6 +85,7 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                         <Button Name="NavFeatures" Content="⚙️ Windows Ozellikleri" Style="{StaticResource SidebarBtn}"/>
                         <Button Name="NavNet" Content="🌐 Ag ve Guvenlik" Style="{StaticResource SidebarBtn}"/>
                         <Button Name="NavFixes" Content="⛑️ Sistem Onarimi" Style="{StaticResource SidebarBtn}"/>
+                        <Button Name="NavRadar" Content="📡 Derin Radar" Style="{StaticResource SidebarBtn}"/>
                     </StackPanel>
                     <StackPanel Grid.Row="2" Margin="10,10,10,0">
                         <Border BorderBrush="#1F222B" BorderThickness="0,1,0,0" Margin="10,0,10,10"/>
@@ -233,6 +234,55 @@ Add-Type -AssemblyName PresentationFramework; Add-Type -AssemblyName Presentatio
                     </StackPanel>
                 </Grid>
 
+                <Grid Name="PageRadar" Visibility="Hidden">
+                    <StackPanel>
+                        <TextBlock Text="📡 DERIN DONANIM RADARI" FontSize="26" FontWeight="Black" Foreground="#FF3366" Margin="0,0,0,20"/>
+                        
+                        <WrapPanel Orientation="Horizontal">
+                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="330" Height="220" Margin="0,0,15,15" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="İŞLEMCİ (CPU)" Foreground="#00CED1" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                    <TextBlock Name="TxtRadarCpuName" Text="Bekleniyor..." Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
+                                    
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Kullanım:" Foreground="White" Grid.Column="0"/>
+                                        <TextBlock Name="TxtRadarCpuLoad" Text="% 0" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Sıcaklık:" Foreground="White" Grid.Column="0"/>
+                                        <TextBlock Name="TxtRadarCpuTemp" Text="0 °C" Foreground="#FF3B30" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Güç (Watt):" Foreground="White" Grid.Column="0"/>
+                                        <TextBlock Name="TxtRadarCpuPower" Text="0 W" Foreground="#1E90FF" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                            <Border Background="#13151A" BorderBrush="#1F222B" BorderThickness="1" CornerRadius="8" Width="330" Height="220" Margin="0,0,15,15" Padding="15">
+                                <StackPanel>
+                                    <TextBlock Text="EKRAN KARTI (GPU)" Foreground="#00CED1" FontWeight="Bold" FontSize="16" Margin="0,0,0,10"/>
+                                    <TextBlock Name="TxtRadarGpuName" Text="Bekleniyor..." Foreground="#8A8D93" FontSize="12" Margin="0,0,0,15"/>
+                                    
+                                    <Grid><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Kullanım:" Foreground="White" Grid.Column="0"/>
+                                        <TextBlock Name="TxtRadarGpuLoad" Text="% 0" Foreground="#00FF66" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Sıcaklık:" Foreground="White" Grid.Column="0"/>
+                                        <TextBlock Name="TxtRadarGpuTemp" Text="0 °C" Foreground="#FF3B30" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                    <Grid Margin="0,5,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                        <TextBlock Text="Fan Hızı (RPM):" Foreground="White" Grid.Column="0"/>
+                                        <TextBlock Name="TxtRadarGpuFan" Text="0 RPM" Foreground="White" FontWeight="Bold" HorizontalAlignment="Right" Grid.Column="1"/>
+                                    </Grid>
+                                </StackPanel>
+                            </Border>
+
+                        </WrapPanel>
+                    </StackPanel>
+                </Grid>
+
                 <Grid Name="PageInfo" Visibility="Hidden">
                     <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                     <TextBlock Name="TxtInfoTitle" Text="📖 SWIFTHUB KULLANIM REHBERI" FontSize="26" FontWeight="Black" Foreground="#00CED1" Margin="0,0,0,20" Grid.Row="0"/>
@@ -262,9 +312,9 @@ $reader = (New-Object System.Xml.XmlNodeReader $xaml); $window = [Windows.Markup
 
 # --- ARAYUZ BINDING ---
 $NavDash=$window.FindName("NavDash"); $NavApps=$window.FindName("NavApps"); $NavTweaks=$window.FindName("NavTweaks")
-$NavFeatures=$window.FindName("NavFeatures"); $NavNet=$window.FindName("NavNet"); $NavFixes=$window.FindName("NavFixes"); $NavInfo=$window.FindName("NavInfo")
+$NavFeatures=$window.FindName("NavFeatures"); $NavNet=$window.FindName("NavNet"); $NavFixes=$window.FindName("NavFixes"); $NavRadar=$window.FindName("NavRadar"); $NavInfo=$window.FindName("NavInfo")
 $PageDash=$window.FindName("PageDash"); $PageApps=$window.FindName("PageApps"); $PageTweaks=$window.FindName("PageTweaks")
-$PageFeatures=$window.FindName("PageFeatures"); $PageNet=$window.FindName("PageNet"); $PageFixes=$window.FindName("PageFixes"); $PageInfo=$window.FindName("PageInfo")
+$PageFeatures=$window.FindName("PageFeatures"); $PageNet=$window.FindName("PageNet"); $PageFixes=$window.FindName("PageFixes"); $PageRadar=$window.FindName("PageRadar"); $PageInfo=$window.FindName("PageInfo")
 
 $BtnExit=$window.FindName("BtnExit"); $BtnLangToggle=$window.FindName("BtnLangToggle"); $TxtStatus=$window.FindName("TxtStatus")
 $TxtTitle=$window.FindName("TxtTitle"); $TxtSub=$window.FindName("TxtSub"); $TxtDashWelcome=$window.FindName("TxtDashWelcome"); $TxtDashSub=$window.FindName("TxtDashSub")
@@ -275,6 +325,8 @@ $TxtInfoDebloat=$window.FindName("TxtInfoDebloat"); $TxtInfoNet=$window.FindName
 
 $BtnAnalyze=$window.FindName("BtnAnalyze"); $BtnWinUtil=$window.FindName("BtnWinUtil")
 $TxtRadarCpu=$window.FindName("TxtRadarCpu"); $TxtRadarRam=$window.FindName("TxtRadarRam")
+$TxtRadarCpuName=$window.FindName("TxtRadarCpuName"); $TxtRadarCpuLoad=$window.FindName("TxtRadarCpuLoad"); $TxtRadarCpuTemp=$window.FindName("TxtRadarCpuTemp"); $TxtRadarCpuPower=$window.FindName("TxtRadarCpuPower")
+$TxtRadarGpuName=$window.FindName("TxtRadarGpuName"); $TxtRadarGpuLoad=$window.FindName("TxtRadarGpuLoad"); $TxtRadarGpuTemp=$window.FindName("TxtRadarGpuTemp"); $TxtRadarGpuFan=$window.FindName("TxtRadarGpuFan")
 $TxtPortSQL=$window.FindName("TxtPortSQL"); $TxtPortWeb=$window.FindName("TxtPortWeb"); $TxtPortDocker=$window.FindName("TxtPortDocker")
 $BtnInstallApps=$window.FindName("BtnInstallApps"); $BtnApplyTweaks=$window.FindName("BtnApplyTweaks")
 $BtnSpeedTest=$window.FindName("BtnSpeedTest"); $BtnDnsCloudflare=$window.FindName("BtnDnsCloudflare"); $BtnDnsGoogle=$window.FindName("BtnDnsGoogle"); $BtnDnsDefault=$window.FindName("BtnDnsDefault"); $BtnNetReset=$window.FindName("BtnNetReset")
@@ -362,19 +414,20 @@ function Update-Language {
 
 function Reset-Nav {
     $NavDash.Background="Transparent"; $NavDash.Foreground="#8A8D93"; $NavApps.Background="Transparent"; $NavApps.Foreground="#8A8D93"; $NavTweaks.Background="Transparent"; $NavTweaks.Foreground="#8A8D93"
-    $NavFeatures.Background="Transparent"; $NavFeatures.Foreground="#8A8D93"; $NavNet.Background="Transparent"; $NavNet.Foreground="#8A8D93"; $NavFixes.Background="Transparent"; $NavFixes.Foreground="#8A8D93"; $NavInfo.Background="Transparent"; $NavInfo.Foreground="#00CED1"
-    $PageDash.Visibility="Hidden"; $PageApps.Visibility="Hidden"; $PageTweaks.Visibility="Hidden"; $PageFeatures.Visibility="Hidden"; $PageNet.Visibility="Hidden"; $PageFixes.Visibility="Hidden"; $PageInfo.Visibility="Hidden"
+    $NavFeatures.Background="Transparent"; $NavFeatures.Foreground="#8A8D93"; $NavNet.Background="Transparent"; $NavNet.Foreground="#8A8D93"; $NavFixes.Background="Transparent"; $NavFixes.Foreground="#8A8D93"; $NavRadar.Background="Transparent"; $NavRadar.Foreground="#8A8D93"; $NavInfo.Background="Transparent"; $NavInfo.Foreground="#00CED1"
+    $PageDash.Visibility="Hidden"; $PageApps.Visibility="Hidden"; $PageTweaks.Visibility="Hidden"; $PageFeatures.Visibility="Hidden"; $PageNet.Visibility="Hidden"; $PageFixes.Visibility="Hidden"; $PageRadar.Visibility="Hidden"; $PageInfo.Visibility="Hidden"
 }
 
 # --- 5. EVENTLER ---
 $BtnLangToggle.Add_Click({ if ($global:CurrentLang -eq "TR") { $global:CurrentLang = "EN" } else { $global:CurrentLang = "TR" }; Update-Language })
-$BtnExit.Add_Click({ $window.Close() })
+$BtnExit.Add_Click({ if ($global:computer) { $global:computer.Close() } $window.Close() })
 $NavDash.Add_Click({ Reset-Nav; $NavDash.Background="#1F222B"; $NavDash.Foreground="White"; $PageDash.Visibility="Visible" })
 $NavApps.Add_Click({ Reset-Nav; $NavApps.Background="#1F222B"; $NavApps.Foreground="White"; $PageApps.Visibility="Visible" })
 $NavTweaks.Add_Click({ Reset-Nav; $NavTweaks.Background="#1F222B"; $NavTweaks.Foreground="White"; $PageTweaks.Visibility="Visible" })
 $NavFeatures.Add_Click({ Reset-Nav; $NavFeatures.Background="#1F222B"; $NavFeatures.Foreground="White"; $PageFeatures.Visibility="Visible" })
 $NavNet.Add_Click({ Reset-Nav; $NavNet.Background="#1F222B"; $NavNet.Foreground="White"; $PageNet.Visibility="Visible" })
 $NavFixes.Add_Click({ Reset-Nav; $NavFixes.Background="#1F222B"; $NavFixes.Foreground="White"; $PageFixes.Visibility="Visible" })
+$NavRadar.Add_Click({ Reset-Nav; $NavRadar.Background="#1F222B"; $NavRadar.Foreground="White"; $PageRadar.Visibility="Visible" })
 $NavInfo.Add_Click({ Reset-Nav; $NavInfo.Background="#1F222B"; $NavInfo.Foreground="White"; $PageInfo.Visibility="Visible" })
 
 # APP & UPDATE ALL
@@ -474,6 +527,81 @@ $BtnFeatWSL.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featu
 $BtnFeatHyperV.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:Microsoft-Hyper-V-All /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] Hyper-V Kuruldu." })
 $BtnFeatSandbox.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:Containers-DisposableClientVM /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] Sandbox Kuruldu." })
 $BtnFeatNet2.Add_Click({ Start-Process "dism.exe" "/online /enable-feature /featurename:NetFx3 /all /norestart" -Wait -NoNewWindow; $TxtStatus.Text="[+] .NET 3.5 Kuruldu." })
+
+# ==============================================================================
+# 📡 HARDWARE MONITOR ENGINE (RAM INJECTION)
+# ==============================================================================
+$TxtStatus.Text = "[*] Donanim Radarlari (LHM) bellege yukleniyor..."
+
+try {
+    # DLL'i GitHub'dan Byte dizisi olarak al (Diske SIFIR temas)
+    $lhmUrl = "https://raw.githubusercontent.com/cyberQbit/SwiftHub/main/LibreHardwareMonitorLib.dll"
+    $dllBytes = (New-Object System.Net.WebClient).DownloadData($lhmUrl)
+    
+    # DLL'i dogrudan RAM uzerinden .NET Uygulama Alanina yukle (Reflection)
+    [System.Reflection.Assembly]::Load($dllBytes) | Out-Null
+    
+    # Sensör bilgisayar objesini olustur ve aktif et
+    $global:computer = New-Object LibreHardwareMonitor.Hardware.Computer
+    $global:computer.IsCpuEnabled = $true
+    $global:computer.IsGpuEnabled = $true
+    $global:computer.IsMemoryEnabled = $true
+    $global:computer.IsMotherboardEnabled = $true
+    $global:computer.IsBatteryEnabled = $true
+    $global:computer.Open()
+    
+    $global:RadarActive = $true
+} catch {
+    $TxtStatus.Text = "[X] Radar modulu yuklenemedi! Sadece arayuz acik kalacak."
+    $global:RadarActive = $false
+}
+
+if ($global:RadarActive) {
+    $lhmTimer = New-Object System.Windows.Threading.DispatcherTimer
+    $lhmTimer.Interval = [TimeSpan]::FromSeconds(2)
+    $lhmTimer.Add_Tick({
+        # Eger Radar sayfasinda degilsek CPU yormamak icin guncelleme yapma
+        if ($PageRadar.Visibility -ne "Visible") { return }
+
+        # Donanimlari taramaya basla
+        foreach ($hardware in $global:computer.Hardware) {
+            $hardware.Update() # Anlik veriyi cek
+            
+            # ISLEMCI (CPU)
+            if ($hardware.HardwareType -match "Cpu") {
+                $TxtRadarCpuName.Text = $hardware.Name
+                foreach ($sensor in $hardware.Sensors) {
+                    if ($sensor.SensorType -eq "Load" -and $sensor.Name -eq "CPU Total") {
+                        $TxtRadarCpuLoad.Text = "% " + [math]::Round($sensor.Value, 1)
+                    }
+                    if ($sensor.SensorType -eq "Temperature" -and ($sensor.Name -match "Core \(Tctl/Tdie\)" -or $sensor.Name -match "Package")) { 
+                        $TxtRadarCpuTemp.Text = [math]::Round($sensor.Value, 0).ToString() + " °C"
+                    }
+                    if ($sensor.SensorType -eq "Power" -and $sensor.Name -eq "Package") {
+                        $TxtRadarCpuPower.Text = [math]::Round($sensor.Value, 1).ToString() + " W"
+                    }
+                }
+            }
+
+            # EKRAN KARTI (GPU)
+            if ($hardware.HardwareType -match "Gpu") {
+                $TxtRadarGpuName.Text = $hardware.Name
+                foreach ($sensor in $hardware.Sensors) {
+                    if ($sensor.SensorType -eq "Load" -and $sensor.Name -eq "GPU Core") {
+                        $TxtRadarGpuLoad.Text = "% " + [math]::Round($sensor.Value, 1)
+                    }
+                    if ($sensor.SensorType -eq "Temperature" -and $sensor.Name -eq "GPU Core") {
+                        $TxtRadarGpuTemp.Text = [math]::Round($sensor.Value, 0).ToString() + " °C"
+                    }
+                    if ($sensor.SensorType -eq "Fan" -and $sensor.Name -eq "GPU") {
+                        $TxtRadarGpuFan.Text = [math]::Round($sensor.Value, 0).ToString() + " RPM"
+                    }
+                }
+            }
+        }
+    })
+    $lhmTimer.Start()
+}
 
 # ==============================================================================
 # 📡 CANLI RADAR MOTORU (Zero-Footprint Telemetry)
